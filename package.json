@@ -1,0 +1,22 @@
+{
+  "name": "rb_dbhelper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/index.js",
+	"types": "lib/index.d.ts",
+  "scripts": {
+    "copy-js": "cp -r src/ lib/; find ./lib -name '*.ts' -type f -delete",
+    "build": "npm run copy-js; tslint --project ./tsconfig.json; tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^2.6.x",
+    "tslint": "^5.7.0",
+    "redblade-types": "git+ssh://git@bitbucket.org/redbladeio/redblade-types.git"
+  },
+  "dependencies": {
+    "config": "^1.29.4"
+  }
+}
