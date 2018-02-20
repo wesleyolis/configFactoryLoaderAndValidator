@@ -1,4 +1,4 @@
-const cache = {};
+const cache: Record<string, string> = {};
 
 interface IKmsEncryptionResult {
     CiphertextBlob: string;
@@ -69,11 +69,9 @@ async function makeMongoDBConnString(settings: any ): Promise<string> {
 
   if (settings.username && (settings.password || settings.e_password)) {
     if (settings.e_password && cache[settings.e_password]) {
-    
-        password = cache[settings.e_password];
-
+      password = cache[settings.e_password];
     } else if (settings.e_password && !cache[settings.e_password]) {
-    
+
       const buf = new Buffer(settings.e_password, 'base64');
       let data: NodeBuffer;
 
