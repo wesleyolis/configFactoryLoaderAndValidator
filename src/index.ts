@@ -92,10 +92,19 @@ async function makeMongoDBConnString(settings: any ): Promise<string> {
     connString = connString + encodeURI(settings.username) + ':' + encodeURI(password) + '@';
   }
 
-  connString = connString + settings.host;
-  if (settings.port) {
-    connString = connString + ':' + settings.port;
-  }
+  settings.hosts.forEach(function(host: Record<string, string>) {
+    connString = connString + host.hostname;
+
+    if (host.port) {
+      connString = connString + ':' + host.port;
+    } else {
+      connString = connString + ':27017';
+    }
+
+    connString = connString + ',';
+  });
+
+  connString = connString.replace(/,+$/, '');
 
   connString = connString + '/' + settings.database;
 
