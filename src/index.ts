@@ -78,7 +78,7 @@ async function makeMongoDBConnString(settings: any ): Promise<string> {
       try {
         data = await exports.decrypt(buf);
       } catch (err) {
-        throw new Error('Unable to decrypt password. Check encrypted string in config.');
+        throw new Error('Unable to decrypt password. Check encrypted string in config.' + err);
       }
       password = data.toString('utf-8');
       cache['settings.e_password'] = password;
