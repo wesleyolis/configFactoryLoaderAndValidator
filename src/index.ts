@@ -63,6 +63,17 @@ async function makePostgresConnString(settings: any): Promise<string> {
   throw new Error('Postgress Not yet implemented.');
 }
 
+export function hasSetting(database: string): boolean {
+  const config = require('config');
+  const dbSetting = config.get('dbConfigs')[database];
+
+  if (dbSetting) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 async function makeMongoDBConnString(settings: any ): Promise<string> {
   let connString = 'mongodb://';
   let password = '';
