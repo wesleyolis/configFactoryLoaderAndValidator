@@ -30,7 +30,7 @@ exports.decrypt = function(buffer: NodeBuffer) {
     const kms = new aws.KMS({
         region: 'eu-west-1'
     });
-    return new Promise((resolve, reject) => {
+    return new Promise( (resolve, reject) => {
         const params = {
             CiphertextBlob: buffer
         };
@@ -44,7 +44,7 @@ exports.decrypt = function(buffer: NodeBuffer) {
     });
 };
 
-export async function getdbsettings(database: string): Promise<string> {
+export async function getDBConnectionString(database: string): Promise<string> {
   const config = require('config');
   const dbSetting = config.get('dbConfigs')[database];
 
@@ -63,15 +63,9 @@ async function makePostgresConnString(settings: any): Promise<string> {
   throw new Error('Postgress Not yet implemented.');
 }
 
-export function hasSetting(database: string): boolean {
+export function hasDBConfig(database: string): boolean {
   const config = require('config');
-  const dbSetting = config.get('dbConfigs')[database];
-
-  if (dbSetting) {
-    return true;
-  } else {
-    return false;
-  }
+  return config.has('dbConfigs.' + database);
 }
 
 async function makeMongoDBConnString(settings: any ): Promise<string> {

@@ -1,2 +1,2 @@
-export declare function getdbsettings(database: string): Promise<string>;
-export declare function hasSetting(database: string): boolean;
+export declare function getDBConnectionString(database: string): Promise<string>;
+export declare function hasDBConfig(database: string): boolean;
