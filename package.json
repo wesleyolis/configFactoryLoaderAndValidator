@@ -4,7 +4,7 @@
   "description": "",
   "repository": "https://bitbucket.org/redbladeio/redblade-platform",
   "main": "lib/index.js",
-	"types": "lib/index.d.ts",
+  "types": "lib/index.d.ts",
   "scripts": {
     "copy-js": "cp -r src/ lib/; find ./lib -name '*.ts' -type f -delete",
     "build": "npm run copy-js; tslint --project ./tsconfig.json; tsc",
@@ -13,9 +13,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "typescript": "^2.6.x",
+    "@types/node": "^9.6.6",
     "tslint": "^5.7.0",
-    "redblade-types": "git+ssh://git@bitbucket.org/redbladeio/redblade-types.git"
   },
   "dependencies": {
     "config": "^1.29.4"

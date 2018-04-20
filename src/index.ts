@@ -1,3 +1,7 @@
+import {ConfigFactoryLoader} from './factory/config-factory-loader';
+
+exports.ConfigFactoryLoader = ConfigFactoryLoader;
+
 const cache: Record<string, string> = {};
 
 interface IKmsEncryptionResult {
