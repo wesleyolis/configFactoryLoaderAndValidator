@@ -1,20 +1,50 @@
 import {ConfigOptions, ConfigOptionsDef, OptionsDefErrors} from '../config-options/config-types'
-import {ConfigFactoryClass, ConfigFactoryTypes} from './config-factory-types'
+import {ConfigFactoryClass, ConfigFactoryTypes, IConfigFactoryDef} from './config-factory-types'
 import {IConfigFactory} from './iconfig-factory'
 
 export abstract class ABaseConfigFactory implements IConfigFactory
 {
-    abstract optionsDef : ConfigOptionsDef;
-    abstract FactoryClass : ConfigFactoryClass;
-    abstract Type : ConfigFactoryTypes;
-    abstract Options : ConfigOptions;
+    abstract OptionsDef : ConfigOptionsDef;
+    FactoryClass : ConfigFactoryClass = ConfigFactoryClass.Factory;
+    Type : ConfigFactoryTypes = ConfigFactoryTypes.Vanilla;
+    Options: ConfigOptions = {};
 
-    abstract create() : IConfigFactory;
-    abstract run () : void;
+    private _created : boolean = false;
 
-    public validate(options : ConfigOptions)
+    create(options : IConfigFactoryDef) : Promise<IConfigFactory>
     {
-        return ABaseConfigFactory.validate(options, this.optionsDef);
+        this.FactoryClass = options.FactoryClass;
+        this.Type = options.Type;
+        this.Options = options.Options;
+
+        this.validate(this.Options);
+        
+        this._created = true;
+
+        return Promise.resolve(this);
+    }
+
+    start () : Promise<any>
+    {
+        if (!this._created)
+            return Promise.reject('Factory has yet to be created.');
+
+        return Promise.resolve();
+    }
+
+    stop () : Promise<any>
+    {
+        return Promise.resolve();
+    }
+
+    public describe() : ConfigOptionsDef
+    {
+        return this.OptionsDef;
+    }
+
+    public validate(options : ConfigOptions) : OptionsDefErrors []
+    {
+        return ABaseConfigFactory.validate(options, this.OptionsDef);
     }
    
     static validate(options : ConfigOptions, optionsDef : ConfigOptionsDef) : OptionsDefErrors []

@@ -1,4 +1,4 @@
-import {ConfigOptions} from '../config-options/config-types';
+import { ConfigOptions } from '../config-options/config-types';
 
 export enum ConfigFactoryClass {
     Factory,

@@ -1,8 +1,10 @@
-import {ConfigFactoryLoader} from './factory/config-factory-loader';
+import { ConfigFactoryLoader } from './config-factory/config-factory-loader';
+import { IConfigFactory } from './config-factory/iconfig-factory';
+import { MongoDbConfigFactoryLoader } from './factories/mongodb/mongodb-config-loader'
 
 exports.ConfigFactoryLoader = ConfigFactoryLoader;
 
-const cache: Record<string, string> = {};
+const databaseFactoryCache: Record<string, IConfigFactory> = {};
 
 interface IKmsEncryptionResult {
     CiphertextBlob: string;
@@ -48,28 +50,39 @@ exports.decrypt = function(buffer: NodeBuffer) {
     });
 };
 
-export async function getDBConnectionString(database: string): Promise<string> {
+export function hasDBConfig(database: string): boolean {
   const config = require('config');
-  const dbSetting = config.get('dbConfigs')[database];
+  return config.has('dbConfigs.' + database);
+}
 
-  if (!dbSetting) {
+export async function getDBConnectionString(database: string): Promise<string> {
+
+  if (databaseFactoryCache[database])
+    return databaseFactoryCache[database];
+
+  const config = require('config');
+  const dbSettings = config.get('dbConfigs')[database];
+
+  if (!dbSettings) {
     throw new Error('No such db setting found in config');
   }
 
-  if (dbSetting.type && dbSetting.type === 'mongodb' ) {
-    return makeMongoDBConnString(dbSetting);
-  }
+  let factoryInstance : IConfigFactory = await MongoDbConfigFactoryLoader.fromJsonConfig(dbSettings);
+
+  databaseFactoryCache[database] = factoryInstance;
+
+  factoryInstance.start();
+
+  
+
+  factoryInstance.stop();
 
   throw new Error('Unsupported Type in db setting config.');
 }
 
-async function makePostgresConnString(settings: any): Promise<string> {
-  throw new Error('Postgress Not yet implemented.');
-}
 
-export function hasDBConfig(database: string): boolean {
-  const config = require('config');
-  return config.has('dbConfigs.' + database);
+if (dbSettings.type && dbSettings.type === 'mongodb' ) {
+  return makeMongoDBConnString(dbSettings);
 }
 
 async function makeMongoDBConnString(settings: any ): Promise<string> {
@@ -90,7 +103,7 @@ async function makeMongoDBConnString(settings: any ): Promise<string> {
         throw new Error('Unable to decrypt password. Check encrypted string in config.' + err);
       }
       password = data.toString('utf-8');
-      cache['settings.e_password'] = password;
+      cache[settings.e_password] = password;
 
     } else {
 

@@ -55,6 +55,11 @@ rbPlatform.getdbsettings('myEncryptedDBSettings').then((dbString) => {
 );
 ```
 ---------------------
+Configuration Loader
+---------------------
+ResolveConfig([primary] = json.url)
+
+----
 
 Parameters that are all required are to be grouped into a single document and parameters
 that are optional, will not have to be present in that objects keys.
