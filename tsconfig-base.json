@@ -34,6 +34,6 @@
 		"preserveSymlinks": true
 	},
 	"include": [
-		"src/**/*[.spec].ts"
+		"src/**/*"
 	]
 }

@@ -1,5 +1,6 @@
 import * as CFT from './config-factory-types';
-import { IConfigFactory } from './iconfig-factory';
+import { ConfigSettings } from '../config-options/config-settings-types'
+import { IConfigFactory, CreateConfigFactoryInstance, IConfigFactoryConstructor } from './iconfig-factory';
 
 export class ErrorNoFactoryConfigFound extends Error {
 
@@ -19,7 +20,7 @@ export class ErrorAmbiguousFactoryConfig extends Error {
 
 export class ConfigFactoryLoader
 {
-    static fromConfigGetJson(config : CFT.JsonOptions) : Promise<IConfigFactory>
+    static fromConfigGetJson<T extends IConfigFactory>(config : ConfigSettings) : T
     {
         let factoryConfigs : CFT.IConfigFactoryRes [] = Object.keys(config).reduce((acc :  CFT.IConfigFactoryRes [], configKeyPhrase) => 
         {
@@ -45,7 +46,7 @@ export class ConfigFactoryLoader
                     FactoryClass : CFT.ConfigFactoryClassStem[factoryClassStem],
                     Type: factoryType,
                     Resouce: value,
-                    Options: config['options']
+                    ConfigSettings: config['options']
                 });
             });
             
@@ -61,11 +62,13 @@ export class ConfigFactoryLoader
         {
             let config = factoryConfigs[0];
             // create and load the factory.
-            let iConfigFactory : IConfigFactory = require(config.Resouce);
+            let iConfigFactory : IConfigFactoryConstructor<T> = require(config.Resouce);
 
-            let factoryInstance = iConfigFactory.create(config);
+            let configFactoryInstance = CreateConfigFactoryInstance(iConfigFactory)
 
-            return factoryInstance;
+            configFactoryInstance.create(config);
+
+            return configFactoryInstance;
         }
         else
         {

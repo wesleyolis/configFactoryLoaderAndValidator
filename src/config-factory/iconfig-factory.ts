@@ -1,18 +1,28 @@
-import * as CT from '../config-options/config-types';
 import * as CFT from './config-factory-types';
-import {ConfigOptions, ConfigOptionsDef, OptionsDefErrors} from '../config-options/config-types';
+import {ErrorSettings} from '../config-options/config-settings-errors'
+
+export function CreateConfigFactoryInstance<A extends IConfigFactory>(ctor : new() => A) : A 
+{
+    return new ctor();
+}
+
+export interface IConfigFactoryConstructor<T extends IConfigFactory>
+{
+    new () : T
+}
 
 export interface IConfigFactory extends CFT.IConfigFactoryDef
 {
-    OptionsDef : CT.ConfigOptionsDef;
+    FactoryClass : CFT.ConfigFactoryClass;
+    Type : CFT.ConfigFactoryTypes;
 
-    create (config : CFT.IConfigFactoryDef) : Promise<IConfigFactory>;
+    create (config : CFT.IConfigFactoryDef) : void;
 
-    start () : Promise<any>;
+    start () : void;
 
-    stop () : Promise<any>;
+    stop () : void;
 
-    validate(options : ConfigOptions) : OptionsDefErrors [];
+    validate() : void;
 
-    describe() : ConfigOptionsDef;
+    describe() : string;
 }

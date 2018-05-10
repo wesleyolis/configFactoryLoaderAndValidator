@@ -1,5 +1,4 @@
-import { ConfigOptions } from '../config-options/config-types';
-
+import {ConfigSettings} from '../config-options/config-settings-types'
 export enum ConfigFactoryClass {
     Factory,
     Module,
@@ -27,13 +26,11 @@ export const ConfigFactoryClassStem : {[prefix : string] : ConfigFactoryClass} =
 
 export const ConfigFactoryClassStemKeys : string [] = Object.keys(ConfigFactoryClassStem);
 
-export type JsonOptions = { [index : string] : object | string | number};
-
 export interface IConfigFactoryDef 
 {
     FactoryClass: ConfigFactoryClass,
     Type: ConfigFactoryTypes,
-    Options: ConfigOptions
+    ConfigSettings: ConfigSettings,
 }
 
 export interface IConfigFactoryRes extends IConfigFactoryDef {

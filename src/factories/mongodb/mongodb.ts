@@ -1,82 +1,25 @@
 import {ABaseConfigFactory} from '../../config-factory/abase-config-factory';
-import {ConfigOptionsDef} from '../../config-options/config-types';
 import {IConfigFactoryDef} from '../../config-factory/config-factory-types';
-import * as IConfigFactory from '../../config-factory/iconfig-factory';
-import {MongoSettings} from './amongodb-config-factory'
+import {IConfigFactory} from '../../config-factory/iconfig-factory';
+import {IMongoSettings} from './amongodb-config-factory'
+import {ErrorSettingMissing, ErrorSettings, ErrorSettingsMissing} from '../../config-options/config-settings-errors'
 
 const cache: Record<string, string> = {};
 
-export class MongoDBConfigFactory extends ABaseConfigFactory implements MongoSettings
-{
-    OptionsDef : ConfigOptionsDef = {
-        'type' : {
-         title : 'Database Type',
-         description : "Database type, legacy support configuration only uses 'mongodb'",
-         type : 'string',   // typically one could use json validator for this.
-         optional : false
-        },
-        'hosts': {
-          title : "EndPoint Hosts",
-          description : "Description",
-          type:"array",
-          optional : false,
-          child : {
-            'hostname' : {
-            title : "HostName",
-            description : "Endpoint hostname",
-            type : 'string',
-            optional : false
-            },
-            'port' : {
-              title : "Port",
-              description : "Endpoint port",
-              type : 'number',
-              optional : false
-            }
-          }
-        },
-        'username' : {
-          title : "UserName",
-          description : "The username",
-          type : "string",
-          optional : false
-        },
-        'password' : {
-          title : "Password:",
-          description : "The Password",
-          type : "string",
-          optional : false
-        },
-        'e_password' : {
-          title : "Enctypted Password",
-          description : "Enctyped Password",
-          type : "string",
-          optional : false
-        },
-        'database' : {
-          title : "Database",
-          description : "Database to connect to on the hosted endpoint",
-          type : "string",
-          optional : false
-        },
-        'options' : {
-          title : "Options",
-          description : "Options",
-          type : "string",
-          optional : false,
-          child : {
-            'authenticationdb' :  {
-              title : "Authentication",
-              
-          }
-        }
-    };
+export type ConfigOptionsTypes = {
+  type? : (string | 'mongodb'),
+  hosts : {hostname: string, port : number} [],
+  database : string,
+  options : {replicaSet : string}
+};
 
-    async create(conf : IConfigFactoryDef) : Promise<IConfigFactory>
+export class MongoDBConfigFactory extends ABaseConfigFactory implements IMongoSettings
+{
+    async create(conf : IConfigFactoryDef)
     {
       super.create(conf);
 
-      let settings = conf.Options;
+      let settings = conf.ConfigSettings;
 
       if (settings.type && settings.type === 'mongodb' ) {
        
@@ -90,11 +33,6 @@ export class MongoDBConfigFactory extends ABaseConfigFactory implements MongoSet
       }
     }
 
-    getConnectionString() : string
-    {
-      return ""
-    }
-
     public start () : Promise<any>
     {
       return Promise.resolve();
@@ -103,6 +41,40 @@ export class MongoDBConfigFactory extends ABaseConfigFactory implements MongoSet
     public stop () : Promise<any>
     {
       return Promise.resolve();
+    }
+
+    describe() : string 
+    {
+      return "";
+    }
+
+    validate() : void
+    {
+      let errors : ErrorSettingMissing [] = [];
+
+      let validateConfig = <ConfigOptionsTypes>(this.ConfigSettings);
+
+      if (validateConfig['type'] == undefined)
+        errors.push(new ErrorSettingMissing("type"));
+
+      if (validateConfig['hosts'] == undefined || validateConfig.hosts.length == 0)
+        errors.push(new ErrorSettingMissing("hosts:[]")); 
+      
+      if (validateConfig['database'] == undefined)
+        errors.push(new ErrorSettingMissing("database"));
+
+      if ( errors.length == 1)
+      {
+        throw errors[0];
+      }
+      else if (errors.length != 0)
+      {
+        throw new ErrorSettingsMissing(errors);
+      }
+    }
+    getConnectionString() : string
+    {
+      return ""
     }
 
     private async makeMongoDBConnString(settings: any ): Promise<string> {
@@ -115,7 +87,7 @@ export class MongoDBConfigFactory extends ABaseConfigFactory implements MongoSet
         } else if (settings.e_password && !cache[settings.e_password]) {
     
           const buf = new Buffer(settings.e_password, 'base64');
-          let data: NodeBuffer;
+          let data: Buffer;
     
           try {
             data = await exports.decrypt(buf);

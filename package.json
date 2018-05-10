@@ -8,18 +8,23 @@
   "scripts": {
     "copy-js": "cp -r src/ lib/; find ./lib -name '*.ts' -type f -delete",
     "build": "npm run copy-js; tslint --project ./tsconfig.json; tsc",
-    "test": "mocha -r ts-node/register src/**/*.spec.ts"
+    "test": "mocha -r ts-node/register 'src/**/*.spec.ts'"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/chai": "^4.1.3",
     "@types/mocha": "^5.2.0",
     "@types/node": "^9.6.6",
     "chai": "^4.1.2",
     "mocha": "^5.1.1",
-    "tslint": "^5.7.0"
+    "ts-node": "^6.0.3"
   },
   "dependencies": {
-    "config": "^1.29.4"
+    "config": "^1.29.4",
+    "redblade-testing": "git+ssh://git@bitbucket.org/redbladeio/redblade-testing.git#feature/returnCaughtError",
+    "redblade-types": "git+ssh://git@bitbucket.org/redbladeio/redblade-types.git",
+    "tslint": "^5.10.0",
+    "typescript": "^2.8.3"
   }
 }
