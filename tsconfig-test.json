@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig-base",
+  "compilerOptions": {
+  "outDir": "lib-test",
+    "rootDir": "test"
+  },
+  "include": [
+    "test/**/*.spec.ts"
+  ]
+}
