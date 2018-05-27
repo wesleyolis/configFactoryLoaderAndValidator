@@ -1,6 +1,5 @@
 import {expect} from 'chai'
-
-import * as CSE from './config-settings-errors';
+import * as CSE from '../../lib/config-options/config-settings-errors';
 
 describe('Config Settings Errors', () =>
 {

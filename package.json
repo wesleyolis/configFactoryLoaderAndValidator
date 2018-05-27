@@ -6,6 +6,8 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
+    "tsc": "tsc",
+    "tsct":"tsc -v;",
     "copy-js": "rm -rf lib && cp -r src/ lib/; find ./lib -name '*.ts' -type f | xargs rm",
     "copy-js-test": "rm -rf lib-test && cp -r test/ lib-test/; find ./lib-test -name '*.ts' -type f | xargs rm",
     "build": "npm run copy-js && tsc",
@@ -20,15 +22,14 @@
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "dependencies": {
     "@types/verror": "^1.10.3",
     "config": "^1.29.4",
     "redblade-testing": "git+ssh://git@bitbucket.org/redbladeio/redblade-testing.git",
     "redblade-types": "git+ssh://git@bitbucket.org/redbladeio/redblade-types.git",
     "tslint": "^5.10.0",
-    "typescript": "^2.8.3",
+    "typescript": "^2.6.2",
     "verror": "^1.10.0"
   }
 }

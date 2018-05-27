@@ -1,36 +1,134 @@
+import {VError, Options, MultiError} from 'verror'
 
-export class ErrorSettings extends Error
+export class EVErrors
 {
-    constructor(msg : string)
+    static errors(error : Error) : Error []
     {
-        super(msg);
+        let cause = VError.cause(error);
+        
+        if (cause instanceof(MultiError))
+        {
+            return (cause as MultiError).errors();
+        }
+        else
+        {
+            let errors : Error [] = [];
+
+            if (cause)
+            {
+                errors.push(cause);
+                return errors;
+            }
+
+            return errors;
+        }
     }
+}
+
+
+
+let error : Error;
+
+// ttail and error connection proedure..
+
+//using existing class.
+// connection....
+// catch(failuer)
+// if ( failure instanceof )
+// if ( failure.name =
+
+// expect(error.name).to.be.equal(ErrorMissingParameterClass.database))
+
+
+
+// Missing Parameter : Database Property : such and such parameters is not formatted correctly
+
+// new TError( new TError(ErrorParamClass,
+
+// let test : TError;
+
+export enum ErrorType {
+    MissingParameter = "MissingParameter",
+    MalformedParameter = "MalformedParameter"
+}
+
+export enum ErrorMissingParameterClass {
+    database = "Database Property",
+    type = "type"
+}
+
+export class ConfigError extends VError
+{
+    constructor(type : ErrorType, message: string, error: )
+    {
+        super({
+            name: type
+        }, message);
+    }
+}
+
+const e: Error = new ConfigError(ErrorType.MissingParameter, 'Something happened', {});
+
+
+export class ErrorContext extends VError
+{
+    constructor(className : string, error : Error, msg : string = "", ...params: any[])
+    {
+        super({
+        'name' : name,
+        'cause': error
+        }, msg, ...params);
+    }
+}
+
+export class ErrorSettings extends VError
+{
 }
 
 export class ErrorSettingMissing extends ErrorSettings
 {
-    static readonly errorDescription = 'Missing parameter';
+    static readonly errorDescription : string = 'Missing parameter';
 
     constructor(public parameter : string)
     {   
-        super(`${ErrorSettingMissing.errorDescription} [${parameter}]`);
+        super({
+            'name' : 'SettingMissing',
+            'cause': new Error(parameter)
+        }, ErrorSettingMissing.errorDescription);
     }
 }
 
 export class ErrorSettingsMissing extends ErrorSettings
 {
-    static readonly errorDescription = 'Missing Multiple Parameter';
+    static readonly errorDescription : string = "Mutiple parameters missing";
 
-    constructor(private errors : ErrorSettingMissing [])
+    constructor(errors : ErrorSettingMissing [])
     {
-        super(`${ErrorSettingsMissing.errorDescription} (${errors.length}) => ${JSON.stringify(errors)}`);
+        super({
+            'name' : 'MutipleSettingsMissing',
+            'cause' : new MultiError(errors)
+        }, ErrorSettingsMissing.errorDescription);
     }
 }
 
-export class ErrorValidationFailed extends Error
+export class ErrorContext extends ErrorSettings
 {
-    constructor(private error : ErrorSettings)
+    constructor(className : string, error : Error, msg : string = "", ...params: any[])
     {
-        super(error.message);
+        super({
+        'name' : name,
+        'cause': error
+        }, msg, ...params);
+    }
+}
+
+export class ErrorValidationFailed extends VError
+{
+    static readonly errorDescription = "Validation Failed";
+
+    constructor(error : ErrorSettings)
+    {
+        super(error, "Failed to created");
+        super.name = "ValidationFailed";
     }
 }

@@ -17,13 +17,24 @@ export abstract class ABaseConfigFactory implements IConfigFactory
         this.Type = settings.Type;
         this.ConfigSettings = settings.ConfigSettings;
 
-        try {
+        try
+        {
             this.validate();
         }
-        catch(error)
+        catch(e)
         {
-            if (error instanceof CSE.ErrorSettings)
-                throw new CSE.ErrorValidationFailed(error);
+            // wrapping context information and rethrowing.
+          throw TError(MongoClassName, e, "custom message", info : settings.ConfigSettings);
+        }
+
+            if(error.name  = "MongoFailed Validation")
+            {
+                //wrapp this in error validation failed
+            }
+
+
+            if (!error instanceof RedBladeLayer)
+               
             else 
                 throw error;
         }
