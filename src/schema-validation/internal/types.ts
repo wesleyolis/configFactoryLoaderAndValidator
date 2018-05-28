@@ -13,8 +13,7 @@ export type Validate<T extends HasType<any>, B extends Bool> = If<B, T['type'], 
 
 // This does allow us to generically add some random error context information
 // that has been supplied generically at design time.
-export function ValidateIn<T extends HasType<any>, B extends Bool>(msg : string) :
- If<B, T['type'], ObjectOmit<T, 'type'>>
+export function ValidateIn<T extends HasType<any>, B extends Bool>(msg : string) : Validate<T,B>
 {
     return new T();
 }

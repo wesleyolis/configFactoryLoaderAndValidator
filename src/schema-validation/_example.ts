@@ -15,10 +15,16 @@ const test = {
 
 class test2 {
     prop1 : boolean =  false;
-    
-    were(val : IValidationType) : IValidationType
+
+    declare were(val : IValidationType) : IValidationType
     {
         return val;
+    }
+}
+
+class types {
+    port : test2 = {
+        prop1 : true
     }
 }
 

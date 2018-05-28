@@ -1,7 +1,8 @@
 import * as VD from '../validator-definitions';
 import * as VCD from './container-definitions';
 import { Kind, KindSelectOption, KindSelect, HasType } from './type-helpers';
-import { ObjectOmit, Bool, If, ObjectClean } from 'typelevel-ts';
+import { ObjectOmit, Bool, If } from 'typelevel-ts';
+import { Validator } from './types';
 
 export type _ValidationTypes = ValidationTypesKind<Kind>;
 export type ValidationTypes = ValidationTypesKind<Validator>;;
