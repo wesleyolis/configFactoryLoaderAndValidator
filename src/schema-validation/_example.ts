@@ -1,10 +1,209 @@
 import { ValidatorOptions, Validate, Optional, Nullable, Validator, TSTypes,  } from './types';
-import {IValidationType} from './internal/type-helpers'
+import {IValidationType, ValidationType} from './internal/type-helpers'
 import {Number, String, Array, ObjectArray} from './validator-definitions';
-import { Bool, ObjectOverwrite, If } from 'typelevel-ts';
-import { Schema } from 'mongoose';
-import { StringDecoder } from 'string_decoder';
+import { Bool, ObjectOverwrite, If, ObjectOmit, ObjectHasKey, PickExact, StringOmit, ObjectClean } from 'typelevel-ts';
 
+export interface HasType<T> 
+{
+    type?: T
+}
+
+export type Optional2<T extends HasType<any>> = ObjectOverwrite<T, { optional: true }>
+
+export class ConfigMerged4<T extends ValidatorOptions>
+{
+    port : Validate<Optional2<Number>, T> = {
+        allowNull: false,
+        lower: 0,
+        upper: 10,
+        kind: "number",
+        optional: true,
+    };
+}
+
+export class Vanilla<B extends ValidatorOptions> implements IValidator<B>
+{
+    port : Validate<Optional2<Number>,B> = {
+        allowNull: false,
+        lower: 0,
+        upper: 10,
+        kind: "number",
+        optional: true
+    };
+    
+    portdfd : Validate<Optional2<Number>,B> = {
+        allowNull: false,
+        lower: 0,
+        upper: 10,
+        kind: "number",
+        optional: true
+    };
+    /*
+    database : Validate<String,B> = {
+        kind: "reg",
+        minLen: 0,
+        maxLen: 10,
+        regx: "yyy"
+    };
+*/
+    arrayObjectOptionalParam: Validate<Optional<ObjectArray<{
+        p1: Optional<Number>,
+        p2: String
+    }, B>>, B> = {
+        kind: "objectArray",
+        elements: {
+            p1: {
+                kind: "number",
+                allowNull: false,
+                lower: 0,
+                upper: 1,
+                optional: true,
+            },
+            p2: {
+                kind: "reg",
+                minLen: 0,
+                maxLen: 10,
+                regx: "regx"
+            }
+        }
+    }
+}
+/*
+type cl = Vanilla<TSTypes>;
+type kkk = TSTypesFrom<cl>;
+
+const mmmdd : cl = {
+    port : 344,
+    database : 'string'
+}
+
+const mmm : cl = {
+    port : {
+        allowNull: false,
+        lower: 0,
+        upper: 10,
+        kind: "number",
+        optional : true
+    },
+    database : {
+        kind: "reg",
+        minLen: 0,
+        maxLen: 10,
+        regx: "yyy"
+    }
+}
+*/
+
+type ValidatorKeys<B extends ValidatorOptions> = KeysIfHasKey<Vanilla<B>,'optional','T'>
+
+type ValidatorKeys2<B extends ValidatorOptions> = KeysIfHasKey<Vanilla<B>,'optional','F'>
+
+type optionals = ValidatorKeys<Validator>;
+type optionals2 = ValidatorKeys2<Validator>;
+
+type val = Vanilla<Validator>;
+type OptionalPart<B extends ValidatorOptions> = PickOptional<Vanilla<Validator>, KeysIfHasKey<Vanilla<B>,'optional','T'>>
+type NonOptional<B extends ValidatorOptions> = Pick<Vanilla<Validator>, KeysIfHasKey<Vanilla<B>,'optional','F'>>
+
+type PickOptional<O, Keys extends keyof O> = 
+{
+    [K in Keys]? : If<ObjectHasKey<O[K],'elements'>, ApplyOptional<O[K]>,O[K]>
+}
+
+type Pick<O, Keys extends keyof O> = 
+{
+    [K in Keys] : If<ObjectHasKey<O[K],'elements'>, ApplyOptional<O[K]>,O[K]>//PickOptional<O[K], KeysIfHasKey<O[K],'optional','T'>> & Pick<O[K], KeysIfHasKey<O[K],'optional','F'>>//ApplyOptional<O[K]>
+}
+
+type ApplyOptional<O> = MakeOptional<O, KeysIfHasKey<O,'optional','T'>, KeysIfHasKey<O,'optional','F'>>
+
+type MakeOptional<O, OKeys extends keyof O, NKeys extends keyof O> =
+{ [K in OKeys]? : IfApplyOptionRecursive<O,K> } & {[K2 in NKeys] : IfApplyOptionRecursive<O,K2>}
+
+type IfApplyOptionRecursive<O, K extends keyof O> = If<ObjectHasKey<O[K],'elements'>, ApplyOptional<O[K]>,O[K]>
+
+type KeysIfHasKey<O, P extends string, IfHas extends Bool> =
+{
+    [K in keyof O] : If<ObjectHasKey<O[K],P>, If<IfHas, K, never>, If<IfHas, never, K>>
+}[keyof O]
+
+type Schema<O, B extends ValidatorOptions> = ApplyOptional<O>
+/*ObjectClean<
+PickOptional<O, KeysIfHasKey<O,'optional','T'>> &
+Pick<O, KeysIfHasKey<O,'optional','F'>>
+>*/
+
+
+type ApplyOptionalClean<O> = ObjectClean<
+ApplyOptional<O>
+>
+
+/*
+PickOptional<O, KeysIfHasKey<O,'optional','T'>> &
+Pick<O, KeysIfHasKey<O,'optional','F'>>
+*/
+
+// The recursive pattern doesn't know were to stop...
+const testasdasd : Schema<Vanilla<Validator>,Validator> = {
+    
+    arrayObjectOptionalParam : {
+        kind: "objectArray",
+        elements: {
+            p1: {
+                kind: "number",
+                allowNull: false,
+                lower: 0,
+                upper: 1
+            },
+            p2: {
+                kind: "reg",
+                minLen: 0,
+                maxLen: 10,
+                regx: "regx"
+            }
+        }
+       
+    }
+}
+
+
+type TSTypesFromRedefine<O extends {}> = Partial<Pick<O,KeysIfHasKey<O>>>
+
+//type aaa = TSTypesFromRedefine<cl>
+/*
+({
+    [K in keyof O] : RedefineObjectKeyIfOptional<K,O[K],never>
+} & {
+    [K in keyof O]? : RedefineObjectKeyIfOptional<K,O[K],O[K]>
+})[keyof O];
+
+
+type ggg = KeysIfHasKey<Vanilla<Validator>>;
+
+type TSTypesFrom<O extends {}> =
+({
+    [K in keyof O] : RedefineObjectKeyIfOptional<K,O[K],never>
+} & {
+    [K in keyof O]? : RedefineObjectKeyIfOptional<K,O[K],O[K]>
+})[keyof O];
+
+type jjj = TSTypesFrom<cl>
+
+type RedefineObjectKeyIfOptional<O extends string, V extends any, A extends any> =
+{
+    T : {[K in O]? : ObjectOmit<V,'optional'>} 
+    F : A
+}[ObjectHasKey<V,'optional'>]
+
+const t_ = new ConfigMerged4<TSTypes>();
+type uuu = TSTypesFrom<ConfigMerged4<TSTypes>>;
+
+
+const testff : RedefineObjectKeyIfOptional<'port', { nullable: true, type: number}> = {
+   // port : 33
+}
+
+/*
 const test = {
     prop1 : false as boolean,
     where : function(val : IValidationType) : IValidationType
@@ -22,6 +221,7 @@ class test2 {
     }
 }
 
+
 class types {
     port : test2 = {
         prop1 : true
@@ -35,7 +235,7 @@ export class ConfigMerged2<T extends ValidatorOptions>
         lower: 0,
         upper: 10,
         kind: "number"
-    };//.where(this.port);
+    }//.where(this.port);
 
     // Basically were is not found unless it is an instance, unless some other way of doing it while keeping this
     // or we look at implemented Validate as a function template wrapper that will, return instance of the Number object
@@ -51,6 +251,8 @@ export class ConfigMerged2<T extends ValidatorOptions>
     // But this means we need to expaned on this again, because for a were I would like a different set of types validation
     // to ensure the correct property is passed in. I am going to have to think about how to do this.
 }
+*/
+
 
 export class ConfigMerged<T extends ValidatorOptions>
 {

@@ -6,7 +6,7 @@ export type Validator = 'F';
 
 export type ValidatorOptions = TSTypes | Validator;
 
-export type Optional<T extends HasType<any>> = ObjectOverwrite<T, { type?: (T['type']), optional: true }>
+export type Optional<T extends HasType<any>> = ObjectOverwrite<T, { type?: (T['type']), optional?: true }>
 export type Nullable<T extends HasType<any>> = ObjectOverwrite<T, { type: (T['type'] | null), nullable: true }>
 
 export type Validate<T extends HasType<any>, B extends Bool> = If<B, T['type'], ObjectOmit<T, 'type'>>;
