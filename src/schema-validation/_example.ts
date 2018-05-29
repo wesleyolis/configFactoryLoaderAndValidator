@@ -1,7 +1,19 @@
 import { ValidatorOptions, Validate, Optional, Nullable, Validator, TSTypes,  } from './types';
 import {IValidationType, ValidationType} from './internal/type-helpers'
 import {Number, String, Array, ObjectArray} from './validator-definitions';
-import { Bool, ObjectOverwrite, If, ObjectOmit, ObjectHasKey, PickExact, StringOmit, ObjectClean } from 'typelevel-ts';
+import { Bool, ObjectOverwrite, If, ObjectOmit, ObjectHasKey, PickExact, StringOmit, ObjectClean, StringContains, StringEq, Or } from 'typelevel-ts';
+import * as Joi from 'joi';
+
+const schema = Joi.object().options({abortEarly: false}).keys({
+    email
+});
+
+enum Modifiers {
+    Non,
+    Nullable,
+
+}
+
 
 export interface HasType<T> 
 {
@@ -21,7 +33,7 @@ export class ConfigMerged4<T extends ValidatorOptions>
     };
 }
 
-export class Vanilla<B extends ValidatorOptions> implements IValidator<B>
+export class Vanilla<B extends ValidatorOptions>
 {
     port : Validate<Optional2<Number>,B> = {
         allowNull: false,
@@ -118,14 +130,23 @@ type Pick<O, Keys extends keyof O> =
 type ApplyOptional<O> = MakeOptional<O, KeysIfHasKey<O,'optional','T'>, KeysIfHasKey<O,'optional','F'>>
 
 type MakeOptional<O, OKeys extends keyof O, NKeys extends keyof O> =
-{ [K in OKeys]? : IfApplyOptionRecursive<O,K> } & {[K2 in NKeys] : IfApplyOptionRecursive<O,K2>}
 
-type IfApplyOptionRecursive<O, K extends keyof O> = If<ObjectHasKey<O[K],'elements'>, ApplyOptional<O[K]>,O[K]>
+//{ [K in OKeys]? : ApplyOptional<O[K]> } & {[K2 in NKeys] : ApplyOptional<O[K2]>}
+{[K in OKeys]? : IfApplyOptionRecursive<O,K> } & 
+{[K2 in NKeys] : IfApplyOptionRecursive<O,K2>}
+
+// we apply this at the top level, but we need to actually apply this to the elements item, which is the problem.
+type IfApplyOptionRecursive<O, K extends keyof O> = If<Or<ObjectHasKey<O[K],'elements'>, StringEq<K,'elements'>>, ApplyOptional<O[K]>, O[K]>
 
 type KeysIfHasKey<O, P extends string, IfHas extends Bool> =
 {
     [K in keyof O] : If<ObjectHasKey<O[K],P>, If<IfHas, K, never>, If<IfHas, never, K>>
 }[keyof O]
+/*
+type KeysIfHasKey<O, P extends string, IfHas extends Bool> =
+{
+    [K in keyof O] : If<ObjectHasKey<O[K],P>, If<IfHas, K, never>, If<IfHas, never, K>>
+}[keyof O]*/
 
 type Schema<O, B extends ValidatorOptions> = ApplyOptional<O>
 /*ObjectClean<
@@ -138,11 +159,15 @@ type ApplyOptionalClean<O> = ObjectClean<
 ApplyOptional<O>
 >
 
+type ApplyValidator<[index : string] extends HasType<any>> =
+{
+    [K in keyof O] : O[K]['type']
+}
+
 /*
 PickOptional<O, KeysIfHasKey<O,'optional','T'>> &
 Pick<O, KeysIfHasKey<O,'optional','F'>>
 */
-
 // The recursive pattern doesn't know were to stop...
 const testasdasd : Schema<Vanilla<Validator>,Validator> = {
     
