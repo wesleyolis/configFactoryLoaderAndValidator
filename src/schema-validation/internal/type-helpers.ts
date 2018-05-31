@@ -364,7 +364,7 @@ export type Null<T extends JoiType, B extends Bool> = If<B, T['type'], JoiNull<T
 export type OpNull<T extends JoiType, B extends Bool> = If<B, T['type'], JoiOpNull<T['Joi']>>
 
 // default everything is optional.
-// TS -> implies required..
+// TS -> implies required.. , this means we required different intialization functions.
 // Optional -> doesn't apply required.
 // Null -> Appllies Null
 // OptionalNull -> Applies Null -> doesn't apply required.
@@ -388,7 +388,7 @@ interface TSJoiSchema {}
 
 class schemaaa<B extends TsTypesOrJoi = Joi> implements TSJoiSchema
 {
-    p1: TS<Number, B> = Joi.number().min(3).max(30).required();
+    p1: TS<String, B> = Joi.number().min(3).max(30).required();
     p1_Op: Op<Number, B> = Op(Joi.number().min(3).max(30));
     p1_Null: Null<Number, B> = Null(Joi.number().min(3).max(30).required());
     p1_OpNull: OpNull<Number, B> = OpNull(Joi.number().min(3).max(30).required());
@@ -408,6 +408,98 @@ function JoiInstance (schema : TSJoiSchema, options: Joi.ValidationOptions | und
 const schemaDef = JoiInstance(new schemaaa()).with('username', 'birthyear').without('password', 'access_token')
 const settings : schemaaa<TSTypes> = 
 {
-    p1_Op :
+    p1 : 3434,
+    p1_Op : 3434,
+
+
+
 }
 
+type Def<T extends keyof Modifiers> = (init : {m: Pick<Modifiers,T>}) => Joi.JoiObject;
+declare function Def<T extends keyof Modifiers> (init :{ m: Pick<Modifiers,T>}) : Joi.JoiObject;
+// interface based extends Joi.AnySchema
+// {
+//     //isRequired : 'T' | 'F';
+//     //isNullable : 'T' | 'F';
+//     required: () => this & {isRequired:'T'}
+//     nullable: () =>  this & {isNullable:'T'} | this
+// }
+
+declare abstract class AnySchema implements Joi.AnySchema
+{
+    validate<T>(value: T): ValidationResult<T>;
+    required() : this & {isRequired:'T'}
+    allow(...values: any[]): this;
+}
+
+abstract class BasedIn extends AnySchema
+{
+    nullable () : (this & {isNullable:'T'} | this)
+    {
+        super.allow(null);
+        return this;
+    }
+}
+
+interface Nunber extends Joi.NumberSchema
+{
+    tsType : number
+}
+
+class schemaaaT<B extends TsTypesOrJoi = Joi> implements TSJoiSchema
+{
+    p1 = Joi.number().min(3).max(30).required().allow(null);
+    p1_Op = Op(Joi.number().min(3).max(30));
+    p1_Null  = Null(Joi.number().min(3).max(30).required());
+    p1_OpNull = OpNull(Joi.number().min(3).max(30).required());     
+}
+
+import * as Joi from 'joi';
+import {If} from 'typelevel-ts';
+
+interface MyBase<T> {
+  tsType: T;
+  isRequired: 'T' | 'F';
+  isNullable: 'T' | 'F';
+  required: () => this & {isRequired: 'T'};
+  allow: (allow: null) => this & {isNullable: 'T'}
+}
+
+type MyNumberSchema = MyBase<number> & Joi.NumberSchema;
+type MyStringSchema = MyBase<string> & Joi.StringSchema;
+type MyDateSchema = MyBase<number | Date | string> & Joi.DateSchema;
+type MyDateSchemaUTC = MyBase<number> & Joi.DateSchema;
+type MyDateSchemaSString = MyBase<string> & Joi.DateSchema;
+
+const JoiX = {
+  number: () => Joi.number() as MyNumberSchema,
+  string: () => Joi.string() as MyStringSchema,
+  date: () => Joi.date() as MyDateSchema,
+  dateUTC: () => Joi.date() as MyDateSchemaUTC,
+  dateString: () => Joi.date() as MyDateSchemaSString
+}
+
+
+type HasTsType = {tsType: any, isRequired: 'T' | 'F', isNullable: 'T' | 'F'};//Add isNullable
+type ExtractTsType<T extends HasTsType> = If<T['isRequired'], T['tsType'], T['tsType'] | undefined>; //Need to add support for isNullable
+
+type propType = (typeof schema)['myString'];
+type extracted = ExtractTsType<propType>;
+
+// Todo: Object/Array
+
+export type Runtime<T> = any; //TODO 
+
+//////
+
+const schema = {
+  numberRequired: JoiX.number().required().min(100).max(200),
+  numberNotRequired: JoiX.number().min(100).allow(null),
+  myString: JoiX.string().regex(/sdfsfd/).required()
+};
+
+const obj: Runtime<typeof schema> = {
+  numberRequired: 42,
+  numberNotRequired: undefined,
+  myString: ''
+};
