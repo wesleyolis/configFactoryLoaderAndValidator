@@ -1,10 +1,10 @@
-import { ConfigFactoryLoader, ErrorNoFactoryConfigFound} from '../../config-factory/config-factory-loader';
+import { ConfigFactoryLoader} from '../../config-factory/config-factory-loader';
 import { IConfigFactory } from '../../config-factory/iconfig-factory';
 import * as CFT from '../../config-factory/config-factory-types';
-import { MongoDBConfigFactory } from './mongodb';
+//import { MongoDBConfigFactory } from './mongodb';
 import { ConfigSettings } from '../../config-options/config-settings-types'
 import { IMongoSettings } from './amongodb-config-factory';
-
+/*
 export class MongoDbConfigFactoryLoader
 {
   static fromJsonConfig(configSettings : ConfigSettings)
@@ -40,3 +40,5 @@ export class MongoDbConfigFactoryLoader
 
   }
 }
+
+*/

@@ -1,7 +1,8 @@
 import * as CFT from './config-factory-types';
-import {ErrorSettings} from '../config-options/config-settings-errors'
+import * as JoiX from '../joi-x';
+import {ConfigSettings} from '../config-options/config-settings-types';
 
-export function CreateConfigFactoryInstance<A extends IConfigFactory>(ctor : new() => A) : A 
+export function NewConfigFactoryInstance<A extends IConfigFactory>(ctor : new() => A) : A 
 {
     return new ctor();
 }
@@ -13,16 +14,19 @@ export interface IConfigFactoryConstructor<T extends IConfigFactory>
 
 export interface IConfigFactory extends CFT.IConfigFactoryDef
 {
-    FactoryClass : CFT.ConfigFactoryClass;
-    Type : CFT.ConfigFactoryTypes;
+    readonly configFactoryName : String;
+    factoryClass : CFT.ConfigFactoryClass;
+    type : CFT.ConfigFactoryTypes;
+    readonly configSchema : JoiX.Schema;
 
-    create (config : CFT.IConfigFactoryDef) : void;
+    createAsync (config : CFT.IConfigFactoryDef) : Promise<void>;
 
-    start () : void;
+    startAsync () : Promise<void>;
 
-    stop () : void;
+    stopAsync () : Promise<void>;
 
-    validate() : void;
+    validateAsync(configSettings : ConfigSettings) : Promise<JoiX.ValidationErrorItem[]>;
 
     describe() : string;
 }
+

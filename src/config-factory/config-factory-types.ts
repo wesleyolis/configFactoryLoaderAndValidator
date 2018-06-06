@@ -1,6 +1,8 @@
 import {ConfigSettings} from '../config-options/config-settings-types'
+import { JoiXSchemaTypes } from '../joi-x';
+
 export enum ConfigFactoryClass {
-    Factory,
+    Factory = 0,
     Module,
     Service
 }
@@ -16,6 +18,10 @@ export const ConfigFactoryTypesPrefix : {[prefix : string] : ConfigFactoryTypes}
     "Mock" : ConfigFactoryTypes.Mock
 }
 
+export const ConfigFactoryTypesPrefixStr : {[prefix : number] : string} = [{key: ConfigFactoryTypes.Vanilla, value : ""},
+{key: ConfigFactoryTypes.Mock, value : "Mock"}
+].reduce((acc : {[index:number]: string}, item) => acc[item.key] = item.value, {});
+
 export const ConfigFactoryTypesPrefixKeys : string [] = Object.keys(ConfigFactoryTypesPrefix);
 
 export const ConfigFactoryClassStem : {[prefix : string] : ConfigFactoryClass} = {
@@ -26,11 +32,17 @@ export const ConfigFactoryClassStem : {[prefix : string] : ConfigFactoryClass} =
 
 export const ConfigFactoryClassStemKeys : string [] = Object.keys(ConfigFactoryClassStem);
 
+export const ConfigFactoryClassStemStr : {[prefix : number] : string} = [{key: ConfigFactoryClass.Factory, value : "Factory"},
+{key: ConfigFactoryClass.Module, value : "Module"},
+{key: ConfigFactoryClass.Service, value : "Service"}
+]
+.reduce((acc : {[index:number]: string}, item) => acc[item.key] = item.value, {});
+
 export interface IConfigFactoryDef 
 {
-    FactoryClass: ConfigFactoryClass,
-    Type: ConfigFactoryTypes,
-    ConfigSettings: ConfigSettings,
+    factoryClass: ConfigFactoryClass,
+    type: ConfigFactoryTypes,
+    configSettings?: JoiXSchemaTypes,
 }
 
 export interface IConfigFactoryRes extends IConfigFactoryDef {

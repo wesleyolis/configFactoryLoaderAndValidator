@@ -1,4 +1,30 @@
 import {VError, Options, MultiError} from 'verror'
+/*
+export enum ErrorType {
+    MissingParameter = "MissingParameter",
+    MalformedParameter = "MalformedParameter"
+}
+
+export enum ErrorMissingParameterClass {
+    database = "Database Property",
+}
+
+export interface ErrorType<EnumType> {
+    Type : EnumType;
+    msg : string;
+}
+
+export interface ErrorClass<EnumClass> {
+    Type : EnumClass;
+    msg : string
+}
+
+export interface Error<Enum, EnumType> {
+    ErrorClass : EnumClass,
+    ErrorType : EnumType
+    msg : string;
+}
+
 
 export class EVErrors
 {
@@ -47,15 +73,8 @@ let error : Error;
 
 // let test : TError;
 
-export enum ErrorType {
-    MissingParameter = "MissingParameter",
-    MalformedParameter = "MalformedParameter"
-}
 
-export enum ErrorMissingParameterClass {
-    database = "Database Property",
-    type = "type"
-}
+VError
 
 export class ConfigError extends VError
 {
@@ -132,3 +151,5 @@ export class ErrorValidationFailed extends VError
         super.name = "ValidationFailed";
     }
 }
+
+*/

@@ -1,26 +1,17 @@
 import * as CFT from './config-factory-types';
-import { ConfigSettings } from '../config-options/config-settings-types'
-import { IConfigFactory, CreateConfigFactoryInstance, IConfigFactoryConstructor } from './iconfig-factory';
+import {ConfigSettings} from '../config-options/config-settings-types'
+import {IConfigFactory, NewConfigFactoryInstance, IConfigFactoryConstructor} from './iconfig-factory';
+import {VError} from 'verror';
 
-export class ErrorNoFactoryConfigFound extends Error {
-
-    constructor()
-    {
-        super("No factory configuration has been found for stem key word 'factory'.");
-    }
-}
-
-export class ErrorAmbiguousFactoryConfig extends Error {
-
-    constructor()
-    {
-        super("Ambiguous Factory, more than one match has been found for stem key word 'factory'.");
-    }
+enum Error
+{
+    NoConfigFound = "NoFactoryFound",
+    AmbiguousMutiple = "AmbiguousMutiple"
 }
 
 export class ConfigFactoryLoader
 {
-    static fromConfigGetJson<T extends IConfigFactory>(config : ConfigSettings) : T
+    static async fromJsonGetConfigAndNewInstance<T extends IConfigFactory>(config : ConfigSettings) : Promise<T>
     {
         let factoryConfigs : CFT.IConfigFactoryRes [] = Object.keys(config).reduce((acc :  CFT.IConfigFactoryRes [], configKeyPhrase) => 
         {
@@ -43,8 +34,8 @@ export class ConfigFactoryLoader
                 }
 
                 acc.push(<CFT.IConfigFactoryRes>{
-                    FactoryClass : CFT.ConfigFactoryClassStem[factoryClassStem],
-                    Type: factoryType,
+                    factoryClass : CFT.ConfigFactoryClassStem[factoryClassStem],
+                    type: factoryType,
                     Resouce: value,
                     ConfigSettings: config['options']
                 });
@@ -56,7 +47,7 @@ export class ConfigFactoryLoader
 
         if (factoryConfigs.length == 0)
         {
-            throw new ErrorNoFactoryConfigFound();
+            throw new VError({name:Error.NoConfigFound}, "No configuration found matching, Factory stem key work.");
         }
         else if (factoryConfigs.length == 1)
         {
@@ -64,15 +55,15 @@ export class ConfigFactoryLoader
             // create and load the factory.
             let iConfigFactory : IConfigFactoryConstructor<T> = require(config.Resouce);
 
-            let configFactoryInstance = CreateConfigFactoryInstance(iConfigFactory)
+            let configFactoryInstance = NewConfigFactoryInstance(iConfigFactory)
 
-            configFactoryInstance.create(config);
+            await configFactoryInstance.createAsync(config);
 
             return configFactoryInstance;
         }
         else
         {
-            throw new ErrorAmbiguousFactoryConfig();
+            throw new VError({name:Error.AmbiguousMutiple}, "Ambiguous Factories, mutiple entries matching 'Factory'");
         } 
     }
 }

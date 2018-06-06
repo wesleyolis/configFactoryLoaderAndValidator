@@ -7,13 +7,13 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "tsc": "tsc",
-    "tsct":"tsc -v;",
+    "tsct": "tsc -v;",
     "copy-js": "rm -rf lib && cp -r src/ lib/; find ./lib -name '*.ts' -type f | xargs rm",
     "copy-js-test": "rm -rf lib-test && cp -r test/ lib-test/; find ./lib-test -name '*.ts' -type f | xargs rm",
     "build": "npm run copy-js && tsc",
     "build-test": "npm run copy-js-test && tsc -p tsconfig-test.json",
     "build-all": "npm run build && npm run build-test",
-    "test": "mocha --recursive 'lib-test/**/*.spec.js'",
+    "test": "mocha --recursive 'lib-test/joi-x.spec.js'",
     "test-coverage": "nyc --all mocha --recursive 'lib-test/**/*.spec.js'",
     "build-run-test": "npm run build-test && npm run test",
     "build-run-test-coverage": "npm run build-test && npm run test-coverage",
@@ -28,6 +28,7 @@
     "config": "^1.29.4",
     "redblade-testing": "git+ssh://git@bitbucket.org/redbladeio/redblade-testing.git",
     "redblade-types": "git+ssh://git@bitbucket.org/redbladeio/redblade-types.git",
+    "tsc-simple": "git+https://github.com/fictitious/tsc-simple.git",
     "tslint": "^5.10.0",
     "typescript": "^2.6.2",
     "verror": "^1.10.0"
