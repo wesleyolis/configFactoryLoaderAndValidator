@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-base",
+  "compilerOptions": {
+  "outDir": "joi_x",
+    "rootDir": ""
+  },
+  "include": [
+    "*.ts"
+  ]
+}
