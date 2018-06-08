@@ -14,7 +14,7 @@ export interface IConfigFactoryConstructor<T extends IConfigFactory>
 
 export interface IConfigFactory
 {
-    readonly FactoryName : String;
+    readonly factoryName : String;
     readonly factoryClass : CFT.ConfigFactoryClass;
     readonly type : CFT.ConfigFactoryTypes;
     readonly configSchema : JoiX.XSchema;

@@ -3,125 +3,106 @@ import {IConfigFactory} from '../../../config-factory/iconfig-factory';
 import {IMongoSettings} from './../amongodb-config-factory';
 import * as CS from './configSchema';
 import * as JoiX from '../../../joi-x';
+import { ConfigFactoryClass, ConfigFactoryTypes } from '../../../config-factory/config-factory-types';
 
 const cache: Record<string, string> = {};
 
 
 export class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABaseConfigFactory implements IMongoSettings
 { 
-    readonly FactoryName = "Network"
-    readonly configSchema  = CS.configSchema;
-    readonly ConfigFactoryName = 'MongoDB';
-    //public configSettings : T = undefined
-    //CS.ConfigSchema
-    static NewInstance()
-    {
-      // cal this with the array constructor versions with undefined and then cast it.
-     //return new MongoDBConfigFactory<any>(undefined) as MongoDBConfigFactory<CS.ConfigSchema>
-    }
+  readonly factoryName = "Network"
+  readonly factoryClass = ConfigFactoryClass.service;
+  readonly type = ConfigFactoryTypes.Production;
+  readonly configSchema  = CS.configSchema;
 
-    constructor(public configSettings : CS.ConfigSchema ) : MongoDBConfigFactory<CS.ConfigSchema>
-    {
-      super();
-    }
+  static NewInstance()
+  {
+   return new MongoDBConfigFactory<any>(undefined) as MongoDBConfigFactory<CS.ConfigSchema>
+  }
 
-    async createAsync(conf : JoiX.XJSchemaMap) : Promise<void>
-    {
-      await super.createAsync(conf); // This is genraic abstract procedure.
+  // We loose the compiler auto complete features, if configSettings is unioned with undefined.
+  constructor(public configSettings : T)
+  {
+    super();
+  }
 
-      this.configSettings.database = 
+  async createAsync(conf : CS.ConfigSchema)
+  {
+    await super.createAsync(conf); // This is genraic abstract procedure.
+      
+    await this.makeMongoDBConnString(this.configSettings);
+  }
 
-      let settings = conf.ConfigSettings;
+  public async startAsync ()
+  {
+    await super.startAsync();
+  }
 
-      if (settings.type && settings.type === 'mongodb' ) {
-       
-        await this.makeMongoDBConnString(settings);
+  public async stopAsync ()
+  {
+    await super.stopAsync();
+  }
+  
+  getConnectionString() : string
+  {
+    return ""
+  }
 
-        return Promise.resolve();
-      }
-      else
-      {
-        throw new Error('Unsupported Type in db setting config.');
-      }
-    }
-
-    public async startAsync () : Promise<any>
-    {
-      return Promise.resolve();
-    }
-
-    public stopAsync () : Promise<any>
-    {
-      return Promise.resolve();
-    }
-
-   
-    getConnectionString() : string
-    {
-      return ""
-    }
-
-    private async makeMongoDBConnString(settings: any ): Promise<string> {
-      let connString = 'mongodb://';
-      let password = '';
-    
-      if (settings.username && (settings.password || settings.e_password)) {
-        if (settings.e_password && cache[settings.e_password]) {
-          password = cache[settings.e_password];
-        } else if (settings.e_password && !cache[settings.e_password]) {
-    
-          const buf = new Buffer(settings.e_password, 'base64');
-          let data: Buffer;
-    
-          try {
-            data = await exports.decrypt(buf);
-          } catch (err) {
-            throw new Error('Unable to decrypt password. Check encrypted string in config.' + err);
-          }
-          password = data.toString('utf-8');
-          cache['settings.e_password'] = password;
-    
-        } else {
-    
-          password = settings.password;
-    
+  private async makeMongoDBConnString(settings: CS.ConfigSchema): Promise<string> {
+    let connString = 'mongodb://';
+    let password = '';
+  
+    if (settings.username && (settings.password || settings.e_password)) {
+      if (settings.e_password && cache[settings.e_password]) {
+        password = cache[settings.e_password];
+      } else if (settings.e_password && !cache[settings.e_password]) {
+  
+        const buf = new Buffer(settings.e_password, 'base64');
+        let data: Buffer;
+  
+        try {
+          data = await exports.decrypt(buf);
+        } catch (err) {
+          throw new Error('Unable to decrypt password. Check encrypted string in config.' + err);
         }
-    
-        connString = connString + encodeURI(settings.username) + ':' + encodeURI(password) + '@';
+        password = data.toString('utf-8');
+        cache['settings.e_password'] = password;
+  
+      } else {
+  
+        password = settings.password;
+  
       }
-    
-      settings.hosts.forEach(function(host: Record<string, string>) {
-        connString = connString + host.hostname;
-    
-        if (host.port) {
-          connString = connString + ':' + host.port;
-        } else {
-          connString = connString + ':27017';
-        }
-    
-        connString = connString + ',';
-      });
-    
-      connString = connString.replace(/,+$/, '');
-    
-      connString = connString + '/' + settings.database;
-    
-      if (settings.options) {
-        connString = connString + '?';
-    
-        Object.keys(settings.options).forEach(
-          function(key) {
-            connString = connString + key + '=' + encodeURI(settings.options[key]);
-          }
-        );
-      }
-    
-      return connString;
+  
+      connString = connString + encodeURI(settings.username) + ':' + encodeURI(password) + '@';
     }
+  
+    settings.hosts.forEach(function(host: Record<string, string>) {
+      connString = connString + host.hostname;
+  
+      if (host.port) {
+        connString = connString + ':' + host.port;
+      } else {
+        connString = connString + ':27017';
+      }
+  
+      connString = connString + ',';
+    });
+  
+    connString = connString.replace(/,+$/, '');
+  
+    connString = connString + '/' + settings.database;
+  
+    if (settings.options) {
+      connString = connString + '?';
+  
+      Object.keys(settings.options).forEach(
+        function(key) {
+          connString = connString + key + '=' + encodeURI(settings.options[key]);
+        }
+      );
+    }
+  
+    return connString;
+  }
 }
-
-
-const test = MongoDBConfigFactory.NewInstance();
-
-test.configSettings.
-

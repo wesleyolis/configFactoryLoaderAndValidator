@@ -13,9 +13,9 @@ export enum ErrorFactory
 
 export abstract class ABaseConfigFactory implements IConfigFactory
 {
-    abstract readonly FactoryName : string;
-    factoryClass : ConfigFactoryClass = ConfigFactoryClass.Factory;
-    type : ConfigFactoryTypes = ConfigFactoryTypes.Production;
+    abstract factoryName : string;
+    abstract factoryClass : ConfigFactoryClass;
+    abstract type : ConfigFactoryTypes;
     abstract readonly configSchema : JoiX.XObjectSchema;
 
     abstract configSettings? : JoiX.XTSchema
