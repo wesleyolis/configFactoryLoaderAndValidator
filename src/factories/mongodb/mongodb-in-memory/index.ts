@@ -21,7 +21,7 @@ export class MongoInMemoryConfigFactory extends ABaseConfigFactory implements IM
     {
         await super.createAsync(options);
         
-        this.mongoServerInstance = new MongoInMemory(this.ConfigSettings);
+     //   this.mongoServerInstance = new MongoInMemory(this.ConfigSettings);
     }
 
     public async startAsync ()
@@ -57,4 +57,3 @@ export class MongoInMemoryConfigFactory extends ABaseConfigFactory implements IM
     }
 }
 
-*/

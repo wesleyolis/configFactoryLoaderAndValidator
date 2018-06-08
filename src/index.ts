@@ -1,4 +1,4 @@
-import { ConfigFactoryLoader } from './config-factory/config-factory-loader';
+//import { ConfigFactoryLoader } from './config-factory/config-factory-loader';
 import { IConfigFactory } from './config-factory/iconfig-factory';
 //import { MongoDbConfigFactoryLoader } from './factories/mongodb/mongodb-config-loader'
 import { IMongoSettings } from './factories/mongodb/amongodb-config-factory'

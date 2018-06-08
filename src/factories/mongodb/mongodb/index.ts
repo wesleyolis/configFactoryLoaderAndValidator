@@ -1,19 +1,35 @@
 import {ABaseConfigFactory} from '../../../config-factory/abase-config-factory';
-import {IConfigFactoryDef} from '../../../config-factory/config-factory-types';
 import {IConfigFactory} from '../../../config-factory/iconfig-factory';
 import {IMongoSettings} from './../amongodb-config-factory';
 import * as CS from './configSchema';
+import * as JoiX from '../../../joi-x';
 
 const cache: Record<string, string> = {};
 
-export class MongoDBConfigFactory extends ABaseConfigFactory implements IMongoSettings
-{ 
-    readonly configSchema = CS.configSchema;
-    readonly ConfigFactoryName = 'MongoDB';
 
-    async createAsync(conf : IConfigFactoryDef) : Promise<void>
+export class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABaseConfigFactory implements IMongoSettings
+{ 
+    readonly FactoryName = "Network"
+    readonly configSchema  = CS.configSchema;
+    readonly ConfigFactoryName = 'MongoDB';
+    //public configSettings : T = undefined
+    //CS.ConfigSchema
+    static NewInstance()
+    {
+      // cal this with the array constructor versions with undefined and then cast it.
+     //return new MongoDBConfigFactory<any>(undefined) as MongoDBConfigFactory<CS.ConfigSchema>
+    }
+
+    constructor(public configSettings : CS.ConfigSchema ) : MongoDBConfigFactory<CS.ConfigSchema>
+    {
+      super();
+    }
+
+    async createAsync(conf : JoiX.XJSchemaMap) : Promise<void>
     {
       await super.createAsync(conf); // This is genraic abstract procedure.
+
+      this.configSettings.database = 
 
       let settings = conf.ConfigSettings;
 
@@ -103,3 +119,9 @@ export class MongoDBConfigFactory extends ABaseConfigFactory implements IMongoSe
       return connString;
     }
 }
+
+
+const test = MongoDBConfigFactory.NewInstance();
+
+test.configSettings.
+

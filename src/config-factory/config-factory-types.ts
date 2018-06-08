@@ -1,6 +1,18 @@
 import {ConfigSettings} from '../config-options/config-settings-types'
 import { JoiXSchemaTypes } from '../joi-x';
 
+export class ConfigFactoryClass {
+    static readonly Factory : string = "Factory";
+    static readonly Module : string = "Module";
+    static readonly service : string = "Service";
+}
+
+export class ConfigFactoryTypes{
+    static readonly Production : string = "Production";
+    static readonly Mock : string = "Mock";
+}
+/*
+
 export enum ConfigFactoryClass {
     Factory = 0,
     Module,
@@ -38,6 +50,7 @@ export const ConfigFactoryClassStemStr : {[prefix : number] : string} = [{key: C
 ]
 .reduce((acc : {[index:number]: string}, item) => acc[item.key] = item.value, {});
 
+/*
 export interface IConfigFactoryDef 
 {
     factoryClass: ConfigFactoryClass,
@@ -46,6 +59,7 @@ export interface IConfigFactoryDef
 }
 
 export interface IConfigFactoryRes extends IConfigFactoryDef {
-    Resouce: string,
+    resouce: string,
 }
+*/
 

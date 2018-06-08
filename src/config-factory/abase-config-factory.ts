@@ -1,4 +1,4 @@
-import { ConfigFactoryClass, ConfigFactoryTypes, IConfigFactoryDef, ConfigFactoryTypesPrefix, ConfigFactoryTypesPrefixStr, ConfigFactoryClassStem, ConfigFactoryClassStemStr } from './config-factory-types';
+import { ConfigFactoryClass, ConfigFactoryTypes } from './config-factory-types';
 import { IConfigFactory } from './iconfig-factory';
 import { ConfigSettings } from '../config-options/config-settings-types';
 import * as CSE from '../config-options/config-settings-errors';
@@ -13,33 +13,31 @@ export enum ErrorFactory
 
 export abstract class ABaseConfigFactory implements IConfigFactory
 {
-    abstract readonly configFactoryName : string;
+    abstract readonly FactoryName : string;
     factoryClass : ConfigFactoryClass = ConfigFactoryClass.Factory;
-    type : ConfigFactoryTypes = ConfigFactoryTypes.Vanilla;
-    abstract configSettings? : JoiX.JoiXSchemaTypes;
-    abstract readonly configSchema : JoiX.Schema;
+    type : ConfigFactoryTypes = ConfigFactoryTypes.Production;
+    abstract readonly configSchema : JoiX.XObjectSchema;
+
+    abstract configSettings? : JoiX.XTSchema
+
+    readonly configSchemaWithClassification : JoiX.SchemaMap = {
+        class : JoiX.string().allow().required(),
+        type : JoiX.string().required()
+    };
 
     private _created : boolean = false;
 
-    factoryName() : string {
-        return ConfigFactoryTypesPrefixStr[this.factoryClass] + ConfigFactoryClassStemStr[this.type] + this.configFactoryName;
-    }
-
-    async createAsync(settings : IConfigFactoryDef) : Promise<void>
+    async createAsync(config : JoiX.XJSchemaMap) : Promise<void>
     {
-        this.factoryClass = settings.factoryClass;
-        this.type = settings.type;
-
-        let results : JoiX.ValidationResult<ConfigSettings>;
-
         try
         {
-            this.configSettings = JoiX.validate(settings.configSettings, this.configSchema, {abortEarly: false});
+            const configSchema = this.configSchema.keys(this.configSchemaWithClassification);
+            this.configSettings = await JoiX.validate(config, configSchema, {abortEarly: false});
         }
         catch(e)
         {
             if (JoiX.isJoiError(e)){
-                throw new VError(e, this.factoryName());
+                throw new VError(e, this.FactoryName);
             }
             throw e;
         }
@@ -62,7 +60,7 @@ export abstract class ABaseConfigFactory implements IConfigFactory
         return Promise.resolve();
     }
 
-    async validateAsync(configSettings : ConfigSettings = this.configSettings) : Promise<JoiX.ValidationErrorItem[]>
+    async validateAsync(configSettings : ConfigSettings ) : Promise<JoiX.ValidationErrorItem[]>
     {
         try {
             await JoiX.validate(this.configSettings, this.configSchema);

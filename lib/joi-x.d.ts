@@ -14,6 +14,9 @@ export interface XBase {
 export interface XPrimitive<T> extends XBase {
     __tsType: T;
 }
+export declare type HasKey = {
+    __tsType: any;
+};
 export interface XObject extends XBase {
     __tsType: Record<string, any>;
     keys<T extends Record<string, JoiXSchema>>(keys: T): this & {
@@ -58,6 +61,10 @@ export declare const lazy: <T extends JoiXSchema>(cb: () => T) => T;
 export declare const object: () => XObjectSchema;
 export declare const array: () => XArraySchema;
 export declare function isJoiError(err: any): err is Joi.ValidationError;
+export declare type SchemaTypes = string | number | boolean | object | null | JoiXSchemaTypes;
+export interface JoiXSchemaTypes {
+    [key: string]: SchemaTypes | SchemaTypes[];
+}
 export declare type JoiXSchema = {
     __tsType: any;
     __isRequired?: 'T';
@@ -68,4 +75,4 @@ export declare type ExtractNull<S, T> = If<ObjectHasKey<S, '__isNullable'>, T | 
 export declare type ExtractFromSchema<T extends JoiXSchema> = ExtractRequired<T, ExtractNull<T, T['__tsType']>>;
 export declare type ExtractFromObject<T extends Record<string, JoiXSchema>> = {
     [P in keyof T]: ExtractFromSchema<T[P]>;
-};
+} & JoiXSchemaTypes;

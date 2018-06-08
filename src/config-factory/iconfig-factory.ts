@@ -12,14 +12,14 @@ export interface IConfigFactoryConstructor<T extends IConfigFactory>
     new () : T
 }
 
-export interface IConfigFactory extends CFT.IConfigFactoryDef
+export interface IConfigFactory
 {
-    readonly configFactoryName : String;
-    factoryClass : CFT.ConfigFactoryClass;
-    type : CFT.ConfigFactoryTypes;
-    readonly configSchema : JoiX.Schema;
+    readonly FactoryName : String;
+    readonly factoryClass : CFT.ConfigFactoryClass;
+    readonly type : CFT.ConfigFactoryTypes;
+    readonly configSchema : JoiX.XSchema;
 
-    createAsync (config : CFT.IConfigFactoryDef) : Promise<void>;
+    createAsync (config : JoiX.XJSchemaMap) : Promise<void>;
 
     startAsync () : Promise<void>;
 

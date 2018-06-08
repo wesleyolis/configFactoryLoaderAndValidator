@@ -1,4 +1,4 @@
-import { ConfigSettings } from '../config-options/config-settings-types';
+import { JoiXSchemaTypes } from '../joi-x';
 export declare enum ConfigFactoryClass {
     Factory = 0,
     Module = 1,
@@ -23,10 +23,10 @@ export declare const ConfigFactoryClassStemStr: {
     [prefix: number]: string;
 };
 export interface IConfigFactoryDef {
-    FactoryClass: ConfigFactoryClass;
-    Type: ConfigFactoryTypes;
-    ConfigSettings: ConfigSettings;
+    factoryClass: ConfigFactoryClass;
+    type: ConfigFactoryTypes;
+    configSettings?: JoiXSchemaTypes;
 }
 export interface IConfigFactoryRes extends IConfigFactoryDef {
-    Resouce: string;
+    resouce: string;
 }

@@ -1,6 +1,8 @@
-import { join } from "bluebird";
+//import { join } from "bluebird";
 import * as JoiX from './joi-x';
+import * as Joi from 'joi';
 
+/*
 interface IBase
 {
     method() : Promise<void>
@@ -70,10 +72,25 @@ async function delay(milliseconds: number) {
         setTimeout(resolve, milliseconds);
     });
 }
-
+*/
 /*
 printDelayed(["Hello", "beautiful", "asynchronous", "world"]).then(() => {
     console.log();
     console.log("Printed every element!");
 });
 */
+
+const alt = Joi.alternatives().try(Joi.object().keys({
+ kind: Joi.string().allow('kind1').required,
+ a: Joi.number()   
+}), 
+
+Joi.object().keys({
+    kind: Joi.string().allow('kind2').required,
+    a: Joi.number()   
+   })
+);
+
+/*Joi.validate({kind:'sfd'}, alt, (err, value) => {
+    console.log("joivalidate:" + JSON.stringify(err)) ;
+});*/
