@@ -1,15 +1,14 @@
 import * as JoiX from './joi-x'
 
-
 export interface Port extends JoiX.XNumberSchema {}
 
 export enum DPorts
 {
-    Undefined = -1,
-    Mongo = 27017
+    undefined = -1,
+    mongo = 27017
 }
 
-export const port = (port : DPorts = DPorts.Undefined) => {
+export const port = (port : DPorts = DPorts.undefined) => {
 
     const joi = JoiX.number().min(0).max(65535);
 
@@ -19,5 +18,18 @@ export const port = (port : DPorts = DPorts.Undefined) => {
     else
         desc += 'Default Port [' + port + ']';
 
-    return joi.description(desc) as Port;
+    return joi.description(desc) as Port;   // Remeber that you are overiding the super impose type value build ups.
+}
+
+export enum PassType
+{
+    plainText = 'plainText',
+    encrypt = "encrypt"
+}
+
+export const password = (passType : PassType = PassType.plainText) => {
+    return JoiX.object().keys({
+        phrase : JoiX.string().required(),
+        type : JoiX.enumString([PassType.plainText, PassType.encrypt]).description("spesified preprocessor, adapter transform to apply, support adapters:'encrypt'")
+    }).description("Password, which consists of a phrase and type, were type is adapter tranformation.");
 }

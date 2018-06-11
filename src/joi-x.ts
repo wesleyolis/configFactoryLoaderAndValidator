@@ -3,7 +3,6 @@ import {If, ObjectHasKey, ObjectOverwrite} from 'typelevel-ts';
 export * from 'joi';
 
 export interface XBase {
-  __tsType: any;
   required: () => this & {__isRequired: 'T'};
   allow: (allow: null) => this & {__isNullable: 'T'};
 }
@@ -18,15 +17,11 @@ export type HasKey =
 }
 
 export interface XObject extends XBase {
-  __tsType: Record<never, any>
-  
   keys<T extends XSchemaMap>(keys: T): this & {__tsType: _ExtractFromObject<T>}
   keys(schema?: Joi.SchemaMap): this & {__tsType: 'Invalid type passed to JoiX.object().keys(). Do not use Joi types - use JoiX instead.'}
 }
 
 export interface XArray extends XBase {
-  __tsType: any[]
-
   items<T extends XSchema>(items: T):  this & {__tsType: _ExtractFromSchema<T>[]}
   items(...types: Joi.SchemaLike[]): this & {__tsType: 'Invalid type passed to JoiX.array().items(). Do not use Joi types - use JoiX instead.'};
   items(types: Joi.SchemaLike[]): this & {__tsType: 'Invalid type passed to JoiX.array().items(). Do not use Joi types - use JoiX instead.'};
@@ -110,6 +105,7 @@ export type _XSchema = (XAnySchema
 
 export type ExtractRequired<S, T> = If<ObjectHasKey<S,'__isRequired'>, T, T | undefined>; 
 export type ExtractNull<S, T> = If<ObjectHasKey<S,'__isNullable'>, T | null, T>; 
+export type ExtractTSType<S, T extends HasKey> = If<ObjectHasKey<S,'__tsType'>, T['__tsType'], T>; 
 
 /*
 export type ApplyOptional<O> = MakeOptional<O, KeysIfHasKey<O,'__isRequired','T'>, KeysIfHasKey<O,'__isRequired','F'>>
@@ -135,13 +131,27 @@ export type GodFunction<T> = T extends JoiXSchema ? ExtractFromSchema<T> : T ext
 */
 
 
-export type _ExtractFromSchema<T extends XSchema> = ExtractRequired<T, ExtractNull<T, T['__tsType']>>
+export type _ExtractFromSchema<T extends XSchema> = ExtractRequired<T, ExtractNull<T, ExtractTSType<T,T>>>
 export type _ExtractFromObject<T extends XSchemaMap> = {
   [P in keyof T]: _ExtractFromSchema<T[P]>
 }
 
 export type ExtractFromSchema<T extends XSchema> = _ExtractFromSchema<T> & XTSchema
 export type ExtractFromObject<T extends XSchemaMap> = _ExtractFromObject<T> & XTSchema
+
+/*
+export type OptionalKeys<T extends Record<string, JoiXSchema>> = ({
+  [P in keyof T]: If<IsRequired<T[P]>, never, P>
+})[keyof T];
+export type RequiredKeys<T extends Record<string, JoiXSchema>> = StringOmit<keyof T, OptionalKeys<T>>;
+
+
+export type ExtractFromObject<T extends Record<string, JoiXSchema>> = Clean<{ 
+  [P in RequiredKeys<T>]: ExtractFromSchema<T[P]>
+} & {
+  [P in OptionalKeys<T>]?: ExtractFromSchema<T[P]>
+}>;
+*/
 
 //export type GodFunction<T> = T extends JoiXSchema ? ExtractFromSchema<T> : T extends Record<string, JoiXSchema> ? ExtractFromObject<T> : never
 

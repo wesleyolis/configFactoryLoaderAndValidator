@@ -8,13 +8,17 @@ export type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>;
 
 export const configSchema = JoiX.object().keys({
     type : JoiX.string().label('Database Provider').description('MongoDB, MSQL, Mysql, Postgress').valid('mongodb'),
-    host : JoiX.array().items(JoiX.object().keys({
+    hosts : JoiX.array().items(JoiX.object().keys({
                 hostname: JoiX.string().required(),
-                port: JoiV.port(JoiV.DPorts.Mongo).required()
+                port: JoiV.port(JoiV.DPorts.mongo).required()
             }).required()
-        ),
+        ).required(),
+    credentials : JoiX.object().keys({
+        username : JoiX.string().required(),
+        password : JoiV.password().required()
+    }).required(),
     database : JoiX.string().required(),
     options : JoiX.object().keys({
-        replicaSet : JoiX.string().required()
+        replicaSetBYNameVariaingKey : JoiX.string().required()
     })
   }).required();  

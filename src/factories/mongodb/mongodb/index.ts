@@ -12,7 +12,7 @@ export class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABaseConfig
 { 
   readonly factoryName = "Network"
   readonly factoryClass = ConfigFactoryClass.service;
-  readonly type = ConfigFactoryTypes.Production;
+  readonly type = ConfigFactoryTypes.production;
   readonly configSchema  = CS.configSchema;
 
   static NewInstance()
@@ -51,13 +51,13 @@ export class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABaseConfig
   private async makeMongoDBConnString(settings: CS.ConfigSchema): Promise<string> {
     let connString = 'mongodb://';
     let password = '';
+
+    if (settings.credentials.username && settings.credentials.password.phrase) {
+      if (settings.credentials.password.type == CS.PassType.encrypt && cache[settings.credentials.password.phrase]) {
+        password = cache[settings.credentials.password.phrase];
+      } else if (settings.credentials.password.type == CS.PassType.encrypt && !cache[settings.credentials.password.phrase]) {
   
-    if (settings.username && (settings.password || settings.e_password)) {
-      if (settings.e_password && cache[settings.e_password]) {
-        password = cache[settings.e_password];
-      } else if (settings.e_password && !cache[settings.e_password]) {
-  
-        const buf = new Buffer(settings.e_password, 'base64');
+        const buf = new Buffer(settings.credentials.password.phrase, 'base64');
         let data: Buffer;
   
         try {
@@ -66,15 +66,14 @@ export class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABaseConfig
           throw new Error('Unable to decrypt password. Check encrypted string in config.' + err);
         }
         password = data.toString('utf-8');
-        cache['settings.e_password'] = password;
+        cache[settings.credentials.password.phrase] = password;
   
       } else {
   
-        password = settings.password;
-  
+        password = settings.credentials.password.phrase;
       }
   
-      connString = connString + encodeURI(settings.username) + ':' + encodeURI(password) + '@';
+      connString = connString + encodeURI(settings.credentials.username) + ':' + encodeURI(settings.credentials.password.phrase) + '@';
     }
   
     settings.hosts.forEach(function(host: Record<string, string>) {
