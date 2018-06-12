@@ -17,6 +17,7 @@ export type HasKey =
 }
 
 export interface XObject extends XBase {
+  pattern<S extends XSchema>(regex: RegExp, schema : S) : this & {__tsType: Record<string, _ExtractFromSchema<S>>}
   keys<T extends XSchemaMap>(keys: T): this & {__tsType: _ExtractFromObject<T>}
   keys(schema?: Joi.SchemaMap): this & {__tsType: 'Invalid type passed to JoiX.object().keys(). Do not use Joi types - use JoiX instead.'}
 }
@@ -102,6 +103,11 @@ export type _XSchema = (XAnySchema
     | XNumberSchema
     | XObjectSchema
     | XStringSchema);
+
+export type XPrimativeSchema = 
+  | XBooleanSchema
+  | XNumberSchema
+  | XStringSchema
 
 export type ExtractRequired<S, T> = If<ObjectHasKey<S,'__isRequired'>, T, T | undefined>; 
 export type ExtractNull<S, T> = If<ObjectHasKey<S,'__isNullable'>, T | null, T>; 

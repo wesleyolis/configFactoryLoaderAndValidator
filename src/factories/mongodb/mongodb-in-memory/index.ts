@@ -2,8 +2,12 @@ import {ABaseConfigFactory} from '../../../config-factory/abase-config-factory';
 import {ConfigFactoryClass, ConfigFactoryTypes} from '../../../config-factory/config-factory-types';
 import {IConfigFactory} from '../../../config-factory/iconfig-factory';
 import {IMongoSettings} from '.././amongodb-config-factory'
-import * as CS from './configSchema';
 import {VError} from 'verror';
+
+import * as CS from './configSchema';
+import * as Joi from 'joi';
+import * as JoiX from '../../../joi-x'
+import * as JoiV from '../../../joi-x-validators'
 
 var MongoInMemory = require('mongo-in-memory');
 

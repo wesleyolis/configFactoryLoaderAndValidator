@@ -1,96 +1,115 @@
-//import { join } from "bluebird";
-import * as JoiX from './joi-x';
+//import * as Joi from 'joi'
+import * as JoiX from './joi-x'
 import * as Joi from 'joi';
 
+console.log("dfsdfsfd");
+
+type FactoryA = JoiX.ExtractFromSchema<typeof factoryA>;
+const factoryA = JoiX.object().keys({
+    factory : JoiX.kind('FactoryA'),
+    d : JoiX.number().required()
+}).required();
+
+type FactoryBase = JoiX.ExtractFromSchema<typeof factoryBase>;
+const factoryBase = JoiX.object().keys({
+    e : JoiX.string().required()
+}).required();
+
+
+type FactoryB = JoiX.ExtractFromSchema<typeof factoryB>;
+const factoryB = factoryBase.keys({
+    factory : JoiX.kind('FactoryB')
+}).required();
+
+//Joi.alternatives().when('b', { is: 5, then: Joi.string(), otherwise: Joi.number() })
+
+
+
+// This constraint can be determined by use..
+type Factories = FactoryA | FactoryB;
+
+enum Test
+{
+    Test = 'test',
+    testing = 'testsdfsdf'
+}
+
+
+function test_swtich(v : Factories)
+{
+    switch(v.factory)
+    {
+    }
+}
+
+type Union<T> =
+{
+}
 /*
-interface IBase
+onst factoryB: JoiX.XObject & JoiX.ObjectSchema & {
+    __tsType: JoiX.ExtractFromObject<{
+        kind: JoiX.XPrimitive<"FactoryB"> & JoiX.StringSchema & {
+            __isRequired: "T";
+        };
+        e: JoiX.XPrimitive<string> & JoiX.StringSchema & {
+            __isRequired: "T";
+        };
+    }>;
+} & {
+    __isRequired: "T";
+}
+*/
+
+const schema = JoiX.object().keys({
+   a : JoiX.alternatives().try([factoryA, factoryB]),
+   b : JoiX.LiteralString(['A', 'B']),
+   //c: factoryB
+}).required();
+
+
+type Schema = JoiX.ExtractFromSchema<typeof schema>;
+
+const impl : Schema = 
 {
-    method() : Promise<void>
+    a : {
+        factory : 'FactoryA',
+        d : 234
+    } as FactoryA,
+    b : 'A'
 }
 
+const case1 : Schema = {a:{factory:'FactoryB',e:'3434'},b:'A'};
+const case2 : Schema = {a:{factory:'FactoryA',d:234},b:'B'};
 
-class Middle implements IBase
+valid('case1', case1);
+valid('case2', case2);
+
+/*
+const testWhenSchema = {a: JoiX.number(), b : Joi.alternatives().when('b.factory', { is : 5, then: {factory:Joi.any(), z : Joi.boolean()},
+ otherwise: {factory:Joi.any(), y: Joi.number()}})};
+
+
+Joi.validate({a:5,b:{factory:8}}, testWhenSchema, (err : any, value : any) =>
 {
-    method() : Promise<void>
+    console.log("dump:" + JSON.stringify(err) + " : " + JSON.stringify(value));  
+});
+
+*/
+
+function valid(msg : string, test : any )
+{
+    Joi.validate(test, schema, (err : any, value : any) =>
     {
-        console.log("Middle");
-        return Promise.resolve();
-        //console.log("Middle-After");
-    }
-}
-
-class Top implements Middle
-{
-    async method() : Promise<void>
-    {
-        console.log("Top");
-        await delay(200);
-        console.log("Top-After");
-    }
-}
-
-async function testMethod ()
-{
-    console.log("Non:" + await testNonAsync());
-    
-
-    await testNonAsync2();
-}
-
- function testNonAsync() 
-{
-    return Promise.resolve(5);
-}
-
-function testNonAsync2() 
-{
-    //sync statments...
-    return Promise.resolve(5);
-}
-
-console.log("Testing: " +   testMethod());
-
-const V1 = new Middle();
-const test = async () => {
-console.log("V1 Before");
-await V1.method();
-console.log("V1 After");
-}
-
-test();
-
-// printDelayed is a 'Promise<void>'
-async function printDelayed(elements: string[]) {
-    for (const element of elements) {
-        await delay(200);
-        console.log(element);
-    }
-}
-
-async function delay(milliseconds: number) {
-    return new Promise<void>(resolve => {
-        setTimeout(resolve, milliseconds);
+        console.log("dump:" + JSON.stringify(err) + " : " + JSON.stringify(value));  
     });
 }
-*/
+
+
 /*
-printDelayed(["Hello", "beautiful", "asynchronous", "world"]).then(() => {
-    console.log();
-    console.log("Printed every element!");
-});
+
+
+        JoiX.object().keys({
+            kind : JoiX.string().valid('B').required(),
+            e : JoiX.string().required()
+        }).required()
 */
-
-const alt = Joi.alternatives().try(Joi.object().keys({
- kind: Joi.string().allow('kind1').required,
- a: Joi.number()   
-}), 
-
-Joi.object().keys({
-    kind: Joi.string().allow('kind2').required,
-    a: Joi.number()   
-   })
-);
-
-/*Joi.validate({kind:'sfd'}, alt, (err, value) => {
-    console.log("joivalidate:" + JSON.stringify(err)) ;
-});*/

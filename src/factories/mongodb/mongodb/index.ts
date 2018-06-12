@@ -1,12 +1,13 @@
 import {ABaseConfigFactory} from '../../../config-factory/abase-config-factory';
 import {IConfigFactory} from '../../../config-factory/iconfig-factory';
 import {IMongoSettings} from './../amongodb-config-factory';
+import {ConfigFactoryClass, ConfigFactoryTypes} from '../../../config-factory/config-factory-types';
 import * as CS from './configSchema';
 import * as JoiX from '../../../joi-x';
-import { ConfigFactoryClass, ConfigFactoryTypes } from '../../../config-factory/config-factory-types';
+import * as Joi from 'joi';
+import * as JoiV from '../../../joi-x-validators'
 
 const cache: Record<string, string> = {};
-
 
 export class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABaseConfigFactory implements IMongoSettings
 { 
@@ -53,9 +54,9 @@ export class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABaseConfig
     let password = '';
 
     if (settings.credentials.username && settings.credentials.password.phrase) {
-      if (settings.credentials.password.type == CS.PassType.encrypt && cache[settings.credentials.password.phrase]) {
+      if (settings.credentials.password.type == JoiV.PassType.encrypt && cache[settings.credentials.password.phrase]) {
         password = cache[settings.credentials.password.phrase];
-      } else if (settings.credentials.password.type == CS.PassType.encrypt && !cache[settings.credentials.password.phrase]) {
+      } else if (settings.credentials.password.type == JoiV.PassType.encrypt && !cache[settings.credentials.password.phrase]) {
   
         const buf = new Buffer(settings.credentials.password.phrase, 'base64');
         let data: Buffer;
@@ -76,7 +77,13 @@ export class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABaseConfig
       connString = connString + encodeURI(settings.credentials.username) + ':' + encodeURI(settings.credentials.password.phrase) + '@';
     }
   
-    settings.hosts.forEach(function(host: Record<string, string>) {
+
+
+    settings.hosts.forEach((host) => {
+      
+    });
+
+    settings.hosts.forEach((host) =>{
       connString = connString + host.hostname;
   
       if (host.port) {

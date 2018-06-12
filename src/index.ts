@@ -14,7 +14,7 @@ interface IKmsEncryptionResult {
 
 exports.encrypt = function(buffer: Buffer, keyid: string) {
     const aws = require('aws-sdk');
-    const kms = new aws.KMS({
+    const kms = new aws.KMS({of
         region: 'eu-west-1'
     });
     return new Promise((resolve, reject) => {

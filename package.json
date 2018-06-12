@@ -24,13 +24,14 @@
   "license": "ISC",
   "devDependencies": {},
   "dependencies": {
+    "@types/joi": "^13.0.8",
     "@types/verror": "^1.10.3",
     "config": "^1.29.4",
+    "joi": "^13.4.0",
     "redblade-testing": "git+ssh://git@bitbucket.org/redbladeio/redblade-testing.git",
     "redblade-types": "git+ssh://git@bitbucket.org/redbladeio/redblade-types.git",
     "tsc-simple": "git+https://github.com/fictitious/tsc-simple.git",
     "tslint": "^5.10.0",
-    "typescript": "^2.6.2",
     "verror": "^1.10.0"
   }
 }

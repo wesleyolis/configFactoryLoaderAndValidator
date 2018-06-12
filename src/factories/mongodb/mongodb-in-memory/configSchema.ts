@@ -7,5 +7,5 @@ export * from '../../../joi-x';
 export type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>;
 
 export const configSchema = JoiX.object().keys({
-    port: JoiV.port(JoiV.DPorts.Mongo).required()
+    port: JoiV.port(JoiV.DPorts.mongo).required()
   }).required();
