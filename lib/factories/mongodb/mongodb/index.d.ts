@@ -13,8 +13,12 @@ export declare class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABa
     readonly type: ConfigFactoryTypes;
     readonly configSchema: JoiX.XObject & Joi.ObjectSchema & {
         __tsType: JoiX._ExtractFromObject<{
-            class: JoiX.XStringSchema<ConfigFactoryClass.netService>;
-            type: JoiX.XStringSchema<ConfigFactoryTypes.production>;
+            class: JoiX.XPrimitive<ConfigFactoryClass.netService> & Joi.StringSchema & {
+                __isRequired: "T";
+            };
+            type: JoiX.XPrimitive<ConfigFactoryTypes.production> & Joi.StringSchema & {
+                __isRequired: "T";
+            };
             provider: JoiX.XStringSchema<string>;
             hosts: JoiX.XArray & Joi.ArraySchema & {
                 __tsType: JoiX._ExtractFromObject<{
@@ -45,8 +49,12 @@ export declare class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABa
     };
     static NewInstance(): MongoDBConfigFactory<JoiX.ExtractFromSchema<JoiX.XObject & Joi.ObjectSchema & {
         __tsType: JoiX._ExtractFromObject<{
-            class: JoiX.XStringSchema<ConfigFactoryClass.netService>;
-            type: JoiX.XStringSchema<ConfigFactoryTypes.production>;
+            class: JoiX.XPrimitive<ConfigFactoryClass.netService> & Joi.StringSchema & {
+                __isRequired: "T";
+            };
+            type: JoiX.XPrimitive<ConfigFactoryTypes.production> & Joi.StringSchema & {
+                __isRequired: "T";
+            };
             provider: JoiX.XStringSchema<string>;
             hosts: JoiX.XArray & Joi.ArraySchema & {
                 __tsType: JoiX._ExtractFromObject<{

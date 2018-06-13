@@ -6,8 +6,12 @@ export declare const factoryName = "Network";
 export declare type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>;
 export declare const configSchema: JoiX.XObject & Joi.ObjectSchema & {
     __tsType: JoiX._ExtractFromObject<{
-        class: JoiX.XStringSchema<CFT.ConfigFactoryClass.netService>;
-        type: JoiX.XStringSchema<CFT.ConfigFactoryTypes.production>;
+        class: JoiX.XPrimitive<CFT.ConfigFactoryClass.netService> & Joi.StringSchema & {
+            __isRequired: "T";
+        };
+        type: JoiX.XPrimitive<CFT.ConfigFactoryTypes.production> & Joi.StringSchema & {
+            __isRequired: "T";
+        };
         provider: JoiX.XStringSchema<string>;
         hosts: JoiX.XArray & Joi.ArraySchema & {
             __tsType: JoiX._ExtractFromObject<{

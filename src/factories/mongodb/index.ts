@@ -10,6 +10,7 @@ import * as JoiX from '../../joi-x';
 import * as JoiV from '../../joi-x-validators';
 import { IConfigFactory } from '../../config-factory/iconfig-factory';
 import * as CFT from '../../config-factory/config-factory-types'
+import { ConfigFactories } from '../../config-factory/index';
 
 
 
@@ -17,21 +18,20 @@ export type MongoDBSchema = JoiX.ExtractFromSchema<typeof mongoDBSchema>;
 
 export const mongoDBSchema = MongoDBCS.configSchema.keys({
     factory : JoiX.kind(MongoDBCS.factoryName)   
-});
-
+}).required();
 
 export type InMemorySchema = JoiX.ExtractFromSchema<typeof inMemorySchema>;
 
 export const inMemorySchema = InMemoryCS.configSchema.keys({
     factory : JoiX.kind(InMemoryCS.factoryName)   
-});
+}).required();
 
 export type ConfigFactories = MongoDBSchema | InMemorySchema;
 
 
 export type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>;
 
-export const configSchema = JoiX.alternatives().try([mongoDBSchema, inMemorySchema]);
+export const configSchema = JoiX.alternatives().try([mongoDBSchema, inMemorySchema]).required();
 
 const factories : Factory [] = [
     {

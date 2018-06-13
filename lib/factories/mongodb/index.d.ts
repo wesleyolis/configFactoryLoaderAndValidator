@@ -6,8 +6,12 @@ import * as CFT from '../../config-factory/config-factory-types';
 export declare type MongoDBSchema = JoiX.ExtractFromSchema<typeof mongoDBSchema>;
 export declare const mongoDBSchema: JoiX.XObject & Joi.ObjectSchema & {
     __tsType: JoiX._ExtractFromObject<{
-        class: JoiX.XStringSchema<CFT.ConfigFactoryClass.netService>;
-        type: JoiX.XStringSchema<CFT.ConfigFactoryTypes.production>;
+        class: JoiX.XPrimitive<CFT.ConfigFactoryClass.netService> & Joi.StringSchema & {
+            __isRequired: "T";
+        };
+        type: JoiX.XPrimitive<CFT.ConfigFactoryTypes.production> & Joi.StringSchema & {
+            __isRequired: "T";
+        };
         provider: JoiX.XStringSchema<string>;
         hosts: JoiX.XArray & Joi.ArraySchema & {
             __tsType: JoiX._ExtractFromObject<{
@@ -45,8 +49,12 @@ export declare const mongoDBSchema: JoiX.XObject & Joi.ObjectSchema & {
 export declare type InMemorySchema = JoiX.ExtractFromSchema<typeof inMemorySchema>;
 export declare const inMemorySchema: JoiX.XObject & Joi.ObjectSchema & {
     __tsType: JoiX._ExtractFromObject<{
-        class: JoiX.XStringSchema<CFT.ConfigFactoryClass.service>;
-        type: JoiX.XStringSchema<CFT.ConfigFactoryTypes.mock>;
+        class: JoiX.XPrimitive<CFT.ConfigFactoryClass.service> & Joi.StringSchema & {
+            __isRequired: "T";
+        };
+        type: JoiX.XPrimitive<CFT.ConfigFactoryTypes.mock> & Joi.StringSchema & {
+            __isRequired: "T";
+        };
         port: JoiV.Port & {
             __isRequired: "T";
         };
@@ -64,8 +72,12 @@ export declare type ConfigFactories = MongoDBSchema | InMemorySchema;
 export declare type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>;
 export declare const configSchema: JoiX.XAlternatives & Joi.AlternativesSchema & {
     __tsType: (JoiX._ExtractFromObject<{
-        class: JoiX.XStringSchema<CFT.ConfigFactoryClass.netService>;
-        type: JoiX.XStringSchema<CFT.ConfigFactoryTypes.production>;
+        class: JoiX.XPrimitive<CFT.ConfigFactoryClass.netService> & Joi.StringSchema & {
+            __isRequired: "T";
+        };
+        type: JoiX.XPrimitive<CFT.ConfigFactoryTypes.production> & Joi.StringSchema & {
+            __isRequired: "T";
+        };
         provider: JoiX.XStringSchema<string>;
         hosts: JoiX.XArray & Joi.ArraySchema & {
             __tsType: JoiX._ExtractFromObject<{
@@ -104,8 +116,12 @@ export declare const configSchema: JoiX.XAlternatives & Joi.AlternativesSchema &
             __isRequired: "T";
         };
     }>) | (JoiX._ExtractFromObject<{
-        class: JoiX.XStringSchema<CFT.ConfigFactoryClass.service>;
-        type: JoiX.XStringSchema<CFT.ConfigFactoryTypes.mock>;
+        class: JoiX.XPrimitive<CFT.ConfigFactoryClass.service> & Joi.StringSchema & {
+            __isRequired: "T";
+        };
+        type: JoiX.XPrimitive<CFT.ConfigFactoryTypes.mock> & Joi.StringSchema & {
+            __isRequired: "T";
+        };
         port: JoiV.Port & {
             __isRequired: "T";
         };
@@ -114,5 +130,7 @@ export declare const configSchema: JoiX.XAlternatives & Joi.AlternativesSchema &
             __isRequired: "T";
         };
     }>);
+} & {
+    __isRequired: "T";
 };
 export declare function NewFactory(settings: ConfigFactories): IConfigFactory;
