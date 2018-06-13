@@ -37,7 +37,7 @@ export interface XAlternatives extends XBase {
   //try(...types: Joi.SchemaLike[]): this & {__tsType: 'Invalid type passed to JoiX.alternatives().try(). Do not use Joi types - use JoiX instead.'}
 }
 export type XAnySchema = XPrimitive<any> & Joi.AnySchema;
-export type XBooleanSchema<T extends boolean = boolean> = XPrimitive<boolean> & Joi.BooleanSchema;
+export type XBooleanSchema<T extends boolean = boolean> = XPrimitive<T> & Joi.BooleanSchema;
 export type XNumberSchema<T extends number = number> = XPrimitive<T> & Joi.NumberSchema;
 export type XStringSchema<T extends string = string> = XPrimitive<T> & Joi.StringSchema;
 export type XDateSchema = XPrimitive<number | Date | string> & Joi.DateSchema;
@@ -52,7 +52,7 @@ export type XKindSchema<T extends string> =  XStringSchema<T>;
 
 export const any = () => Joi.any() as XAnySchema;
 export const bool = () => Joi.bool() as XBooleanSchema;
-export const boolean = () => Joi.boolean() as XBooleanSchema;
+export const boolean = () => Joi.boolean() as XBooleanSchema<boolean>;
 export const number = () => Joi.number() as XNumberSchema;
 export const string = () => Joi.string() as XStringSchema;
 export const date = () => Joi.date() as XDateSchema;

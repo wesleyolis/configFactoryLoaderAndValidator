@@ -44,7 +44,7 @@ export interface XAlternatives extends XBase {
     };
 }
 export declare type XAnySchema = XPrimitive<any> & Joi.AnySchema;
-export declare type XBooleanSchema<T extends boolean = boolean> = XPrimitive<boolean> & Joi.BooleanSchema;
+export declare type XBooleanSchema<T extends boolean = boolean> = XPrimitive<T> & Joi.BooleanSchema;
 export declare type XNumberSchema<T extends number = number> = XPrimitive<T> & Joi.NumberSchema;
 export declare type XStringSchema<T extends string = string> = XPrimitive<T> & Joi.StringSchema;
 export declare type XDateSchema = XPrimitive<number | Date | string> & Joi.DateSchema;
@@ -57,8 +57,8 @@ export declare type XObjectSchema = XObject & Joi.ObjectSchema;
 export declare type XAlternativesSchema = XAlternatives & Joi.AlternativesSchema;
 export declare type XKindSchema<T extends string> = XStringSchema<T>;
 export declare const any: () => XAnySchema;
-export declare const bool: () => XBooleanSchema<T>;
-export declare const boolean: () => XBooleanSchema<T>;
+export declare const bool: () => XBooleanSchema<boolean>;
+export declare const boolean: () => XBooleanSchema<boolean>;
 export declare const number: () => XNumberSchema<number>;
 export declare const string: () => XStringSchema<string>;
 export declare const date: () => XDateSchema;
