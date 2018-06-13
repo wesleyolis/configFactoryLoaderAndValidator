@@ -30,9 +30,15 @@ export enum PassType
     encrypt = "encrypt"
 }
 
-export const password = (passType : PassType = PassType.plainText) => {
-    return JoiX.object().keys({
-        phrase : JoiX.string().required(),
-        type : JoiX.enumString([PassType.plainText, PassType.encrypt]).description("spesified preprocessor, adapter transform to apply, support adapters:'encrypt'")
-    }).description("Password, which consists of a phrase and type, were type is adapter tranformation.");
+type PassWord = typeof _password
+
+const _password = JoiX.object().keys({
+    phrase : JoiX.string().required(),
+    type : JoiX.enumString([PassType.plainText, PassType.encrypt]).description("spesified preprocessor, adapter transform to apply, support adapters:'encrypt'")
+}).description("Password, which consists of a phrase and type, were type is adapter tranformation.");
+
+
+export const password = (passType : PassType = PassType.plainText) : typeof _password => {
+    
+    return _password;
 }
