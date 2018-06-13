@@ -6,7 +6,7 @@ export declare enum DPorts {
     undefined = -1,
     mongo = 27017,
 }
-export declare const port: (port?: DPorts) => Port;
+export declare const port: (port?: DPorts) => JoiX.XNumberSchema<number>;
 export declare enum PassType {
     plainText = "plainText",
     encrypt = "encrypt",

@@ -1,6 +1,5 @@
 import * as Joi from 'joi';
 import * as JoiX from '../../joi-x';
-import * as JoiV from '../../joi-x-validators';
 import { IConfigFactory } from '../../config-factory/iconfig-factory';
 import * as CFT from '../../config-factory/config-factory-types';
 export declare type MongoDBSchema = JoiX.ExtractFromSchema<typeof mongoDBSchema>;
@@ -18,7 +17,7 @@ export declare const mongoDBSchema: JoiX.XObject & Joi.ObjectSchema & {
                 hostname: JoiX.XPrimitive<string> & Joi.StringSchema & {
                     __isRequired: "T";
                 };
-                port: JoiV.Port & {
+                port: JoiX.XPrimitive<number> & Joi.NumberSchema & {
                     __isRequired: "T";
                 };
             }>[];
@@ -55,7 +54,7 @@ export declare const inMemorySchema: JoiX.XObject & Joi.ObjectSchema & {
         type: JoiX.XPrimitive<CFT.ConfigFactoryTypes.mock> & Joi.StringSchema & {
             __isRequired: "T";
         };
-        port: JoiV.Port & {
+        port: JoiX.XPrimitive<number> & Joi.NumberSchema & {
             __isRequired: "T";
         };
     }>;
@@ -84,7 +83,7 @@ export declare const configSchema: JoiX.XAlternatives & Joi.AlternativesSchema &
                 hostname: JoiX.XPrimitive<string> & Joi.StringSchema & {
                     __isRequired: "T";
                 };
-                port: JoiV.Port & {
+                port: JoiX.XPrimitive<number> & Joi.NumberSchema & {
                     __isRequired: "T";
                 };
             }>[];
@@ -122,7 +121,7 @@ export declare const configSchema: JoiX.XAlternatives & Joi.AlternativesSchema &
         type: JoiX.XPrimitive<CFT.ConfigFactoryTypes.mock> & Joi.StringSchema & {
             __isRequired: "T";
         };
-        port: JoiV.Port & {
+        port: JoiX.XPrimitive<number> & Joi.NumberSchema & {
             __isRequired: "T";
         };
     }> & JoiX._ExtractFromObject<{

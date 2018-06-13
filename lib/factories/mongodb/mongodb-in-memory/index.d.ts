@@ -4,7 +4,6 @@ import { IMongoSettings } from '.././amongodb-config-factory';
 import * as CS from './configSchema';
 import * as Joi from 'joi';
 import * as JoiX from '../../../joi-x';
-import * as JoiV from '../../../joi-x-validators';
 export { CS as CS };
 export declare class MongoInMemoryConfigFactory<T extends CS.ConfigSchema> extends ABaseConfigFactory implements IMongoSettings {
     readonly configSettings: T;
@@ -21,7 +20,7 @@ export declare class MongoInMemoryConfigFactory<T extends CS.ConfigSchema> exten
             type: JoiX.XPrimitive<ConfigFactoryTypes.mock> & Joi.StringSchema & {
                 __isRequired: "T";
             };
-            port: JoiV.Port & {
+            port: JoiX.XPrimitive<number> & Joi.NumberSchema & {
                 __isRequired: "T";
             };
         }>;

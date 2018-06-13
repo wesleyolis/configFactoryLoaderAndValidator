@@ -1,6 +1,8 @@
 import * as JoiX from './joi-x'
 import * as Joi from 'joi'
 
+// this can be fixed in version 2.9 if I recall, were generic template parameter can be used to instaniate a base class,
+// in which case we can preserve the settings.
 export interface Port extends JoiX.XNumberSchema {}
 
 export enum DPorts
@@ -19,7 +21,7 @@ export const port = (port : DPorts = DPorts.undefined) => {
     else
         desc += 'Default Port [' + port + ']';
 
-    return joi.description(desc) as Port;   // Remeber that you are overiding the super impose type value build ups.
+    return joi.description(desc);   // Remeber that you are overiding the super impose type value build ups.
 }
 
 export enum PassType

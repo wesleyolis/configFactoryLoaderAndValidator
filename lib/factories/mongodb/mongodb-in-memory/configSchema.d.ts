@@ -1,4 +1,3 @@
-import * as JoiV from '../../../joi-x-validators';
 import * as JoiX from '../../../joi-x';
 import * as Joi from 'joi';
 export * from '../../../joi-x-validators';
@@ -14,7 +13,7 @@ export declare const configSchema: JoiX.XObject & Joi.ObjectSchema & {
         type: JoiX.XPrimitive<CFT.ConfigFactoryTypes.mock> & Joi.StringSchema & {
             __isRequired: "T";
         };
-        port: JoiV.Port & {
+        port: JoiX.XPrimitive<number> & Joi.NumberSchema & {
             __isRequired: "T";
         };
     }>;

@@ -4,7 +4,6 @@ import { ConfigFactoryClass, ConfigFactoryTypes } from '../../../config-factory/
 import * as CS from './configSchema';
 import * as JoiX from '../../../joi-x';
 import * as Joi from 'joi';
-import * as JoiV from '../../../joi-x-validators';
 export { CS as CS };
 export declare class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABaseConfigFactory implements IMongoSettings {
     configSettings: T;
@@ -25,7 +24,7 @@ export declare class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABa
                     hostname: JoiX.XPrimitive<string> & Joi.StringSchema & {
                         __isRequired: "T";
                     };
-                    port: JoiV.Port & {
+                    port: JoiX.XPrimitive<number> & Joi.NumberSchema & {
                         __isRequired: "T";
                     };
                 }>[];
@@ -61,7 +60,7 @@ export declare class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABa
                     hostname: JoiX.XPrimitive<string> & Joi.StringSchema & {
                         __isRequired: "T";
                     };
-                    port: JoiV.Port & {
+                    port: JoiX.XPrimitive<number> & Joi.NumberSchema & {
                         __isRequired: "T";
                     };
                 }>[];
