@@ -13,7 +13,9 @@ export declare class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABa
     readonly type: ConfigFactoryTypes;
     readonly configSchema: JoiX.XObject & Joi.ObjectSchema & {
         __tsType: JoiX._ExtractFromObject<{
-            type: JoiX.XStringSchema<string>;
+            class: JoiX.XStringSchema<ConfigFactoryClass.netService>;
+            type: JoiX.XStringSchema<ConfigFactoryTypes.production>;
+            provider: JoiX.XStringSchema<string>;
             hosts: JoiX.XArray & Joi.ArraySchema & {
                 __tsType: JoiX._ExtractFromObject<{
                     hostname: JoiX.XPrimitive<string> & Joi.StringSchema & {
@@ -35,15 +37,6 @@ export declare class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABa
             options: JoiX.XObject & Joi.ObjectSchema & {
                 __tsType: Record<string, string>;
             } & {
-                __isRequired: "T";
-            };
-        }>;
-    } & {
-        __tsType: JoiX._ExtractFromObject<{
-            class: JoiX.XPrimitive<ConfigFactoryClass> & Joi.StringSchema & {
-                __isRequired: "T";
-            };
-            type: JoiX.XPrimitive<ConfigFactoryTypes> & Joi.StringSchema & {
                 __isRequired: "T";
             };
         }>;
@@ -52,7 +45,9 @@ export declare class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABa
     };
     static NewInstance(): MongoDBConfigFactory<JoiX.ExtractFromSchema<JoiX.XObject & Joi.ObjectSchema & {
         __tsType: JoiX._ExtractFromObject<{
-            type: JoiX.XStringSchema<string>;
+            class: JoiX.XStringSchema<ConfigFactoryClass.netService>;
+            type: JoiX.XStringSchema<ConfigFactoryTypes.production>;
+            provider: JoiX.XStringSchema<string>;
             hosts: JoiX.XArray & Joi.ArraySchema & {
                 __tsType: JoiX._ExtractFromObject<{
                     hostname: JoiX.XPrimitive<string> & Joi.StringSchema & {
@@ -74,15 +69,6 @@ export declare class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABa
             options: JoiX.XObject & Joi.ObjectSchema & {
                 __tsType: Record<string, string>;
             } & {
-                __isRequired: "T";
-            };
-        }>;
-    } & {
-        __tsType: JoiX._ExtractFromObject<{
-            class: JoiX.XPrimitive<ConfigFactoryClass> & Joi.StringSchema & {
-                __isRequired: "T";
-            };
-            type: JoiX.XPrimitive<ConfigFactoryTypes> & Joi.StringSchema & {
                 __isRequired: "T";
             };
         }>;

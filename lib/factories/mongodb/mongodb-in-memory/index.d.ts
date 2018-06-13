@@ -15,16 +15,9 @@ export declare class MongoInMemoryConfigFactory<T extends CS.ConfigSchema> exten
     private mongoServerInstance;
     static NewInstance(): MongoInMemoryConfigFactory<JoiX.ExtractFromSchema<JoiX.XObject & Joi.ObjectSchema & {
         __tsType: JoiX._ExtractFromObject<{
+            class: JoiX.XStringSchema<ConfigFactoryClass.service>;
+            type: JoiX.XStringSchema<ConfigFactoryTypes.mock>;
             port: JoiV.Port & {
-                __isRequired: "T";
-            };
-        }>;
-    } & {
-        __tsType: JoiX._ExtractFromObject<{
-            class: JoiX.XPrimitive<ConfigFactoryClass> & Joi.StringSchema & {
-                __isRequired: "T";
-            };
-            type: JoiX.XPrimitive<ConfigFactoryTypes> & Joi.StringSchema & {
                 __isRequired: "T";
             };
         }>;

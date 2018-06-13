@@ -8,16 +8,9 @@ export declare const factoryName = "InMemory";
 export declare type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>;
 export declare const configSchema: JoiX.XObject & Joi.ObjectSchema & {
     __tsType: JoiX._ExtractFromObject<{
+        class: JoiX.XStringSchema<CFT.ConfigFactoryClass.service>;
+        type: JoiX.XStringSchema<CFT.ConfigFactoryTypes.mock>;
         port: JoiV.Port & {
-            __isRequired: "T";
-        };
-    }>;
-} & {
-    __tsType: JoiX._ExtractFromObject<{
-        class: JoiX.XPrimitive<CFT.ConfigFactoryClass> & Joi.StringSchema & {
-            __isRequired: "T";
-        };
-        type: JoiX.XPrimitive<CFT.ConfigFactoryTypes> & Joi.StringSchema & {
             __isRequired: "T";
         };
     }>;

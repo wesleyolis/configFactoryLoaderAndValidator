@@ -9,7 +9,9 @@ export const factoryName = "Network";
 export type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>;
 
 export const configSchema = JoiX.object().keys({
-    type : JoiX.string().label('Database Provider').description('MongoDB, MSQL, Mysql, Postgress').valid('mongodb'),
+    class : JoiX.LiteralString([CFT.ConfigFactoryClass.netService]),
+    type : JoiX.LiteralString([CFT.ConfigFactoryTypes.production]),
+    provider : JoiX.string().label('Database Provider').description('MongoDB, MSQL, Mysql, Postgress').valid('mongodb'),
     hosts : JoiX.array().items(JoiX.object().keys({
                 hostname: JoiX.string().required(),
                 port: JoiV.port(JoiV.DPorts.mongo).required()
@@ -21,5 +23,5 @@ export const configSchema = JoiX.object().keys({
     }).required(),
     database : JoiX.string().required(),
     options : JoiX.object().pattern(/w/, JoiX.string().required()).required(),
-  }).keys(baseConfigSchema).required();
+  }).required();
 

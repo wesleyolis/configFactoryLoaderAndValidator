@@ -11,5 +11,7 @@ export const factoryName = "InMemory"
 export type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>;
 
 export const configSchema = JoiX.object().keys({
+    class : JoiX.LiteralString([CFT.ConfigFactoryClass.service]),
+    type : JoiX.LiteralString([CFT.ConfigFactoryTypes.mock]),
     port: JoiV.port(JoiV.DPorts.mongo).required()
-  }).keys(baseConfigSchema).required();
+  }).required();
