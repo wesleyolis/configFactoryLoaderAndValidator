@@ -2,6 +2,8 @@ import * as JoiV from '../../../joi-x-validators';
 import * as JoiX from '../../../joi-x';
 import * as Joi from 'joi';
 
+export const factoryName = "Network";
+
 export type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>;
 
 export const configSchema = JoiX.object().keys({

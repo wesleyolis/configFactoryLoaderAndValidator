@@ -1,15 +1,30 @@
 import { ABaseConfigFactory } from '../../../config-factory/abase-config-factory';
-import { IConfigFactoryDef, ConfigFactoryClass, ConfigFactoryTypes } from '../../../config-factory/config-factory-types';
+import { ConfigFactoryClass, ConfigFactoryTypes } from '../../../config-factory/config-factory-types';
 import { IMongoSettings } from '.././amongodb-config-factory';
 import * as CS from './configSchema';
-export declare class MongoInMemoryConfigFactory extends ABaseConfigFactory implements IMongoSettings {
-    configFactoryName: string;
-    factoryClass: ConfigFactoryClass;
-    type: ConfigFactoryTypes;
-    configSchema: typeof CS.configSchema;
-    readonly configSettings?: CS.ConfigSchema;
+import * as Joi from 'joi';
+import * as JoiX from '../../../joi-x';
+import * as JoiV from '../../../joi-x-validators';
+export * from './configSchema';
+export declare const factoryName = "InMemory";
+export declare class MongoInMemoryConfigFactory<T extends CS.ConfigSchema> extends ABaseConfigFactory implements IMongoSettings {
+    readonly configSettings: T;
+    readonly factoryName: string;
+    readonly factoryClass: ConfigFactoryClass;
+    readonly type: ConfigFactoryTypes;
+    readonly configSchema: typeof CS.configSchema;
     private mongoServerInstance;
-    createAsync(options: IConfigFactoryDef): Promise<void>;
+    static NewInstance(): MongoInMemoryConfigFactory<JoiX.ExtractFromSchema<JoiX.XObject & Joi.ObjectSchema & {
+        __tsType: JoiX._ExtractFromObject<{
+            port: JoiV.Port & {
+                __isRequired: "T";
+            };
+        }>;
+    } & {
+        __isRequired: "T";
+    }>>;
+    constructor(configSettings: T);
+    createAsync(conf: CS.ConfigSchema): Promise<void>;
     startAsync(): Promise<any>;
     stopAsync(): any;
     describe(): string;

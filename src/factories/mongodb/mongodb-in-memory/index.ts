@@ -9,11 +9,15 @@ import * as Joi from 'joi';
 import * as JoiX from '../../../joi-x'
 import * as JoiV from '../../../joi-x-validators'
 
+export * from './configSchema'
+
+export const factoryName = "InMemory";
+
 var MongoInMemory = require('mongo-in-memory');
 
 export class MongoInMemoryConfigFactory<T extends CS.ConfigSchema> extends ABaseConfigFactory implements IMongoSettings
 {   
-    readonly factoryName : string = "InMemory";
+    readonly factoryName : string = factoryName;
     readonly factoryClass : ConfigFactoryClass = ConfigFactoryClass.service
     readonly type : ConfigFactoryTypes = ConfigFactoryTypes.mock
     readonly configSchema : typeof CS.configSchema = CS.configSchema;

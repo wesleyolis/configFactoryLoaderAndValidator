@@ -4,6 +4,8 @@ import * as Joi from 'joi';
 export * from '../../../joi-x-validators';
 export * from '../../../joi-x';
 
+export const factoryName = "InMemory"
+
 export type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>;
 
 export const configSchema = JoiX.object().keys({

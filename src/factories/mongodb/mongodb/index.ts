@@ -6,12 +6,15 @@ import * as CS from './configSchema';
 import * as JoiX from '../../../joi-x';
 import * as Joi from 'joi';
 import * as JoiV from '../../../joi-x-validators'
+import {ConfigSchema} from './configSchema';
 
 const cache: Record<string, string> = {};
 
+export {ConfigSchema} from './configSchema';
+
 export class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABaseConfigFactory implements IMongoSettings
 { 
-  readonly factoryName = "Network"
+  readonly factoryName = CS.factoryName;
   readonly factoryClass = ConfigFactoryClass.service;
   readonly type = ConfigFactoryTypes.production;
   readonly configSchema  = CS.configSchema;

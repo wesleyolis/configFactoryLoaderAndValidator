@@ -1,5 +1,3 @@
-import {ConfigSettings} from '../config-options/config-settings-types'
-
 export enum ConfigFactoryClass {
 
     factory = "Factory",

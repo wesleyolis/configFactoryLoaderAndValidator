@@ -1,4 +1,5 @@
 import * as JoiX from './joi-x'
+import * as Joi from 'joi'
 
 export interface Port extends JoiX.XNumberSchema {}
 

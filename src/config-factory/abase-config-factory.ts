@@ -1,17 +1,16 @@
 import { ConfigFactoryClass, ConfigFactoryTypes } from './config-factory-types';
 import { IConfigFactory } from './iconfig-factory';
-import { ConfigSettings } from '../config-options/config-settings-types';
-import * as CSE from '../config-options/config-settings-errors';
 import * as JoiX from '../joi-x';
 import * as VError from 'verror';
 import { SchemaLike, ValidationError } from '../joi-x';
+import { Config } from './config';
 
 export enum ErrorFactory
 {
     NotCreated = "FactoryNotCreated"
 }
 
-export abstract class ABaseConfigFactory implements IConfigFactory
+export abstract class ABaseConfigFactory extends Config implements IConfigFactory
 {
     abstract factoryName : string;
     abstract factoryClass : ConfigFactoryClass;
@@ -37,7 +36,7 @@ export abstract class ABaseConfigFactory implements IConfigFactory
         catch(e)
         {
             if (JoiX.isJoiError(e)){
-                throw new VError(e, this.FactoryName);
+                throw new VError(e, this.factoryName);
             }
             throw e;
         }
@@ -58,27 +57,5 @@ export abstract class ABaseConfigFactory implements IConfigFactory
     stopAsync () : Promise<void>
     {
         return Promise.resolve();
-    }
-
-    async validateAsync(configSettings : ConfigSettings ) : Promise<JoiX.ValidationErrorItem[]>
-    {
-        try {
-            await JoiX.validate(this.configSettings, this.configSchema);
-        }
-        catch(e)
-        {
-            if (JoiX.isJoiError(e)) {
-                return Promise.resolve(e.details);
-            }
-
-            throw e;
-        }
-
-        return Promise.resolve([]);
-    }
-
-    describe() : string
-    {
-        return JSON.stringify(JoiX.describe(this.configSchema));
     }
 }

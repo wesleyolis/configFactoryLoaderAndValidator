@@ -29,7 +29,7 @@ export interface XArray extends XBase {
 }
 
 export interface XAlternatives extends XBase {
-  __tsType: Record<never, any>
+  //__tsType: Record<never, any>
   
   // try needs to generate a union of the extracted types.
   try<T extends XSchema>(types: T[]): this & {__tsType: _ExtractFromSchema<T>}
@@ -69,6 +69,7 @@ export const kind = <T extends string>(value : T) => Joi.string().allow(value) a
 export const LiteralString = <T extends string>(value : T[]) => Joi.string().allow(value) as XStringSchema<T>
 export const LiteralNumber = <T extends number>(value : T[]) => Joi.number().allow(value) as XNumberSchema<T>
 export const LiteralBoolean = <T extends boolean>(value : T[]) => Joi.boolean().allow(value) as XBooleanSchema<T>
+export const enumString = <T extends string>(values : T []) => Joi.string().allow(values) as XStringSchema<T>
 
 export function isJoiError(err: any): err is Joi.ValidationError {
   return err.isJoi && err.name == 'ValidationError' && (err instanceof Error);
