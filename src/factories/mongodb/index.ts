@@ -9,6 +9,7 @@ import * as Joi from 'joi';
 import * as JoiX from '../../joi-x';
 import * as JoiV from '../../joi-x-validators';
 import { IConfigFactory } from '../../config-factory/iconfig-factory';
+import * as CFT from '../../config-factory/config-factory-types'
 
 
 

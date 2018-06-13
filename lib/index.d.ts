@@ -8,3 +8,4 @@ import * as JoiX from './joi-x';
 export { JoiX as JoiX };
 import * as JoiV from './joi-x-validators';
 export { JoiV as JoiV };
+export { describe as DescribeConfigSchema, validateAsync as ValidatConfigSchemaeAsync } from './config-factory/config';

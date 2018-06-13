@@ -4,6 +4,7 @@ import * as JoiX from '../joi-x';
 import * as VError from 'verror';
 import { SchemaLike, ValidationError } from '../joi-x';
 import { Config } from './config';
+import { baseConfigSchema } from './abase-config-factory-schema'
 
 export enum ErrorFactory
 {
@@ -19,18 +20,13 @@ export abstract class ABaseConfigFactory extends Config implements IConfigFactor
 
     abstract configSettings? : JoiX.XTSchema
 
-    readonly configSchemaWithClassification : JoiX.SchemaMap = {
-        class : JoiX.string().allow().required(),
-        type : JoiX.string().required()
-    };
-
     private _created : boolean = false;
 
     async createAsync(config : JoiX.XJSchemaMap) : Promise<void>
     {
         try
         {
-            const configSchema = this.configSchema.keys(this.configSchemaWithClassification);
+            const configSchema = this.configSchema.keys(baseConfigSchema);
             this.configSettings = await JoiX.validate(config, configSchema, {abortEarly: false});
         }
         catch(e)

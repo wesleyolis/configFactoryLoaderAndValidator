@@ -2,6 +2,7 @@ import * as Joi from 'joi';
 import * as JoiX from '../../joi-x';
 import * as JoiV from '../../joi-x-validators';
 import { IConfigFactory } from '../../config-factory/iconfig-factory';
+import * as CFT from '../../config-factory/config-factory-types';
 export declare type MongoDBSchema = JoiX.ExtractFromSchema<typeof mongoDBSchema>;
 export declare const mongoDBSchema: JoiX.XObject & Joi.ObjectSchema & {
     __tsType: JoiX._ExtractFromObject<{
@@ -31,6 +32,15 @@ export declare const mongoDBSchema: JoiX.XObject & Joi.ObjectSchema & {
         };
     }>;
 } & {
+    __tsType: JoiX._ExtractFromObject<{
+        class: JoiX.XPrimitive<CFT.ConfigFactoryClass> & Joi.StringSchema & {
+            __isRequired: "T";
+        };
+        type: JoiX.XPrimitive<CFT.ConfigFactoryTypes> & Joi.StringSchema & {
+            __isRequired: "T";
+        };
+    }>;
+} & {
     __isRequired: "T";
 } & {
     __tsType: JoiX._ExtractFromObject<{
@@ -43,6 +53,15 @@ export declare type InMemorySchema = JoiX.ExtractFromSchema<typeof inMemorySchem
 export declare const inMemorySchema: JoiX.XObject & Joi.ObjectSchema & {
     __tsType: JoiX._ExtractFromObject<{
         port: JoiV.Port & {
+            __isRequired: "T";
+        };
+    }>;
+} & {
+    __tsType: JoiX._ExtractFromObject<{
+        class: JoiX.XPrimitive<CFT.ConfigFactoryClass> & Joi.StringSchema & {
+            __isRequired: "T";
+        };
+        type: JoiX.XPrimitive<CFT.ConfigFactoryTypes> & Joi.StringSchema & {
             __isRequired: "T";
         };
     }>;
@@ -93,11 +112,25 @@ export declare const configSchema: JoiX.XAlternatives & Joi.AlternativesSchema &
             __isRequired: "T";
         };
     }> & JoiX._ExtractFromObject<{
+        class: JoiX.XPrimitive<CFT.ConfigFactoryClass> & Joi.StringSchema & {
+            __isRequired: "T";
+        };
+        type: JoiX.XPrimitive<CFT.ConfigFactoryTypes> & Joi.StringSchema & {
+            __isRequired: "T";
+        };
+    }> & JoiX._ExtractFromObject<{
         factory: JoiX.XPrimitive<"Network"> & Joi.StringSchema & {
             __isRequired: "T";
         };
     }>) | (JoiX._ExtractFromObject<{
         port: JoiV.Port & {
+            __isRequired: "T";
+        };
+    }> & JoiX._ExtractFromObject<{
+        class: JoiX.XPrimitive<CFT.ConfigFactoryClass> & Joi.StringSchema & {
+            __isRequired: "T";
+        };
+        type: JoiX.XPrimitive<CFT.ConfigFactoryTypes> & Joi.StringSchema & {
             __isRequired: "T";
         };
     }> & JoiX._ExtractFromObject<{

@@ -1,6 +1,8 @@
 import * as JoiV from '../../../joi-x-validators';
 import * as JoiX from '../../../joi-x';
 import * as Joi from 'joi';
+import {baseConfigSchema} from '../../../config-factory/abase-config-factory-schema'
+import * as CFT from '../../../config-factory/config-factory-types'
 
 export const factoryName = "Network";
 
@@ -19,5 +21,5 @@ export const configSchema = JoiX.object().keys({
     }).required(),
     database : JoiX.string().required(),
     options : JoiX.object().pattern(/w/, JoiX.string().required()).required(),
-  }).required();
+  }).keys(baseConfigSchema).required();
 

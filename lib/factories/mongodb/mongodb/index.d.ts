@@ -39,6 +39,15 @@ export declare class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABa
             };
         }>;
     } & {
+        __tsType: JoiX._ExtractFromObject<{
+            class: JoiX.XPrimitive<ConfigFactoryClass> & Joi.StringSchema & {
+                __isRequired: "T";
+            };
+            type: JoiX.XPrimitive<ConfigFactoryTypes> & Joi.StringSchema & {
+                __isRequired: "T";
+            };
+        }>;
+    } & {
         __isRequired: "T";
     };
     static NewInstance(): MongoDBConfigFactory<JoiX.ExtractFromSchema<JoiX.XObject & Joi.ObjectSchema & {
@@ -65,6 +74,15 @@ export declare class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABa
             options: JoiX.XObject & Joi.ObjectSchema & {
                 __tsType: Record<string, string>;
             } & {
+                __isRequired: "T";
+            };
+        }>;
+    } & {
+        __tsType: JoiX._ExtractFromObject<{
+            class: JoiX.XPrimitive<ConfigFactoryClass> & Joi.StringSchema & {
+                __isRequired: "T";
+            };
+            type: JoiX.XPrimitive<ConfigFactoryTypes> & Joi.StringSchema & {
                 __isRequired: "T";
             };
         }>;

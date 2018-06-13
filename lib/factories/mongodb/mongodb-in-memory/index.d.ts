@@ -20,6 +20,15 @@ export declare class MongoInMemoryConfigFactory<T extends CS.ConfigSchema> exten
             };
         }>;
     } & {
+        __tsType: JoiX._ExtractFromObject<{
+            class: JoiX.XPrimitive<ConfigFactoryClass> & Joi.StringSchema & {
+                __isRequired: "T";
+            };
+            type: JoiX.XPrimitive<ConfigFactoryTypes> & Joi.StringSchema & {
+                __isRequired: "T";
+            };
+        }>;
+    } & {
         __isRequired: "T";
     }>>;
     constructor(configSettings: T);

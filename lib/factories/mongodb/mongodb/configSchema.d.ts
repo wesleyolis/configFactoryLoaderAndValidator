@@ -1,6 +1,7 @@
 import * as JoiV from '../../../joi-x-validators';
 import * as JoiX from '../../../joi-x';
 import * as Joi from 'joi';
+import * as CFT from '../../../config-factory/config-factory-types';
 export declare const factoryName = "Network";
 export declare type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>;
 export declare const configSchema: JoiX.XObject & Joi.ObjectSchema & {
@@ -27,6 +28,15 @@ export declare const configSchema: JoiX.XObject & Joi.ObjectSchema & {
         options: JoiX.XObject & Joi.ObjectSchema & {
             __tsType: Record<string, string>;
         } & {
+            __isRequired: "T";
+        };
+    }>;
+} & {
+    __tsType: JoiX._ExtractFromObject<{
+        class: JoiX.XPrimitive<CFT.ConfigFactoryClass> & Joi.StringSchema & {
+            __isRequired: "T";
+        };
+        type: JoiX.XPrimitive<CFT.ConfigFactoryTypes> & Joi.StringSchema & {
             __isRequired: "T";
         };
     }>;
