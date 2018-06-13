@@ -10,7 +10,7 @@ import {ConfigSchema} from './configSchema';
 
 const cache: Record<string, string> = {};
 
-export {ConfigSchema} from './configSchema';
+export {CS as CS}
 
 export class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABaseConfigFactory implements IMongoSettings
 { 

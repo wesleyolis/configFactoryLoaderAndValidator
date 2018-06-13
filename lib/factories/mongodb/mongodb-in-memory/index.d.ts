@@ -5,8 +5,7 @@ import * as CS from './configSchema';
 import * as Joi from 'joi';
 import * as JoiX from '../../../joi-x';
 import * as JoiV from '../../../joi-x-validators';
-export * from './configSchema';
-export declare const factoryName = "InMemory";
+export { CS as CS };
 export declare class MongoInMemoryConfigFactory<T extends CS.ConfigSchema> extends ABaseConfigFactory implements IMongoSettings {
     readonly configSettings: T;
     readonly factoryName: string;

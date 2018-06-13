@@ -5,7 +5,7 @@ import * as CS from './configSchema';
 import * as JoiX from '../../../joi-x';
 import * as Joi from 'joi';
 import * as JoiV from '../../../joi-x-validators';
-export { ConfigSchema } from './configSchema';
+export { CS as CS };
 export declare class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABaseConfigFactory implements IMongoSettings {
     configSettings: T;
     readonly factoryName: string;

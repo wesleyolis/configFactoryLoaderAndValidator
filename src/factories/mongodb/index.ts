@@ -38,7 +38,7 @@ const factories : Factory [] = [
         configFactoryNew: MongoDB.MongoDBConfigFactory.NewInstance
     },
     {
-        configFactoryName: InMemory.factoryName,
+        configFactoryName: InMemoryCS.factoryName,
         configFactoryNew: InMemory.MongoInMemoryConfigFactory.NewInstance
     }
 ];
