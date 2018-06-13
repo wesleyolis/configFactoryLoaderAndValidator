@@ -1,6 +1,10 @@
 import * as configFactories from './config-factory'
 export {configFactories as ConfigFactories}
 
+import * as CFT from './config-factory/config-factory-types'
+export {CFT as CFT}
+
+
 import * as factories from './factories'
 export {factories as Factories}
 
