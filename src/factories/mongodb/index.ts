@@ -1,4 +1,4 @@
-import {Factory, _NewFactory, StartFactoryAsync} from '../../config-factory/config-factories';
+import {Factory, _NewFactory} from '../../config-factory/config-factories';
 
 import * as MongoDB from '../mongodb/mongodb';
 import * as MongoDBCS from '../mongodb/mongodb/configSchema';
@@ -48,3 +48,5 @@ const factories : Factory [] = [
 export function NewFactory(settings : ConfigFactories) : IConfigFactory {
     return _NewFactory(factories, settings);
 }
+
+

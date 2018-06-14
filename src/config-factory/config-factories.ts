@@ -23,10 +23,3 @@ export function _NewFactory<T extends {factory : string}>(factories : Factory[],
 
     throw new VError({name:ConfigErrors.FactoryLoadingFail}, `Factory: '$settings.factory'`);
 }
-
-export function StartFactoryAsync<T extends ({factory: string} & JoiX.XTSchema)>(factory : IConfigFactory, settings : T){
-
-    const unWrappedSettings = delete settings.factory;
-
-    return factory.createAsync(unWrappedSettings);
-}
