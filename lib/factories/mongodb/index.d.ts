@@ -2,6 +2,8 @@ import * as Joi from 'joi';
 import * as JoiX from '../../joi-x';
 import { IConfigFactory } from '../../config-factory/iconfig-factory';
 import * as CFT from '../../config-factory/config-factory-types';
+import { IMongoSettings } from './amongodb-config-factory';
+export { IMongoSettings };
 export declare type MongoDBSchema = JoiX.ExtractFromSchema<typeof mongoDBSchema>;
 export declare const mongoDBSchema: {
     __tsType: JoiX._ExtractFromObject<{

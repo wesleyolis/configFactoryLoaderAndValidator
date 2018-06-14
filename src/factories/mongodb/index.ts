@@ -11,8 +11,9 @@ import * as JoiV from '../../joi-x-validators';
 import { IConfigFactory } from '../../config-factory/iconfig-factory';
 import * as CFT from '../../config-factory/config-factory-types'
 import { ConfigFactories } from '../../config-factory/index';
+import { IMongoSettings } from './amongodb-config-factory';
 
-
+export {IMongoSettings}
 
 export type MongoDBSchema = JoiX.ExtractFromSchema<typeof mongoDBSchema>;
 
