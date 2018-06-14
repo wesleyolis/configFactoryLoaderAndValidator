@@ -8,13 +8,13 @@ class ConfigErrors
     static FactoryLoadingFail = "FactoryLoadingFailed";
 }
 
-export interface Factory
+export interface Factory<T extends IConfigFactory>
 {
     configFactoryName : string
-    configFactoryNew: () => IConfigFactory
+    configFactoryNew: () => T
 }
 
-export function _NewFactory<T extends {factory : string}>(factories : Factory[], settings : T) : IConfigFactory
+export function _NewFactory<F extends IConfigFactory, T extends {factory : string}>(factories : Factory<F>[], settings : T) : F
 {
     const factory = factories.filter(f => f.configFactoryName == settings.factory);
 

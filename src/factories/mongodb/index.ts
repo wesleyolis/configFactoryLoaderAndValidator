@@ -34,7 +34,7 @@ export type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>;
 
 export const configSchema = JoiX.alternatives().try([mongoDBSchema, inMemorySchema]).required();
 
-const factories : Factory [] = [
+const factories : Factory<IMongoSettings> [] = [
     {
         configFactoryName : MongoDBCS.factoryName,
         configFactoryNew: MongoDB.MongoDBConfigFactory.NewInstance
@@ -45,7 +45,7 @@ const factories : Factory [] = [
     }
 ];
 
-export function NewFactory(settings : ConfigFactories) : IConfigFactory {
+export function NewFactory(settings : ConfigFactories) : IMongoSettings {
     return _NewFactory(factories, settings);
 }
 

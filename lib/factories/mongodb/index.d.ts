@@ -1,6 +1,5 @@
 import * as Joi from 'joi';
 import * as JoiX from '../../joi-x';
-import { IConfigFactory } from '../../config-factory/iconfig-factory';
 import * as CFT from '../../config-factory/config-factory-types';
 import { IMongoSettings } from './amongodb-config-factory';
 export { IMongoSettings };
@@ -138,4 +137,4 @@ export declare const configSchema: JoiX.XAlternatives & Joi.AlternativesSchema &
 } & {
     __isRequired: "T";
 };
-export declare function NewFactory(settings: ConfigFactories): IConfigFactory;
+export declare function NewFactory(settings: ConfigFactories): IMongoSettings;

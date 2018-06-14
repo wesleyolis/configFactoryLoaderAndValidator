@@ -1,8 +1,8 @@
 import { IConfigFactory } from './iconfig-factory';
-export interface Factory {
+export interface Factory<T extends IConfigFactory> {
     configFactoryName: string;
-    configFactoryNew: () => IConfigFactory;
+    configFactoryNew: () => T;
 }
-export declare function _NewFactory<T extends {
+export declare function _NewFactory<F extends IConfigFactory, T extends {
     factory: string;
-}>(factories: Factory[], settings: T): IConfigFactory;
+}>(factories: Factory<F>[], settings: T): F;
