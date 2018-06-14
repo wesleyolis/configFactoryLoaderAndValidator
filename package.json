@@ -13,7 +13,7 @@
     "build": "npm run copy-js && tsc",
     "build-test": "npm run copy-js-test && tsc -p tsconfig-test.json",
     "build-all": "npm run build && npm run build-test",
-    "test": "mocha --recursive 'lib-test/joi-x.spec.js'",
+    "test": "mocha --recursive 'lib-test/**/*.spec.js'",
     "test-coverage": "nyc --all mocha --recursive 'lib-test/**/*.spec.js'",
     "build-run-test": "npm run build-test && npm run test",
     "build-run-test-coverage": "npm run build-test && npm run test-coverage",
@@ -22,7 +22,9 @@
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {},
+  "devDependencies": {
+    "mongo-in-memory": "0.0.5"
+  },
   "dependencies": {
     "@types/joi": "^13.0.8",
     "@types/verror": "^1.10.3",
