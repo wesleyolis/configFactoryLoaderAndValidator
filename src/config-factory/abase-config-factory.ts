@@ -22,6 +22,14 @@ export abstract class ABaseConfigFactory extends Config implements IConfigFactor
 
     private _created : boolean = false;
 
+
+    async createFactoryAsync<T extends ({factory: string} & JoiX.XTSchema)>(settings : T) : Promise<void>{
+
+        const unWrappedSettings = delete settings.factory;
+
+        return this.createAsync(unWrappedSettings);
+    }
+
     async createAsync(config : JoiX.XJSchemaMap) : Promise<void>
     {
         try
