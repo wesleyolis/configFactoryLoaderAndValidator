@@ -24,7 +24,7 @@ export function describe(configSchema : JoiX.XObjectSchema) : string
 
 export abstract class Config
 {
-    readonly configSchema : JoiX.XObjectSchema;
+    abstract readonly configSchema : JoiX.XObjectSchema;
 
     async validateAsync(configSettings : JoiX.XTSchema) : Promise<JoiX.ValidationErrorItem[]>
     {

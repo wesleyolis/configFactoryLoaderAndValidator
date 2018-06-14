@@ -18,12 +18,12 @@ export type HasKey =
 
 export interface XObject extends XBase {
   pattern<S extends XSchema>(regex: RegExp, schema : S) : this & {__tsType: Record<string, _ExtractFromSchema<S>>}
-  keys<T extends XSchemaMap>(keys: T): this & {__tsType: _ExtractFromObject<T>}
+  keys<T extends XSchemaMap>(keys: T): {__tsType: _ExtractFromObject<T>} & this
   keys(schema?: Joi.SchemaMap): this & {__tsType: 'Invalid type passed to JoiX.object().keys(). Do not use Joi types - use JoiX instead.'}
 }
 
 export interface XArray extends XBase {
-  items<T extends XSchema>(items: T):  this & {__tsType: _ExtractFromSchema<T>[]}
+  items<T extends XSchema>(items: T): this & {__tsType: _ExtractFromSchema<T>[]}
   items(...types: Joi.SchemaLike[]): this & {__tsType: 'Invalid type passed to JoiX.array().items(). Do not use Joi types - use JoiX instead.'};
   items(types: Joi.SchemaLike[]): this & {__tsType: 'Invalid type passed to JoiX.array().items(). Do not use Joi types - use JoiX instead.'};
 }

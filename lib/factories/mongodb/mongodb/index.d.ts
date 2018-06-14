@@ -10,7 +10,7 @@ export declare class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABa
     readonly factoryName: string;
     readonly factoryClass: ConfigFactoryClass;
     readonly type: ConfigFactoryTypes;
-    readonly configSchema: JoiX.XObject & Joi.ObjectSchema & {
+    readonly configSchema: {
         __tsType: JoiX._ExtractFromObject<{
             class: JoiX.XPrimitive<ConfigFactoryClass.netService> & Joi.StringSchema & {
                 __isRequired: "T";
@@ -18,7 +18,9 @@ export declare class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABa
             type: JoiX.XPrimitive<ConfigFactoryTypes.production> & Joi.StringSchema & {
                 __isRequired: "T";
             };
-            provider: JoiX.XStringSchema<string>;
+            provider: JoiX.XPrimitive<"mongodb"> & Joi.StringSchema & {
+                __isRequired: "T";
+            };
             hosts: JoiX.XArray & Joi.ArraySchema & {
                 __tsType: JoiX._ExtractFromObject<{
                     hostname: JoiX.XPrimitive<string> & Joi.StringSchema & {
@@ -31,7 +33,7 @@ export declare class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABa
             } & {
                 __isRequired: "T";
             };
-            credentials: JoiX.XObject & Joi.ObjectSchema & any & {
+            credentials: any & JoiX.XObject & Joi.ObjectSchema & {
                 __isRequired: "T";
             };
             database: JoiX.XPrimitive<string> & Joi.StringSchema & {
@@ -43,10 +45,10 @@ export declare class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABa
                 __isRequired: "T";
             };
         }>;
-    } & {
+    } & JoiX.XObject & Joi.ObjectSchema & {
         __isRequired: "T";
     };
-    static NewInstance(): MongoDBConfigFactory<JoiX.ExtractFromSchema<JoiX.XObject & Joi.ObjectSchema & {
+    static NewInstance(): MongoDBConfigFactory<JoiX.ExtractFromSchema<{
         __tsType: JoiX._ExtractFromObject<{
             class: JoiX.XPrimitive<ConfigFactoryClass.netService> & Joi.StringSchema & {
                 __isRequired: "T";
@@ -54,7 +56,9 @@ export declare class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABa
             type: JoiX.XPrimitive<ConfigFactoryTypes.production> & Joi.StringSchema & {
                 __isRequired: "T";
             };
-            provider: JoiX.XStringSchema<string>;
+            provider: JoiX.XPrimitive<"mongodb"> & Joi.StringSchema & {
+                __isRequired: "T";
+            };
             hosts: JoiX.XArray & Joi.ArraySchema & {
                 __tsType: JoiX._ExtractFromObject<{
                     hostname: JoiX.XPrimitive<string> & Joi.StringSchema & {
@@ -67,7 +71,7 @@ export declare class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABa
             } & {
                 __isRequired: "T";
             };
-            credentials: JoiX.XObject & Joi.ObjectSchema & any & {
+            credentials: any & JoiX.XObject & Joi.ObjectSchema & {
                 __isRequired: "T";
             };
             database: JoiX.XPrimitive<string> & Joi.StringSchema & {
@@ -79,7 +83,7 @@ export declare class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABa
                 __isRequired: "T";
             };
         }>;
-    } & {
+    } & JoiX.XObject & Joi.ObjectSchema & {
         __isRequired: "T";
     }>>;
     constructor(configSettings: T);

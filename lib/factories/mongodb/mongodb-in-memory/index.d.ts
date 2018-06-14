@@ -12,7 +12,7 @@ export declare class MongoInMemoryConfigFactory<T extends CS.ConfigSchema> exten
     readonly type: ConfigFactoryTypes;
     readonly configSchema: typeof CS.configSchema;
     private mongoServerInstance;
-    static NewInstance(): MongoInMemoryConfigFactory<JoiX.ExtractFromSchema<JoiX.XObject & Joi.ObjectSchema & {
+    static NewInstance(): MongoInMemoryConfigFactory<JoiX.ExtractFromSchema<{
         __tsType: JoiX._ExtractFromObject<{
             class: JoiX.XPrimitive<ConfigFactoryClass.service> & Joi.StringSchema & {
                 __isRequired: "T";
@@ -24,7 +24,7 @@ export declare class MongoInMemoryConfigFactory<T extends CS.ConfigSchema> exten
                 __isRequired: "T";
             };
         }>;
-    } & {
+    } & JoiX.XObject & Joi.ObjectSchema & {
         __isRequired: "T";
     }>>;
     constructor(configSettings: T);

@@ -3,7 +3,13 @@ import * as JoiX from '../../joi-x';
 import { IConfigFactory } from '../../config-factory/iconfig-factory';
 import * as CFT from '../../config-factory/config-factory-types';
 export declare type MongoDBSchema = JoiX.ExtractFromSchema<typeof mongoDBSchema>;
-export declare const mongoDBSchema: JoiX.XObject & Joi.ObjectSchema & {
+export declare const mongoDBSchema: {
+    __tsType: JoiX._ExtractFromObject<{
+        factory: JoiX.XPrimitive<"Network"> & Joi.StringSchema & {
+            __isRequired: "T";
+        };
+    }>;
+} & {
     __tsType: JoiX._ExtractFromObject<{
         class: JoiX.XPrimitive<CFT.ConfigFactoryClass.netService> & Joi.StringSchema & {
             __isRequired: "T";
@@ -11,7 +17,9 @@ export declare const mongoDBSchema: JoiX.XObject & Joi.ObjectSchema & {
         type: JoiX.XPrimitive<CFT.ConfigFactoryTypes.production> & Joi.StringSchema & {
             __isRequired: "T";
         };
-        provider: JoiX.XStringSchema<string>;
+        provider: JoiX.XPrimitive<"mongodb"> & Joi.StringSchema & {
+            __isRequired: "T";
+        };
         hosts: JoiX.XArray & Joi.ArraySchema & {
             __tsType: JoiX._ExtractFromObject<{
                 hostname: JoiX.XPrimitive<string> & Joi.StringSchema & {
@@ -24,7 +32,7 @@ export declare const mongoDBSchema: JoiX.XObject & Joi.ObjectSchema & {
         } & {
             __isRequired: "T";
         };
-        credentials: JoiX.XObject & Joi.ObjectSchema & any & {
+        credentials: any & JoiX.XObject & Joi.ObjectSchema & {
             __isRequired: "T";
         };
         database: JoiX.XPrimitive<string> & Joi.StringSchema & {
@@ -36,17 +44,17 @@ export declare const mongoDBSchema: JoiX.XObject & Joi.ObjectSchema & {
             __isRequired: "T";
         };
     }>;
-} & {
+} & JoiX.XObject & Joi.ObjectSchema & {
     __isRequired: "T";
-} & {
+};
+export declare type InMemorySchema = JoiX.ExtractFromSchema<typeof inMemorySchema>;
+export declare const inMemorySchema: {
     __tsType: JoiX._ExtractFromObject<{
-        factory: JoiX.XPrimitive<"Network"> & Joi.StringSchema & {
+        factory: JoiX.XPrimitive<"InMemory"> & Joi.StringSchema & {
             __isRequired: "T";
         };
     }>;
-};
-export declare type InMemorySchema = JoiX.ExtractFromSchema<typeof inMemorySchema>;
-export declare const inMemorySchema: JoiX.XObject & Joi.ObjectSchema & {
+} & {
     __tsType: JoiX._ExtractFromObject<{
         class: JoiX.XPrimitive<CFT.ConfigFactoryClass.service> & Joi.StringSchema & {
             __isRequired: "T";
@@ -58,26 +66,26 @@ export declare const inMemorySchema: JoiX.XObject & Joi.ObjectSchema & {
             __isRequired: "T";
         };
     }>;
-} & {
+} & JoiX.XObject & Joi.ObjectSchema & {
     __isRequired: "T";
-} & {
-    __tsType: JoiX._ExtractFromObject<{
-        factory: JoiX.XPrimitive<"InMemory"> & Joi.StringSchema & {
-            __isRequired: "T";
-        };
-    }>;
 };
 export declare type ConfigFactories = MongoDBSchema | InMemorySchema;
 export declare type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>;
 export declare const configSchema: JoiX.XAlternatives & Joi.AlternativesSchema & {
     __tsType: (JoiX._ExtractFromObject<{
+        factory: JoiX.XPrimitive<"Network"> & Joi.StringSchema & {
+            __isRequired: "T";
+        };
+    }> & JoiX._ExtractFromObject<{
         class: JoiX.XPrimitive<CFT.ConfigFactoryClass.netService> & Joi.StringSchema & {
             __isRequired: "T";
         };
         type: JoiX.XPrimitive<CFT.ConfigFactoryTypes.production> & Joi.StringSchema & {
             __isRequired: "T";
         };
-        provider: JoiX.XStringSchema<string>;
+        provider: JoiX.XPrimitive<"mongodb"> & Joi.StringSchema & {
+            __isRequired: "T";
+        };
         hosts: JoiX.XArray & Joi.ArraySchema & {
             __tsType: JoiX._ExtractFromObject<{
                 hostname: JoiX.XPrimitive<string> & Joi.StringSchema & {
@@ -90,16 +98,16 @@ export declare const configSchema: JoiX.XAlternatives & Joi.AlternativesSchema &
         } & {
             __isRequired: "T";
         };
-        credentials: JoiX.XObject & Joi.ObjectSchema & {
+        credentials: {
             __tsType: JoiX._ExtractFromObject<{
                 username: JoiX.XPrimitive<string> & Joi.StringSchema & {
                     __isRequired: "T";
                 };
-                password: JoiX.XObject & Joi.ObjectSchema & any & {
+                password: any & JoiX.XObject & Joi.ObjectSchema & {
                     __isRequired: "T";
                 };
             }>;
-        } & {
+        } & JoiX.XObject & Joi.ObjectSchema & {
             __isRequired: "T";
         };
         database: JoiX.XPrimitive<string> & Joi.StringSchema & {
@@ -110,11 +118,11 @@ export declare const configSchema: JoiX.XAlternatives & Joi.AlternativesSchema &
         } & {
             __isRequired: "T";
         };
-    }> & JoiX._ExtractFromObject<{
-        factory: JoiX.XPrimitive<"Network"> & Joi.StringSchema & {
+    }>) | (JoiX._ExtractFromObject<{
+        factory: JoiX.XPrimitive<"InMemory"> & Joi.StringSchema & {
             __isRequired: "T";
         };
-    }>) | (JoiX._ExtractFromObject<{
+    }> & JoiX._ExtractFromObject<{
         class: JoiX.XPrimitive<CFT.ConfigFactoryClass.service> & Joi.StringSchema & {
             __isRequired: "T";
         };
@@ -122,10 +130,6 @@ export declare const configSchema: JoiX.XAlternatives & Joi.AlternativesSchema &
             __isRequired: "T";
         };
         port: JoiX.XPrimitive<number> & Joi.NumberSchema & {
-            __isRequired: "T";
-        };
-    }> & JoiX._ExtractFromObject<{
-        factory: JoiX.XPrimitive<"InMemory"> & Joi.StringSchema & {
             __isRequired: "T";
         };
     }>);

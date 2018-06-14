@@ -5,7 +5,7 @@ export * from '../../../joi-x';
 import * as CFT from '../../../config-factory/config-factory-types';
 export declare const factoryName = "InMemory";
 export declare type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>;
-export declare const configSchema: JoiX.XObject & Joi.ObjectSchema & {
+export declare const configSchema: {
     __tsType: JoiX._ExtractFromObject<{
         class: JoiX.XPrimitive<CFT.ConfigFactoryClass.service> & Joi.StringSchema & {
             __isRequired: "T";
@@ -17,6 +17,6 @@ export declare const configSchema: JoiX.XObject & Joi.ObjectSchema & {
             __isRequired: "T";
         };
     }>;
-} & {
+} & JoiX.XObject & Joi.ObjectSchema & {
     __isRequired: "T";
 };
