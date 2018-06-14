@@ -1,15 +1,34 @@
+import * as JoiV from '../../../joi-x-validators';
 import * as JoiX from '../../../joi-x';
 import * as Joi from 'joi';
 import * as CFT from '../../../config-factory/config-factory-types';
 export declare const factoryName = "Network";
 export declare type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>;
 export declare type Credentials = JoiX.ExtractFromSchema<typeof credentials>;
+export declare type Password = JoiX.ExtractFromSchema<typeof password>;
+export declare const password: {
+    __tsType: JoiX._ExtractFromObject<{
+        phrase: JoiX.XPrimitive<string> & Joi.StringSchema & {
+            __isRequired: "T";
+        };
+        type: JoiX.XStringSchema<JoiV.PassType>;
+    }>;
+} & JoiX.XObject & Joi.ObjectSchema & {
+    __isRequired: "T";
+};
 export declare const credentials: {
     __tsType: JoiX._ExtractFromObject<{
         username: JoiX.XPrimitive<string> & Joi.StringSchema & {
             __isRequired: "T";
         };
-        password: any & JoiX.XObject & Joi.ObjectSchema & {
+        password: {
+            __tsType: JoiX._ExtractFromObject<{
+                phrase: JoiX.XPrimitive<string> & Joi.StringSchema & {
+                    __isRequired: "T";
+                };
+                type: JoiX.XStringSchema<JoiV.PassType>;
+            }>;
+        } & JoiX.XObject & Joi.ObjectSchema & {
             __isRequired: "T";
         };
     }>;
@@ -44,7 +63,14 @@ export declare const configSchema: {
                 username: JoiX.XPrimitive<string> & Joi.StringSchema & {
                     __isRequired: "T";
                 };
-                password: any & JoiX.XObject & Joi.ObjectSchema & {
+                password: {
+                    __tsType: JoiX._ExtractFromObject<{
+                        phrase: JoiX.XPrimitive<string> & Joi.StringSchema & {
+                            __isRequired: "T";
+                        };
+                        type: JoiX.XStringSchema<JoiV.PassType>;
+                    }>;
+                } & JoiX.XObject & Joi.ObjectSchema & {
                     __isRequired: "T";
                 };
             }>;

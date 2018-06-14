@@ -11,9 +11,13 @@ export type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>;
   
 export type Credentials = JoiX.ExtractFromSchema<typeof credentials>;
 
+export type Password = JoiX.ExtractFromSchema<typeof password>;
+
+export const password = JoiV.password().required();
+
 export const credentials = JoiX.object().keys({
     username : JoiX.string().required(),
-    password : JoiV.password().required()
+    password : password
 }).required();
 
 export const configSchema = JoiX.object().keys({
