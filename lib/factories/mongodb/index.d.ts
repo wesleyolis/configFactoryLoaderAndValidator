@@ -122,19 +122,10 @@ export declare const configSchema: JoiX.XAlternatives & Joi.AlternativesSchema &
                 };
                 password: {
                     __tsType: JoiX._ExtractFromObject<{
-                        username: JoiX.XPrimitive<string> & Joi.StringSchema & {
+                        phrase: JoiX.XPrimitive<string> & Joi.StringSchema & {
                             __isRequired: "T";
                         };
-                        password: {
-                            __tsType: JoiX._ExtractFromObject<{
-                                phrase: JoiX.XPrimitive<string> & Joi.StringSchema & {
-                                    __isRequired: "T";
-                                };
-                                type: JoiX.XStringSchema<JoiV.PassType>;
-                            }>;
-                        } & JoiX.XObject & Joi.ObjectSchema & {
-                            __isRequired: "T";
-                        };
+                        type: JoiX.XStringSchema<JoiV.PassType>;
                     }>;
                 } & JoiX.XObject & Joi.ObjectSchema & {
                     __isRequired: "T";
