@@ -11,6 +11,8 @@ export declare class MongoInMemoryConfigFactory<T extends CS.ConfigSchema> exten
     readonly factoryClass: ConfigFactoryClass;
     readonly type: ConfigFactoryTypes;
     readonly configSchema: typeof CS.configSchema;
+    private connectionHost;
+    private connectionPort;
     private mongoServerInstance;
     static NewInstance(): MongoInMemoryConfigFactory<JoiX.ExtractFromSchema<{
         __tsType: JoiX._ExtractFromObject<{
@@ -30,8 +32,6 @@ export declare class MongoInMemoryConfigFactory<T extends CS.ConfigSchema> exten
     constructor(configSettings: T);
     createAsync(conf: CS.ConfigSchema): Promise<void>;
     startAsync(): Promise<any>;
-    stopAsync(): any;
-    describe(): string;
-    validate(): Error[];
+    stopAsync(): Promise<any>;
     getConnectionString(): string;
 }

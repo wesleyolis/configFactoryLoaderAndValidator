@@ -21,14 +21,7 @@ export declare const credentials: {
         username: JoiX.XPrimitive<string> & Joi.StringSchema & {
             __isRequired: "T";
         };
-        password: {
-            __tsType: JoiX._ExtractFromObject<{
-                phrase: JoiX.XPrimitive<string> & Joi.StringSchema & {
-                    __isRequired: "T";
-                };
-                type: JoiX.XStringSchema<JoiV.PassType>;
-            }>;
-        } & JoiX.XObject & Joi.ObjectSchema & {
+        password: any & JoiX.XObject & Joi.ObjectSchema & {
             __isRequired: "T";
         };
     }>;
@@ -58,25 +51,9 @@ export declare const configSchema: {
         } & {
             __isRequired: "T";
         };
-        credentials: {
-            __tsType: JoiX._ExtractFromObject<{
-                username: JoiX.XPrimitive<string> & Joi.StringSchema & {
-                    __isRequired: "T";
-                };
-                password: {
-                    __tsType: JoiX._ExtractFromObject<{
-                        phrase: JoiX.XPrimitive<string> & Joi.StringSchema & {
-                            __isRequired: "T";
-                        };
-                        type: JoiX.XStringSchema<JoiV.PassType>;
-                    }>;
-                } & JoiX.XObject & Joi.ObjectSchema & {
-                    __isRequired: "T";
-                };
-            }>;
-        } & JoiX.XObject & Joi.ObjectSchema & {
+        credentials: any & JoiX.XObject & Joi.ObjectSchema & {
             __isRequired: "T";
-        },
+        };
         database: JoiX.XPrimitive<string> & Joi.StringSchema & {
             __isRequired: "T";
         };

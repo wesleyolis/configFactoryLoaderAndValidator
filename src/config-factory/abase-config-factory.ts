@@ -20,7 +20,7 @@ export abstract class ABaseConfigFactory extends Config implements IConfigFactor
 
     abstract configSettings? : JoiX.XTSchema
 
-    private _created : boolean = false;
+    protected _created : boolean = false;
 
 
     async createFactoryAsync<T extends ({factory: string} & JoiX.XTSchema)>(settings : T) : Promise<void>{
@@ -40,7 +40,7 @@ export abstract class ABaseConfigFactory extends Config implements IConfigFactor
         catch(e)
         {
             if (JoiX.isJoiError(e)){
-                throw new VError(e, this.factoryName);
+                throw new VError(JSON.stringify(e), this.factoryName);
             }
             throw e;
         }

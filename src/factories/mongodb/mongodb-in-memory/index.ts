@@ -1,8 +1,9 @@
-import {ABaseConfigFactory} from '../../../config-factory/abase-config-factory';
+import {ABaseConfigFactory, ErrorFactory} from '../../../config-factory/abase-config-factory';
 import {ConfigFactoryClass, ConfigFactoryTypes} from '../../../config-factory/config-factory-types';
 import {IConfigFactory} from '../../../config-factory/iconfig-factory';
 import {IMongoSettings} from '.././amongodb-config-factory'
 import {VError} from 'verror';
+import {promisify} from 'bluebird';
 
 import * as CS from './configSchema';
 import * as Joi from 'joi';
@@ -13,12 +14,19 @@ export {CS as CS}
 
 var MongoInMemory = require('mongo-in-memory');
 
+class MongoInMemoryErrors
+{
+    static FailedToStart = "FailedToStart";
+}
+
 export class MongoInMemoryConfigFactory<T extends CS.ConfigSchema> extends ABaseConfigFactory implements IMongoSettings
 {   
     readonly factoryName : string = CS.factoryName;
     readonly factoryClass : ConfigFactoryClass = ConfigFactoryClass.service
     readonly type : ConfigFactoryTypes = ConfigFactoryTypes.mock
     readonly configSchema : typeof CS.configSchema = CS.configSchema;
+    private connectionHost : string;
+    private connectionPort : number;
 
     private mongoServerInstance : any = null;
 
@@ -37,38 +45,31 @@ export class MongoInMemoryConfigFactory<T extends CS.ConfigSchema> extends ABase
         await super.createAsync(conf);
         
         this.mongoServerInstance = new MongoInMemory(this.configSettings.port);
+        
+        this.connectionHost = this.mongoServerInstance.host;
+        this.connectionPort = this.mongoServerInstance.port;
     }
 
     public async startAsync()
     {
         if (this.mongoServerInstance === null)
-            throw new VError('Mongo failed to start or you have yet to call create.');
+            throw new VError({name:MongoInMemoryErrors.FailedToStart}, 'Mongo failed to start or you have yet to call create.');
 
-       await super.startAsync();
+        await super.startAsync();
 
-        const config = await this.mongoServerInstance.start();
-
-        return config;
+        return await promisify(this.mongoServerInstance.start).bind(this.mongoServerInstance);
     }
 
-    public stopAsync()
+    public async stopAsync()
     {
-        return this.mongoServerInstance.stop();
-    }
-
-    describe() : string
-    {
-        return "";
-    }
-
-    validate() : Error []
-    {
-        return [];
+        return await promisify(this.mongoServerInstance.stop).bind(this.mongoServerInstance);
     }
 
     getConnectionString() : string
     {
-        return "";
+        if (this._created)
+            return "mongodb://" + this.connectionHost + ":" + this.connectionPort;
+        else 
+            throw ErrorFactory.NotCreated;
     }
 }
-

@@ -6,7 +6,7 @@ import {ConfigSchema, inMemorySchema, InMemorySchema, mongoDBSchema, MongoDBSche
 import * as CFT from '../../../src/config-factory/config-factory-types'
 import { configSchema } from '../../../src/factories/mongodb';
 
-describe("Configuration Schema", function()
+describe("CFactories", function()
 {
     describe("Joi sucessfully validates varius schema", async function() {
 
@@ -20,7 +20,7 @@ describe("Configuration Schema", function()
         it("InMemory", async function() {
     
             chai.expect(await JoiX.validate(inMemorySettings, inMemorySchema)).to.deep.equal(inMemorySettings)
-        })
+        });
 
         const mongoDBSettings : ConfigSchema = {
             factory : 'Network',
@@ -74,7 +74,25 @@ describe("Configuration Schema", function()
             })
         });
     });
-})
+});
+
+
+/*
+describe("Mongo Factory Loading", async function()
+{
+    it.only("Resolves Configuration", async function () {
+
+        const factoryInstances = await new ConfigBundle().newBundleAndResolveConfigAsync(settingsInMemory);
+
+        const config = require('config');
+
+        console.log(JSON.stringify(config));
+
+        chai.expect(config['mongoConnectionString']).eql(""); 
+    });
+});
+*/
+
 
 
 
