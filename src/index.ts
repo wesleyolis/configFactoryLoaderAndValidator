@@ -18,4 +18,4 @@ import * as JoiV from './joi-x-validators'
 import { ConfigFactories } from './config-factory';
 export {JoiV as JoiV}
 
-export  {describe as DescribeConfigSchema, validateAsync as ValidatConfigSchemaeAsync} from './config-factory/config'
+export {describe as describeConfigSchema, validateAsync as validatConfigSchemaAsync} from './config-factory/config'

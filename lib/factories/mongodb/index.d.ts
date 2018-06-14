@@ -1,6 +1,5 @@
 import * as Joi from 'joi';
 import * as JoiX from '../../joi-x';
-import * as JoiV from '../../joi-x-validators'
 import { IConfigFactory } from '../../config-factory/iconfig-factory';
 import * as CFT from '../../config-factory/config-factory-types';
 export declare type MongoDBSchema = JoiX.ExtractFromSchema<typeof mongoDBSchema>;
@@ -33,23 +32,7 @@ export declare const mongoDBSchema: {
         } & {
             __isRequired: "T";
         };
-        credentials: {
-            __tsType: JoiX._ExtractFromObject<{
-                username: JoiX.XPrimitive<string> & Joi.StringSchema & {
-                    __isRequired: "T";
-                };
-                password: {
-                    __tsType: JoiX._ExtractFromObject<{
-                        phrase: JoiX.XPrimitive<string> & Joi.StringSchema & {
-                            __isRequired: "T";
-                        };
-                        type: JoiX.XStringSchema<JoiV.PassType>;
-                    }>;
-                } & JoiX.XObject & Joi.ObjectSchema & {
-                    __isRequired: "T";
-                };
-            }>
-        } & JoiX.XObject & Joi.ObjectSchema & {
+        credentials: any & JoiX.XObject & Joi.ObjectSchema & {
             __isRequired: "T";
         };
         database: JoiX.XPrimitive<string> & Joi.StringSchema & {
@@ -120,14 +103,7 @@ export declare const configSchema: JoiX.XAlternatives & Joi.AlternativesSchema &
                 username: JoiX.XPrimitive<string> & Joi.StringSchema & {
                     __isRequired: "T";
                 };
-                password: {
-                    __tsType: JoiX._ExtractFromObject<{
-                        phrase: JoiX.XPrimitive<string> & Joi.StringSchema & {
-                            __isRequired: "T";
-                        };
-                        type: JoiX.XStringSchema<JoiV.PassType>;
-                    }>;
-                } & JoiX.XObject & Joi.ObjectSchema & {
+                password: any & JoiX.XObject & Joi.ObjectSchema & {
                     __isRequired: "T";
                 };
             }>;
