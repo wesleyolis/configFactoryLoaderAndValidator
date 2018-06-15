@@ -33,16 +33,10 @@ export declare class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABa
             } & {
                 __isRequired: "T";
             };
-            credentials: any & JoiX.XObject & Joi.ObjectSchema & {
-                __isRequired: "T";
-            };
-            database: JoiX.XPrimitive<string> & Joi.StringSchema & {
-                __isRequired: "T";
-            };
+            credentials: any & JoiX.XObject & Joi.ObjectSchema;
+            database: JoiX.XStringSchema<string>;
             options: JoiX.XObject & Joi.ObjectSchema & {
                 __tsType: Record<string, string>;
-            } & {
-                __isRequired: "T";
             };
         }>;
     } & JoiX.XObject & Joi.ObjectSchema & {
@@ -71,16 +65,10 @@ export declare class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABa
             } & {
                 __isRequired: "T";
             };
-            credentials: any & JoiX.XObject & Joi.ObjectSchema & {
-                __isRequired: "T";
-            };
-            database: JoiX.XPrimitive<string> & Joi.StringSchema & {
-                __isRequired: "T";
-            };
+            credentials: any & JoiX.XObject & Joi.ObjectSchema;
+            database: JoiX.XStringSchema<string>;
             options: JoiX.XObject & Joi.ObjectSchema & {
                 __tsType: Record<string, string>;
-            } & {
-                __isRequired: "T";
             };
         }>;
     } & JoiX.XObject & Joi.ObjectSchema & {

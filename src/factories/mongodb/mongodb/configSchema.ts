@@ -18,7 +18,7 @@ export const password = JoiV.password().required();
 export const credentials = JoiX.object().keys({
     username : JoiX.string().required(),
     password : password
-}).required();
+});
 
 export const configSchema = JoiX.object().keys({
     class : JoiX.LiteralString([CFT.ConfigFactoryClass.netService]).required(),
@@ -28,11 +28,30 @@ export const configSchema = JoiX.object().keys({
                 hostname: JoiX.string().required(),
                 port: JoiV.port(JoiV.DPorts.mongo).required()
             }).required()
-        ).required(),
+        ).required().min(1),
     credentials : credentials,
-    database : JoiX.string().required(),
-    options : JoiX.object().pattern(/w/, JoiX.string().required()).required(),
+    database : JoiX.string(),
+    options : JoiX.object().pattern(/\w?/, JoiX.string().required()),
   }).required();
 
 
+
+  const settings = {
+    class : CFT.ConfigFactoryClass.netService,
+    type : CFT.ConfigFactoryTypes.production,
+    provider : 'mongodb',
+    credentials : {
+        username : 'username',
+        password : {
+            phrase : 'sdfsdf',
+            type : JoiV.PassType.plainText
+        }
+    },
+    database : 'databsase',
+    hosts : [{hostname:'hostname', port : 237}],
+    options : {
+        op1 : '1',
+        op2 : '2'
+    }
+};
 

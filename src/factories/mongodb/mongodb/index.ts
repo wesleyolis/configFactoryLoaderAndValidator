@@ -49,14 +49,60 @@ export class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABaseConfig
   
   getConnectionString() : string
   {
-    return ""
+    // we can write a uri validate that takes this information infuture in a spesifica validation from like this.
+    //mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database][?options]]
+
+    const hosts = this.configSettings.hosts;
+
+    let hostConnectionStr = "mongodb://";
+
+    if(this.configSettings.credentials)
+    {
+      hostConnectionStr += this.configSettings.credentials.username + ":" +
+      this.configSettings.credentials.password.phrase + "@"
+    }
+
+    hostConnectionStr += hosts[0].hostname;
+    
+    if(hosts[0].port)
+      hostConnectionStr += ":" + hosts[0].port;
+
+    for (let i = 1; i < hosts.length; i++)
+    {
+      hostConnectionStr += "," + hosts[i].hostname;
+
+      if (hosts[0].port)
+        hostConnectionStr += ":" + hosts[0].port;
+    }
+
+    if(this.configSettings.database && this.configSettings.database.length)
+      hostConnectionStr += "/" + this.configSettings.database;
+
+    if(this.configSettings.options)
+    {
+      let keys = Object.keys(this.configSettings.options);
+      
+      if(keys.length)
+      {
+        const firstKey = keys[0];
+        hostConnectionStr += "?" + firstKey + "=" + this.configSettings.options[firstKey];
+
+        for(let i = 1; i < keys.length; i++)
+        {
+          const key = keys[i];
+          hostConnectionStr += "&" + key + "=" + this.configSettings.options[key];
+        }
+      }
+    }
+    
+    return hostConnectionStr;
   }
 
   private async makeMongoDBConnString(settings: CS.ConfigSchema): Promise<string> {
     let connString = 'mongodb://';
     let password = '';
 
-    if (settings.credentials.username && settings.credentials.password.phrase) {
+    if (settings.credentials && settings.credentials.username && settings.credentials.password.phrase) {
       if (settings.credentials.password.type == JoiV.PassType.encrypt && cache[settings.credentials.password.phrase]) {
         password = cache[settings.credentials.password.phrase];
       } else if (settings.credentials.password.type == JoiV.PassType.encrypt && !cache[settings.credentials.password.phrase]) {
@@ -107,7 +153,8 @@ export class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABaseConfig
   
       Object.keys(settings.options).forEach(
         function(key) {
-          connString = connString + key + '=' + encodeURI(settings.options[key]);
+          if(settings.options)
+            connString = connString + key + '=' + encodeURI(settings.options[key]);
         }
       );
     }

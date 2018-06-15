@@ -80,7 +80,7 @@ describe("CFactories", function()
 /*
 describe("Mongo Factory Loading", async function()
 {
-    it.only("Resolves Configuration", async function () {
+    it.oy("Resolves Configuration", async function () {
 
         const factoryInstances = await new ConfigBundle().newBundleAndResolveConfigAsync(settingsInMemory);
 

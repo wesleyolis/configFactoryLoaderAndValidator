@@ -33,16 +33,10 @@ export declare const mongoDBSchema: {
         } & {
             __isRequired: "T";
         };
-        credentials: any & JoiX.XObject & Joi.ObjectSchema & {
-            __isRequired: "T";
-        };
-        database: JoiX.XPrimitive<string> & Joi.StringSchema & {
-            __isRequired: "T";
-        };
+        credentials: any & JoiX.XObject & Joi.ObjectSchema;
+        database: JoiX.XStringSchema<string>;
         options: JoiX.XObject & Joi.ObjectSchema & {
             __tsType: Record<string, string>;
-        } & {
-            __isRequired: "T";
         };
     }>;
 } & JoiX.XObject & Joi.ObjectSchema & {
@@ -108,16 +102,10 @@ export declare const configSchema: JoiX.XAlternatives & Joi.AlternativesSchema &
                     __isRequired: "T";
                 };
             }>;
-        } & JoiX.XObject & Joi.ObjectSchema & {
-            __isRequired: "T";
-        };
-        database: JoiX.XPrimitive<string> & Joi.StringSchema & {
-            __isRequired: "T";
-        };
+        } & JoiX.XObject & Joi.ObjectSchema;
+        database: JoiX.XStringSchema<string>;
         options: JoiX.XObject & Joi.ObjectSchema & {
             __tsType: Record<string, string>;
-        } & {
-            __isRequired: "T";
         };
     }>) | (JoiX._ExtractFromObject<{
         factory: JoiX.XPrimitive<"InMemory"> & Joi.StringSchema & {

@@ -40,7 +40,7 @@ export abstract class ABaseConfigFactory extends Config implements IConfigFactor
         catch(e)
         {
             if (JoiX.isJoiError(e)){
-                throw new VError(JSON.stringify(e), this.factoryName);
+                throw new VError(e, this.factoryName);
             }
             throw e;
         }
