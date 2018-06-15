@@ -17,68 +17,34 @@ export {JoiX as JoiX}
 import * as JoiV from './joi-x-validators'
 import { ConfigFactories, IConfigFactory } from './config-factory';
 export {JoiV as JoiV}
+import {validateAsync} from './config-factory/config'
 
 export {describe as describeConfigSchema, validateAsync as validatConfigSchemaAsync} from './config-factory/config'
 
-/*
+
+
 export abstract class IConfigBundle
 {
-    static async newBundleAndResolveConfigAsync (settings: JoiX.XJSchemaMap | undefined = undefined) : Promise<any>
+    static async newBundleAndResolveConfigAsync (settings: JoiX.XJSchemaMap | undefined = undefined, configSchema : JoiX.XObjectSchema, requireConfig : (file:string) => any = require('config')) : Promise<any>
     {
         if (settings == undefined)
         {
-            await validatConfigSchemaAsync(require('config'), configSchema);
-            settings = require('config');
+            let config = requireConfig('config');
+            
+            await validateAsync(configSchema, config);
+            return config
+            
         }
-        return settings;
+        return JSON.parse(JSON.stringify(settings));
     }
 
     // Typically were you would inject any configuraiton for other modules.
     // For instance resolving encrypted passwords for mutiple factories async.
-    abstract async newBundleAndResolveConfigAsync (settings: JoiX.XJSchemaMap | undefined) : Promise<IConfigFactoryInstance>
+    abstract async newBundleAndResolveConfigAsync (settings: JoiX.XJSchemaMap | undefined) : Promise<IConfigFactoriesInstances>
 }
 
-export interface IConfigFactoryInstance
+export interface IConfigFactoriesInstances
 {
     startAsync() : Promise<void>;
     stopAsync() : Promise<void>;
 }
-
-
-export class ConfigBundle implements IConfigBundle
-{
-    async newBundleAndResolveConfigAsync(settings : JoiX.XJSchemaMap | undefined = undefined) : Promise<ConfigFactoryInstance>
-    {
-        let rawConfig = await IConfigBundle.newBundleAndResolveConfigAsync(settings);
-
-        const config = settings as ConfigSchema;
-
-        const mongodbInstance = Factories.MongoDB.NewFactory(config.mongodb);
-
-        await mongodbInstance.createFactoryAsync(config.mongodb);
-
-        const mongoConnectionStr : string = mongodbInstance.getConnectionString();
-
-        rawConfig['mongoConnectionString'] = mongoConnectionStr;
-
-        return new ConfigFactoryInstance(config, mongodbInstance);
-    }
-}
-
-export class ConfigFactoryInstance implements IConfigFactoryInstance
-{
-    constructor(private config : ConfigSchema, private mongodbInstance : IMongoSettings){
-
-    }
-
-    async startAsync() : Promise<void>
-    {
-        await this.mongodbInstance.startAsync();
-    }
-
-    async stopAsync() : Promise<void>
-    {
-        await this.mongodbInstance.stopAsync();
-    }
-}
-*/

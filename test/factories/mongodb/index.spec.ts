@@ -1,12 +1,15 @@
 import * as mocha from 'mocha';
 import * as chai from 'chai';
+import * as Joi from 'joi';
 import * as JoiX from '../../../src/joi-x';
 import * as JoiV from '../../../src/joi-x-validators'
 import {ConfigSchema, inMemorySchema, InMemorySchema, mongoDBSchema, MongoDBSchema} from '../../../src/factories/mongodb/index'
 import * as CFT from '../../../src/config-factory/config-factory-types'
 import { configSchema } from '../../../src/factories/mongodb';
+import { Factories, validatConfigSchemaAsync, IConfigBundle, IConfigFactoriesInstances } from '../../../src/index';
+import { IMongoSettings } from '../../../src/factories/mongodb/amongodb-config-factory';
 
-describe("CFactories", function()
+describe("Factories", function()
 {
     describe("Joi sucessfully validates varius schema", async function() {
 
@@ -75,94 +78,3 @@ describe("CFactories", function()
         });
     });
 });
-
-
-/*
-describe("Mongo Factory Loading", async function()
-{
-    it.oy("Resolves Configuration", async function () {
-
-        const factoryInstances = await new ConfigBundle().newBundleAndResolveConfigAsync(settingsInMemory);
-
-        const config = require('config');
-
-        console.log(JSON.stringify(config));
-
-        chai.expect(config['mongoConnectionString']).eql(""); 
-    });
-});
-*/
-
-
-
-
-/*
-type FactorySchema = JoiX._ExtractFromObject<{
-    factory: JoiX.XAlternatives & AlternativesSchema & {
-        __tsType: (JoiX._ExtractFromObject<{
-            factory: JoiX.XPrimitive<"InMemory"> & StringSchema & {
-                __isRequired: "T";
-            };
-        }> & JoiX._ExtractFromObject<{
-            class: JoiX.XPrimitive<CFT.ConfigFactoryClass.service> & StringSchema & {
-                __isRequired: "T";
-            };
-            type: JoiX.XPrimitive<CFT.ConfigFactoryTypes.mock> & StringSchema & {
-                __isRequired: "T";
-            };
-            port: JoiX.XPrimitive<number> & NumberSchema & {
-                __isRequired: "T";
-            };
-        }>) | (JoiX._ExtractFromObject<{
-            factory: JoiX.XPrimitive<"Network"> & StringSchema & {
-                __isRequired: "T";
-            };
-        }> & JoiX._ExtractFromObject<{
-            class: JoiX.XPrimitive<CFT.ConfigFactoryClass.netService> & StringSchema & {
-                __isRequired: "T";
-            };
-            type: JoiX.XPrimitive<CFT.ConfigFactoryTypes.production> & StringSchema & {
-                __isRequired: "T";
-            };
-            provider: JoiX.XPrimitive<"mongodb"> & StringSchema & {
-                __isRequired: "T";
-            };
-            hosts: JoiX.XArray & ArraySchema & {
-                __tsType: JoiX._ExtractFromObject<{
-                    hostname: JoiX.XPrimitive<string> & StringSchema & {
-                        __isRequired: "T";
-                    };
-                    port: JoiX.XPrimitive<number> & NumberSchema & {
-                        __isRequired: "T";
-                    };
-                }>[];
-            } & {
-                __isRequired: "T";
-            };
-            credentials: {
-                __tsType: JoiX._ExtractFromObject<{
-                    username: JoiX.XPrimitive<string> & StringSchema & {
-                        __isRequired: "T";
-                    };
-                    password: any & JoiX.XObject & ObjectSchema & {
-                        __isRequired: "T";
-                    };
-                }>;
-            } & JoiX.XObject & ObjectSchema & {
-                __isRequired: "T";
-            };
-            database: JoiX.XPrimitive<string> & StringSchema & {
-                __isRequired: "T";
-            };
-            options: JoiX.XObject & ObjectSchema & {
-                __tsType: Record<string, string>;
-            } & {
-                __isRequired: "T";
-            };
-        }>);
-    } & {
-        __isRequired: "T";
-    };
-}> & JoiX.XTSchema
-*/
-

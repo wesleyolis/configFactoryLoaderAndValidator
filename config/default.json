@@ -1,20 +1,5 @@
 {
-    "banking": {
-        "bankingSystem": "redblade-hyphen-banking"
-    },
-    "documents": {
-        "s3": {
-            "expires": 207360000
-        }
-    },
-    "pubSubUrl": "http://some-url",
-    "serviceBus": {
-        "service": "redblade-servicebus-aws"
-    },
-    "mongodb" : {
-        "factory" : "InMemory",
-        "class" : "service",
-        "type" : "mock",
-        "port" : 27300
-    }
+    "a":"b",
+    "deletableKey" : "transme",
+    "b":"b"
 }
