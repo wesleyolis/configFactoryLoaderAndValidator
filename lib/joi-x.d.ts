@@ -83,8 +83,10 @@ export declare enum FactoryType {
     dependent = 1,
     manual = 2,
 }
-export declare const Factory: <F extends FactoryType>(type: F) => void;
-export declare const objectBundle: (unqiueBundleName: string) => void;
+export declare const Factory: <F extends FactoryType>(type: F) => XAlternatives & Joi.AlternativesSchema & {
+    __Factory: F;
+};
+export declare const objectBundle: (unqiueBundleName: string) => XObjectBundleSchema;
 export declare function isJoiError(err: any): err is Joi.ValidationError;
 export interface XJSchemaMap {
 }

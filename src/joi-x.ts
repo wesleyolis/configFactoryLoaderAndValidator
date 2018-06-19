@@ -84,7 +84,7 @@ export const Factory = <F extends FactoryType> (type : F) =>
   const factories = Joi.alternatives() as any;
   factories['__Factory'] = type; 
 
-  factories as (XAlternativesSchema & {__Factory: F})
+  return factories as (XAlternativesSchema & {__Factory: F})
 }
 
 
@@ -96,7 +96,7 @@ export const objectBundle = (unqiueBundleName : string) =>
   const object = Joi.object() as any;
   object['unqiueBundleName'] = unqiueBundleName; 
 
-  object as XObjectBundleSchema
+  return object as XObjectBundleSchema
 }
 
 export function isJoiError(err: any): err is Joi.ValidationError {
