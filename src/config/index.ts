@@ -1,8 +1,12 @@
 import { Factories, CFT, JoiX, JoiV, Joi } from '../index';
 import * as hyphenBanking from './hyphen-banking'
 
-export const configSchemaGlobal = {
-    mongoConnectionString : JoiV.mongoConnectionString().required(),
+export type GlobalConfigSchema = JoiX.ExtractFromObject<typeof globalConfigSchema>
+
+// As far as we know.
+export const globalConfigSchema = {
+    mongodb: Factories.MongoDB.configSchema.required().tags('mongoConnectionString'),
+    mongoConnectionString : JoiX.string().required().description("Mongo connection string, for legacy support, typically gets inject from a factory instance."),
     agenda : JoiX.object().keys({
         mongoConnectionString: JoiV.mongoConnectionString().required()    
     }).required(),
@@ -21,11 +25,11 @@ export const configSchemaGlobal = {
     }).required(),
 };
 
-export const configSchema = JoiX.object().keys({
-    mongodb: Factories.MongoDB.configSchema.required().tags('mongoConnectionString'),
-    mongoConnectionString : JoiX.string().required().description("Mongo connection string, for legacy support, typically gets inject from a factory instance."),
-}).keys(configSchemaGlobal);
+export type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>
 
+export const configSchema = JoiX.object().keys({
+    banking : hyphenBanking.configSchema
+}).keys(globalConfigSchema);
 
 /*
 other config that I don't know were it belongs.
