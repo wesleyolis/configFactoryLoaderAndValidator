@@ -38,3 +38,18 @@ export const password = (passType : PassType = PassType.plainText) => {
         type : JoiX.enumString([PassType.plainText, PassType.encrypt]).description("spesified preprocessor, adapter transform to apply, support adapters:'encrypt'")
     }).description("Password, which consists of a phrase and type, were type is adapter tranformation.");
 }
+
+export const mongoConnectionString = () =>
+{
+    return JoiX.string();
+}
+
+export const postgress = () =>
+{
+    return JoiX.string()
+}
+
+export const Url = () =>
+{
+    return JoiX.string()
+}

@@ -20,3 +20,6 @@ export declare const password: (passType?: PassType) => {
         type: JoiX.XStringSchema<PassType>;
     }>;
 } & JoiX.XObject & Joi.ObjectSchema;
+export declare const mongoConnectionString: () => JoiX.XStringSchema<string>;
+export declare const postgress: () => JoiX.XStringSchema<string>;
+export declare const Url: () => JoiX.XStringSchema<string>;
