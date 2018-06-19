@@ -24,6 +24,8 @@
   "license": "ISC",
   "devDependencies": {
     "@types/bluebird": "^3.5.20",
+    "@types/ssh2": "^0.5.35",
+    "@types/ssh2-streams": "^0.1.2",
     "mongo-in-memory": "0.0.5"
   },
   "dependencies": {
@@ -35,6 +37,7 @@
     "joi": "^13.4.0",
     "redblade-testing": "git+ssh://git@bitbucket.org/redbladeio/redblade-testing.git",
     "redblade-types": "git+ssh://git@bitbucket.org/redbladeio/redblade-types.git",
+    "ssh2": "^0.5.2",
     "tsc-simple": "git+https://github.com/fictitious/tsc-simple.git",
     "tslint": "^5.10.0",
     "verror": "^1.10.0"

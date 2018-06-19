@@ -125,4 +125,3 @@ export declare const configSchema: JoiX.XAlternatives & Joi.AlternativesSchema &
 } & {
     __isRequired: "T";
 };
-export declare function NewFactory(settings: ConfigFactories): IMongoSettings;

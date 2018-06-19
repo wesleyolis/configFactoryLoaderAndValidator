@@ -8,7 +8,8 @@ export interface Port extends JoiX.XNumberSchema {}
 export enum DPorts
 {
     undefined = -1,
-    mongo = 27017
+    mongo = 27017,
+    sftp = 22
 }
 
 export const port = (port : DPorts = DPorts.undefined) => {

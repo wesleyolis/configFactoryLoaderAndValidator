@@ -21,8 +21,6 @@ import {validateAsync} from './config-factory/config'
 
 export {describe as describeConfigSchema, validateAsync as validatConfigSchemaAsync} from './config-factory/config'
 
-
-
 export abstract class IConfigBundle
 {
     static async newBundleAndResolveConfigAsync (settings: JoiX.XJSchemaMap | undefined = undefined, configSchema : JoiX.XObjectSchema, requireConfig : (file:string) => any = require('config')) : Promise<any>
@@ -45,6 +43,43 @@ export abstract class IConfigBundle
 
 export interface IConfigFactoriesInstances
 {
+    
     startAsync() : Promise<void>;
     stopAsync() : Promise<void>;
 }
+
+
+export interface IConfigFactoriesInstancesResolver extends IConfigFactoriesInstances
+{
+    startAsync() : Promise<void>;
+    stopAsync() : Promise<void>;
+}
+/*
+type ObjectFactoryInstances = IConfigFactory | FactoryInstances
+type FactoryInstances = {
+    [index:string] : ObjectFactoryInstances
+}
+
+
+export class FactoriesInstancesResolver implements IConfigFactoriesInstances
+{
+    constructor(public localInstances : FactoryInstances, public parentInstances : FactoryInstances )
+    {
+
+    }
+
+    startAsync() : Promise<void>
+    {
+
+    }
+    stopAsync() : Promise<void>
+    {
+
+    }
+}
+
+export function LoadConfig(localConfig : JoiX.XObject, parentConfig : JoiX.XObject) : FactoriesInstancesResolver
+{
+
+}
+*/

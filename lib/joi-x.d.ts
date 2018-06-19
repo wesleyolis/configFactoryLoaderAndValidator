@@ -56,6 +56,9 @@ export declare type XArraySchema = XArray & Joi.ArraySchema;
 export declare type XObjectSchema = XObject & Joi.ObjectSchema;
 export declare type XAlternativesSchema = XAlternatives & Joi.AlternativesSchema;
 export declare type XKindSchema<T extends string> = XStringSchema<T>;
+export declare type XObjectBundleSchema = XObject & Joi.ObjectSchema & {
+    __bundleName: 'T';
+};
 export declare const any: () => XAnySchema;
 export declare const bool: () => XBooleanSchema<boolean>;
 export declare const boolean: () => XBooleanSchema<boolean>;
@@ -75,6 +78,13 @@ export declare const LiteralString: <T extends string>(value: T[]) => XStringSch
 export declare const LiteralNumber: <T extends number>(value: T[]) => XNumberSchema<T>;
 export declare const LiteralBoolean: <T extends boolean>(value: T[]) => XBooleanSchema<T>;
 export declare const enumString: <T extends string>(values: T[]) => XStringSchema<T>;
+export declare enum FactoryType {
+    issolated = 0,
+    dependent = 1,
+    manual = 2,
+}
+export declare const Factory: <F extends FactoryType>(type: F) => void;
+export declare const objectBundle: (unqiueBundleName: string) => void;
 export declare function isJoiError(err: any): err is Joi.ValidationError;
 export interface XJSchemaMap {
 }

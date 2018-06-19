@@ -34,6 +34,30 @@ export type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>;
 
 export const configSchema = JoiX.alternatives().try([mongoDBSchema, inMemorySchema]).required();
 
+/*
+export const factorySchema = JoiX.Factory(JoiX.FactoryType.issolated).try([mongoDBSchema, inMemorySchema]).required();
+
+export const majorSchema = JoiX.object().keys(
+{
+    a : JoiX.string(),
+    f1 : factorySchema,
+    f2 : JoiX.Factory(JoiX.FactoryType.issolated).try([mongoDBSchema, inMemorySchema]).required(),
+    b : JoiX.string()
+})
+
+type majorSchema = typeof majorSchema;
+
+function generateFactoryTreeInstance<T extends any, R extends JoiX.ExtractFromFa>(schema : T)
+{
+    const keys = Object.keys(schema);
+
+    keys.forEach(key => {
+        console.log(typeof schema[key])
+    });
+}
+const instanceTree = generateFactoryTreeInstance(majorSchema);
+
+
 const factories : Factory<IMongoSettings> [] = [
     {
         configFactoryName : MongoDBCS.factoryName,
@@ -48,5 +72,6 @@ const factories : Factory<IMongoSettings> [] = [
 export function NewFactory(settings : ConfigFactories) : IMongoSettings {
     return _NewFactory(factories, settings);
 }
+*/
 
 

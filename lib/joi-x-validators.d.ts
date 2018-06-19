@@ -5,6 +5,7 @@ export interface Port extends JoiX.XNumberSchema {
 export declare enum DPorts {
     undefined = -1,
     mongo = 27017,
+    sftp = 22,
 }
 export declare const port: (port?: DPorts) => JoiX.XNumberSchema<number>;
 export declare enum PassType {

@@ -19,3 +19,7 @@ export interface IConfigFactoriesInstances {
     startAsync(): Promise<void>;
     stopAsync(): Promise<void>;
 }
+export interface IConfigFactoriesInstancesResolver extends IConfigFactoriesInstances {
+    startAsync(): Promise<void>;
+    stopAsync(): Promise<void>;
+}

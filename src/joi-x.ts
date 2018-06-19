@@ -49,6 +49,7 @@ export type XArraySchema = XArray & Joi.ArraySchema ;//& ObjectOmit<Joi.ArraySch
 export type XObjectSchema = XObject & Joi.ObjectSchema;
 export type XAlternativesSchema = XAlternatives & Joi.AlternativesSchema;
 export type XKindSchema<T extends string> =  XStringSchema<T>;
+export type XObjectBundleSchema = XObject & Joi.ObjectSchema & {__bundleName :'T'};
 
 export const any = () => Joi.any() as XAnySchema;
 export const bool = () => Joi.bool() as XBooleanSchema;
@@ -70,6 +71,33 @@ export const LiteralString = <T extends string>(value : T[]) => Joi.string().all
 export const LiteralNumber = <T extends number>(value : T[]) => Joi.number().allow(value) as XNumberSchema<T>
 export const LiteralBoolean = <T extends boolean>(value : T[]) => Joi.boolean().allow(value) as XBooleanSchema<T>
 export const enumString = <T extends string>(values : T []) => Joi.string().allow(values) as XStringSchema<T>
+
+export enum FactoryType
+{
+  issolated,
+  dependent,
+  manual
+}
+
+export const Factory = <F extends FactoryType> (type : F) =>
+{
+  const factories = Joi.alternatives() as any;
+  factories['__Factory'] = type; 
+
+  factories as (XAlternativesSchema & {__Factory: F})
+}
+
+
+// figure out weather I can check for ducplicates..
+// typically need to count the has keys and also
+// need to then compute the unique set of keys.
+export const objectBundle = (unqiueBundleName : string) =>
+{
+  const object = Joi.object() as any;
+  object['unqiueBundleName'] = unqiueBundleName; 
+
+  object as XObjectBundleSchema
+}
 
 export function isJoiError(err: any): err is Joi.ValidationError {
   return err.isJoi && err.name == 'ValidationError' && (err instanceof Error);
