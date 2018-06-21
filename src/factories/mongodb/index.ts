@@ -32,7 +32,137 @@ export type ConfigFactories = MongoDBSchema | InMemorySchema;
 
 export type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>;
 
+// type MongoDBSchemda = InMemory.CS._ExtractFromObject<{
+//     class: InMemory.CS.XPrimitive<CFT.ConfigFactoryClass.netService> & InMemory.CS.StringSchema & {
+//         __isRequired: "T";
+//     };
+//     type: InMemory.CS.XPrimitive<CFT.ConfigFactoryTypes.production> & InMemory.CS.StringSchema & {
+//         __isRequired: "T";
+//     };
+//     provider: InMemory.CS.XPrimitive<"mongodb"> & InMemory.CS.StringSchema & {
+//         __isRequired: "T";
+//     };
+//     hosts: InMemory.CS.XArray & InMemory.CS.ArraySchema & {
+//         __tsTypeAr: InMemory.CS.XObject & InMemory.CS.ObjectSchema & {
+//             __tsTypeO: {
+//                 hostname: InMemory.CS.XPrimitive<string> & InMemory.CS.StringSchema & {
+//                     __isRequired: "T";
+//                 };
+//                 port: InMemory.CS.XPrimitive<number> & InMemory.CS.NumberSchema & {
+//                     __isRequired: "T";
+//                 };
+//             };
+//         } & {
+//             __isRequired: "T";
+//         };
+//     } & {
+//         __isRequired: "T";
+//     };
+//     credentials: InMemory.CS.XObject & InMemory.CS.ObjectSchema & {
+//         __tsTypeO: {
+//             username: InMemory.CS.XPrimitive<string> & InMemory.CS.StringSchema & {
+//                 __isRequired: "T";
+//             };
+//             password: InMemory.CS.XObject & InMemory.CS.ObjectSchema & any & {
+//                 __isRequired: "T";
+//             };
+//         };
+//     };
+//     database: InMemory.CS.XStringSchema<string>;
+//     options: InMemory.CS.XObject & InMemory.CS.ObjectSchema & {
+//         __tsTypeOP: InMemory.CS.XPrimitive<string> & InMemory.CS.StringSchema & {
+//             __isRequired: "T";
+//         };
+//     };
+// } & {
+//     factory: InMemory.CS.XPrimitive<"Network"> & InMemory.CS.StringSchema & {
+//         __isRequired: "T";
+//     };
+// }> & InMemory.CS.XTSchema
+
 export const configSchema = JoiX.alternatives().try([mongoDBSchema, inMemorySchema]).required();
+
+// type ConfigSchemakk = (InMemory.CS._ExtractFromObject<{
+//     class: InMemory.CS.XPrimitive<CFT.ConfigFactoryClass.service> & InMemory.CS.StringSchema & {
+//         __isRequired: "T";
+//     };
+//     type: InMemory.CS.XPrimitive<CFT.ConfigFactoryTypes.mock> & InMemory.CS.StringSchema & {
+//         __isRequired: "T";
+//     };
+//     port: InMemory.CS.XPrimitive<number> & InMemory.CS.NumberSchema & {
+//         __isRequired: "T";
+//     };
+// } & {
+//     factory: InMemory.CS.XPrimitive<"InMemory"> & InMemory.CS.StringSchema & {
+//         __isRequired: "T";
+//     };
+// }> & InMemory.CS.XTSchema) | (InMemory.CS._ExtractFromObject<{
+//     class: InMemory.CS.XPrimitive<CFT.ConfigFactoryClass.netService> & InMemory.CS.StringSchema & {
+//         __isRequired: "T";
+//     };
+//     type: InMemory.CS.XPrimitive<CFT.ConfigFactoryTypes.production> & InMemory.CS.StringSchema & {
+//         __isRequired: "T";
+//     };
+//     provider: InMemory.CS.XPrimitive<"mongodb"> & InMemory.CS.StringSchema & {
+//         __isRequired: "T";
+//     };
+//     hosts: InMemory.CS.XArray & InMemory.CS.ArraySchema & {
+//         __tsTypeAr: InMemory.CS.XObject & InMemory.CS.ObjectSchema & {
+//             __tsTypeO: {
+//                 hostname: InMemory.CS.XPrimitive<string> & InMemory.CS.StringSchema & {
+//                     __isRequired: "T";
+//                 };
+//                 port: InMemory.CS.XPrimitive<number> & InMemory.CS.NumberSchema & {
+//                     __isRequired: "T";
+//                 };
+//             };
+//         } & {
+//             __isRequired: "T";
+//         };
+//     } & {
+//         __isRequired: "T";
+//     };
+//     credentials: InMemory.CS.XObject & InMemory.CS.ObjectSchema & {
+//         __tsTypeO: {
+//             username: InMemory.CS.XPrimitive<string> & InMemory.CS.StringSchema & {
+//                 __isRequired: "T";
+//             };
+//             password: InMemory.CS.XObject & InMemory.CS.ObjectSchema & any & {
+//                 __isRequired: "T";
+//             };
+//         };
+//     };
+//     database: InMemory.CS.XStringSchema<string>;
+//     options: InMemory.CS.XObject & InMemory.CS.ObjectSchema & {
+//         __tsTypeOP: InMemory.CS.XPrimitive<string> & InMemory.CS.StringSchema & {
+//             __isRequired: "T";
+//         };
+//     };
+// } & {
+//     factory: InMemory.CS.XPrimitive<"Network"> & InMemory.CS.StringSchema & {
+//         __isRequired: "T";
+//     };
+// }> & InMemory.CS.XTSchema)
+
+const mongoDBSettings : ConfigSchema = {
+    factory : 'Network',
+    class : CFT.ConfigFactoryClass.netService,
+    type : CFT.ConfigFactoryTypes.production,
+    provider : 'mongodb',
+    credentials : {
+        username : 'username',
+        password : {
+            phrase : 'sdfsdf',
+            type : JoiV.PassType.plainText
+        }
+    },
+    database : 'databsase',
+    hosts : [{hostname:'hostname', port : 237}],
+    options : {
+        op1 : '1',
+        op2 : '2'
+    }
+};
 
 /*
 export const factorySchema = JoiX.Factory(JoiX.FactoryType.issolated).try([mongoDBSchema, inMemorySchema]).required();

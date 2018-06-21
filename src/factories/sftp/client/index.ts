@@ -1,11 +1,12 @@
+import * as JoiX from '../../../joi-x'
 import * as CS from './config-schema'
-import {ABaseConfigFactory} from '.././../../../src/config-factory/abase-config-factory'
+import { ABaseConfigFactory } from '.././../../../src/config-factory/abase-config-factory'
 import { ConfigFactoryClass, ConfigFactoryTypes } from '../../../config-factory/config-factory-types'
 
-import * as Joi from 'joi'
-import * as JoiX from '../../../joi-x'
 
-class SftpClient<T extends CS.ConfigSchema> extends ABaseConfigFactory
+import {ISftpSettings} from '../isftp-config-factory'
+
+export class SftpClient<T extends CS.ConfigSchema> extends ABaseConfigFactory implements ISftpSettings 
 {
     factoryName: string = CS.factoryName;
     factoryClass: ConfigFactoryClass = ConfigFactoryClass.netService;
@@ -35,5 +36,10 @@ class SftpClient<T extends CS.ConfigSchema> extends ABaseConfigFactory
     public async stopAsync()
     {
         await super.stopAsync();
+    }
+
+    public getConnectionString() : string
+    {
+        return "";
     }
 }

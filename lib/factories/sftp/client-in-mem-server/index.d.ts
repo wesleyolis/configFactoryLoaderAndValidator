@@ -1,9 +1,10 @@
 import * as JoiX from '../../../joi-x';
 import * as CS from './config-schema';
-import { ABaseConfigFactory } from '.././../../../src/config-factory/abase-config-factory';
 import { ConfigFactoryClass, ConfigFactoryTypes } from '../../../config-factory/config-factory-types';
-import { ISftpSettings } from '../isftp-config-factory';
-export declare class SftpClient<T extends CS.ConfigSchema> extends ABaseConfigFactory implements ISftpSettings {
+import { SftpClient } from '../client/index';
+import * as Ssh2 from 'ssh2';
+export { Ssh2 };
+export declare class SftpInMemoryClientWrapper<T extends CS.ConfigSchema> extends SftpClient<T> {
     configSettings: T;
     factoryName: string;
     factoryClass: ConfigFactoryClass;
@@ -21,6 +22,7 @@ export declare class SftpClient<T extends CS.ConfigSchema> extends ABaseConfigFa
     } & {
         __isRequired: "T";
     };
+    private server?;
     static NewInstance(): SftpClient<JoiX.ExtractFromSchema<JoiX.XObject & JoiX.ObjectSchema & {
         __tsTypeO: {
             host: JoiX.XPrimitive<string> & JoiX.StringSchema & {
@@ -38,5 +40,5 @@ export declare class SftpClient<T extends CS.ConfigSchema> extends ABaseConfigFa
     createAsync(config: JoiX.XJSchemaMap): Promise<void>;
     startAsync(): Promise<void>;
     stopAsync(): Promise<void>;
-    getConnectionString(): string;
+    private ServerConnectionListern(client, info);
 }

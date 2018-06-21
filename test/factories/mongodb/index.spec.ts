@@ -1,13 +1,9 @@
-import * as mocha from 'mocha';
 import * as chai from 'chai';
-import * as Joi from 'joi';
 import * as JoiX from '../../../src/joi-x';
 import * as JoiV from '../../../src/joi-x-validators'
-import {ConfigSchema, inMemorySchema, InMemorySchema, mongoDBSchema, MongoDBSchema} from '../../../src/factories/mongodb/index'
+import {ConfigSchema, inMemorySchema, InMemorySchema, mongoDBSchema} from '../../../src/factories/mongodb/index'
 import * as CFT from '../../../src/config-factory/config-factory-types'
 import { configSchema } from '../../../src/factories/mongodb';
-import { Factories, validatConfigSchemaAsync, IConfigBundle, IConfigFactoriesInstances } from '../../../src/index';
-import { IMongoSettings } from '../../../src/factories/mongodb/amongodb-config-factory';
 
 describe("Factories", function()
 {

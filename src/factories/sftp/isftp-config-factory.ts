@@ -5,5 +5,5 @@ export {Ssh2}
 
 export interface ISftpSettings extends ABaseConfigFactory
 {
-    getClient : () => Ssh2.Client;
+    getConnectionString : () => string;
 }
