@@ -26,7 +26,8 @@
     "@types/bluebird": "^3.5.20",
     "@types/ssh2": "^0.5.35",
     "@types/ssh2-streams": "^0.1.2",
-    "mongo-in-memory": "0.0.5"
+    "mongo-in-memory": "0.0.5",
+    "typescript": "^2.8.4"
   },
   "dependencies": {
     "@types/bluebird": "^3.5.20",

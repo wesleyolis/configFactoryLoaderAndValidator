@@ -3,75 +3,68 @@ import { IMongoSettings } from './../amongodb-config-factory';
 import { ConfigFactoryClass, ConfigFactoryTypes } from '../../../config-factory/config-factory-types';
 import * as CS from './configSchema';
 import * as JoiX from '../../../joi-x';
-import * as Joi from 'joi';
 export { CS as CS };
 export declare class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABaseConfigFactory implements IMongoSettings {
     configSettings: T;
     readonly factoryName: string;
     readonly factoryClass: ConfigFactoryClass;
     readonly type: ConfigFactoryTypes;
-    readonly configSchema: {
-        __tsType: JoiX._ExtractFromObject<{
-            class: JoiX.XPrimitive<ConfigFactoryClass.netService> & Joi.StringSchema & {
+    readonly configSchema: JoiX.XObject & JoiX.ObjectSchema & {
+        __tsTypeO: {
+            class: JoiX.XPrimitive<ConfigFactoryClass.netService> & JoiX.StringSchema & {
                 __isRequired: "T";
             };
-            type: JoiX.XPrimitive<ConfigFactoryTypes.production> & Joi.StringSchema & {
+            type: JoiX.XPrimitive<ConfigFactoryTypes.production> & JoiX.StringSchema & {
                 __isRequired: "T";
             };
-            provider: JoiX.XPrimitive<"mongodb"> & Joi.StringSchema & {
+            provider: JoiX.XPrimitive<"mongodb"> & JoiX.StringSchema & {
                 __isRequired: "T";
             };
-            hosts: JoiX.XArray & Joi.ArraySchema & {
-                __tsType: JoiX._ExtractFromObject<{
-                    hostname: JoiX.XPrimitive<string> & Joi.StringSchema & {
-                        __isRequired: "T";
-                    };
-                    port: JoiX.XPrimitive<number> & Joi.NumberSchema & {
-                        __isRequired: "T";
-                    };
-                }>[];
+            hosts: JoiX.XArray & JoiX.ArraySchema & {
+                __tsTypeAr: JoiX.XObject & JoiX.ObjectSchema & any & {
+                    __isRequired: "T";
+                };
             } & {
                 __isRequired: "T";
             };
-            credentials: any & JoiX.XObject & Joi.ObjectSchema;
+            credentials: JoiX.XObject & JoiX.ObjectSchema & any;
             database: JoiX.XStringSchema<string>;
-            options: JoiX.XObject & Joi.ObjectSchema & {
-                __tsType: Record<string, string>;
+            options: JoiX.XObject & JoiX.ObjectSchema & {
+                __tsTypeOP: JoiX.XPrimitive<string> & JoiX.StringSchema & {
+                    __isRequired: "T";
+                };
             };
-        }>;
-    } & JoiX.XObject & Joi.ObjectSchema & {
+        };
+    } & {
         __isRequired: "T";
     };
-    static NewInstance(): MongoDBConfigFactory<JoiX.ExtractFromSchema<{
-        __tsType: JoiX._ExtractFromObject<{
-            class: JoiX.XPrimitive<ConfigFactoryClass.netService> & Joi.StringSchema & {
+    static NewInstance(): MongoDBConfigFactory<JoiX.ExtractFromSchema<JoiX.XObject & JoiX.ObjectSchema & {
+        __tsTypeO: {
+            class: JoiX.XPrimitive<ConfigFactoryClass.netService> & JoiX.StringSchema & {
                 __isRequired: "T";
             };
-            type: JoiX.XPrimitive<ConfigFactoryTypes.production> & Joi.StringSchema & {
+            type: JoiX.XPrimitive<ConfigFactoryTypes.production> & JoiX.StringSchema & {
                 __isRequired: "T";
             };
-            provider: JoiX.XPrimitive<"mongodb"> & Joi.StringSchema & {
+            provider: JoiX.XPrimitive<"mongodb"> & JoiX.StringSchema & {
                 __isRequired: "T";
             };
-            hosts: JoiX.XArray & Joi.ArraySchema & {
-                __tsType: JoiX._ExtractFromObject<{
-                    hostname: JoiX.XPrimitive<string> & Joi.StringSchema & {
-                        __isRequired: "T";
-                    };
-                    port: JoiX.XPrimitive<number> & Joi.NumberSchema & {
-                        __isRequired: "T";
-                    };
-                }>[];
+            hosts: JoiX.XArray & JoiX.ArraySchema & {
+                __tsTypeAr: JoiX.XObject & JoiX.ObjectSchema & any & {
+                    __isRequired: "T";
+                };
             } & {
                 __isRequired: "T";
             };
-            credentials: any & JoiX.XObject & Joi.ObjectSchema;
+            credentials: JoiX.XObject & JoiX.ObjectSchema & any;
             database: JoiX.XStringSchema<string>;
-            options: JoiX.XObject & Joi.ObjectSchema & {
-                __tsType: Record<string, string>;
+            options: JoiX.XObject & JoiX.ObjectSchema & {
+                __tsTypeOP: JoiX.XPrimitive<string> & JoiX.StringSchema & {
+                    __isRequired: "T";
+                };
             };
-        }>;
-    } & JoiX.XObject & Joi.ObjectSchema & {
+        };
+    } & {
         __isRequired: "T";
     }>>;
     constructor(configSettings: T);

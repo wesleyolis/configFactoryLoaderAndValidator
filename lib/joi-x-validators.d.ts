@@ -1,5 +1,4 @@
 import * as JoiX from './joi-x';
-import * as Joi from 'joi';
 export interface Port extends JoiX.XNumberSchema {
 }
 export declare enum DPorts {
@@ -12,14 +11,14 @@ export declare enum PassType {
     plainText = "plainText",
     encrypt = "encrypt",
 }
-export declare const password: (passType?: PassType) => {
-    __tsType: JoiX._ExtractFromObject<{
-        phrase: JoiX.XPrimitive<string> & Joi.StringSchema & {
+export declare const password: (passType?: PassType) => JoiX.XObject & JoiX.ObjectSchema & {
+    __tsTypeO: {
+        phrase: JoiX.XPrimitive<string> & JoiX.StringSchema & {
             __isRequired: "T";
         };
         type: JoiX.XStringSchema<PassType>;
-    }>;
-} & JoiX.XObject & Joi.ObjectSchema;
+    };
+};
 export declare const mongoConnectionString: () => JoiX.XStringSchema<string>;
 export declare const postgress: () => JoiX.XStringSchema<string>;
 export declare const Url: () => JoiX.XStringSchema<string>;

@@ -25,8 +25,8 @@ export class MongoInMemoryConfigFactory<T extends CS.ConfigSchema> extends ABase
     readonly factoryClass : ConfigFactoryClass = ConfigFactoryClass.service
     readonly type : ConfigFactoryTypes = ConfigFactoryTypes.mock
     readonly configSchema : typeof CS.configSchema = CS.configSchema;
-    private connectionHost : string;
-    private connectionPort : number;
+    private connectionHost? : string;
+    private connectionPort? : number;
 
     private mongoServerInstance : any = null;
 

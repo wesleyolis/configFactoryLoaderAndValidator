@@ -2,8 +2,6 @@ import { ABaseConfigFactory } from '../../../config-factory/abase-config-factory
 import { ConfigFactoryClass, ConfigFactoryTypes } from '../../../config-factory/config-factory-types';
 import { IMongoSettings } from '.././amongodb-config-factory';
 import * as CS from './configSchema';
-import * as Joi from 'joi';
-import * as JoiX from '../../../joi-x';
 export { CS as CS };
 export declare class MongoInMemoryConfigFactory<T extends CS.ConfigSchema> extends ABaseConfigFactory implements IMongoSettings {
     readonly configSettings: T;
@@ -11,22 +9,22 @@ export declare class MongoInMemoryConfigFactory<T extends CS.ConfigSchema> exten
     readonly factoryClass: ConfigFactoryClass;
     readonly type: ConfigFactoryTypes;
     readonly configSchema: typeof CS.configSchema;
-    private connectionHost;
-    private connectionPort;
+    private connectionHost?;
+    private connectionPort?;
     private mongoServerInstance;
-    static NewInstance(): MongoInMemoryConfigFactory<JoiX.ExtractFromSchema<{
-        __tsType: JoiX._ExtractFromObject<{
-            class: JoiX.XPrimitive<ConfigFactoryClass.service> & Joi.StringSchema & {
+    static NewInstance(): MongoInMemoryConfigFactory<CS.ExtractFromSchema<CS.XObject & CS.ObjectSchema & {
+        __tsTypeO: {
+            class: CS.XPrimitive<ConfigFactoryClass.service> & CS.StringSchema & {
                 __isRequired: "T";
             };
-            type: JoiX.XPrimitive<ConfigFactoryTypes.mock> & Joi.StringSchema & {
+            type: CS.XPrimitive<ConfigFactoryTypes.mock> & CS.StringSchema & {
                 __isRequired: "T";
             };
-            port: JoiX.XPrimitive<number> & Joi.NumberSchema & {
+            port: CS.XPrimitive<number> & CS.NumberSchema & {
                 __isRequired: "T";
             };
-        }>;
-    } & JoiX.XObject & Joi.ObjectSchema & {
+        };
+    } & {
         __isRequired: "T";
     }>>;
     constructor(configSettings: T);

@@ -2,37 +2,33 @@ import { ILegacyConfig, InjectConfig } from '../../../config-legacy-gen/iconfig-
 import { MongoDBConfigFactory, CS } from './index';
 import * as CFT from '../../../config-factory/config-factory-types';
 import * as JoiX from '../../../joi-x';
-import * as Joi from 'joi';
-export declare function NewInstance(injectKey: string): MongoDBConfigFactoryWithLegacy<JoiX.ExtractFromSchema<{
-    __tsType: JoiX._ExtractFromObject<{
-        class: JoiX.XPrimitive<CFT.ConfigFactoryClass.netService> & Joi.StringSchema & {
+export declare function NewInstance(injectKey: string): MongoDBConfigFactoryWithLegacy<JoiX.ExtractFromSchema<JoiX.XObject & JoiX.ObjectSchema & {
+    __tsTypeO: {
+        class: JoiX.XPrimitive<CFT.ConfigFactoryClass.netService> & JoiX.StringSchema & {
             __isRequired: "T";
         };
-        type: JoiX.XPrimitive<CFT.ConfigFactoryTypes.production> & Joi.StringSchema & {
+        type: JoiX.XPrimitive<CFT.ConfigFactoryTypes.production> & JoiX.StringSchema & {
             __isRequired: "T";
         };
-        provider: JoiX.XPrimitive<"mongodb"> & Joi.StringSchema & {
+        provider: JoiX.XPrimitive<"mongodb"> & JoiX.StringSchema & {
             __isRequired: "T";
         };
-        hosts: JoiX.XArray & Joi.ArraySchema & {
-            __tsType: JoiX._ExtractFromObject<{
-                hostname: JoiX.XPrimitive<string> & Joi.StringSchema & {
-                    __isRequired: "T";
-                };
-                port: JoiX.XPrimitive<number> & Joi.NumberSchema & {
-                    __isRequired: "T";
-                };
-            }>[];
+        hosts: JoiX.XArray & JoiX.ArraySchema & {
+            __tsTypeAr: JoiX.XObject & JoiX.ObjectSchema & any & {
+                __isRequired: "T";
+            };
         } & {
             __isRequired: "T";
         };
-        credentials: any & JoiX.XObject & Joi.ObjectSchema;
+        credentials: JoiX.XObject & JoiX.ObjectSchema & any;
         database: JoiX.XStringSchema<string>;
-        options: JoiX.XObject & Joi.ObjectSchema & {
-            __tsType: Record<string, string>;
+        options: JoiX.XObject & JoiX.ObjectSchema & {
+            __tsTypeOP: JoiX.XPrimitive<string> & JoiX.StringSchema & {
+                __isRequired: "T";
+            };
         };
-    }>;
-} & JoiX.XObject & Joi.ObjectSchema & {
+    };
+} & {
     __isRequired: "T";
 }>>;
 export declare class MongoDBConfigFactoryWithLegacy<T extends CS.ConfigSchema> extends MongoDBConfigFactory<CS.ConfigSchema> implements ILegacyConfig {

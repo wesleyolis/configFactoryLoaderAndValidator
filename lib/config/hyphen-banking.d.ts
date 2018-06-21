@@ -1,17 +1,17 @@
 import { Joi, JoiX } from '../index';
 export declare const bundleName: string;
 export declare type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>;
-export declare const configSchema: {
-    __tsType: JoiX._ExtractFromObject<{
+export declare const configSchema: JoiX.XObject & Joi.ObjectSchema & {
+    __bundleName: "T";
+} & {
+    __tsTypeO: {
         pendingNc: JoiX.XPrimitive<boolean> & Joi.BooleanSchema & {
             __isRequired: "T";
         };
-        banking: any & JoiX.XObject & Joi.ObjectSchema & {
+        banking: JoiX.XObject & Joi.ObjectSchema & any & {
             __isRequired: "T";
         };
-    }>;
-} & JoiX.XObject & Joi.ObjectSchema & {
-    __bundleName: "T";
+    };
 } & {
     __isRequired: "T";
 };

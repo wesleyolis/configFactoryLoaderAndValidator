@@ -1,21 +1,19 @@
 import { ILegacyConfig, InjectConfig } from '../../../config-legacy-gen/iconfig-legacy';
 import { MongoInMemoryConfigFactory, CS } from './index';
 import * as CFT from '../../../config-factory/config-factory-types';
-import * as JoiX from '../../../joi-x';
-import * as Joi from 'joi';
-export declare function NewInstance(injectKey: string): MongoInMemoryConfigFactoryWithLegacy<JoiX.ExtractFromSchema<{
-    __tsType: JoiX._ExtractFromObject<{
-        class: JoiX.XPrimitive<CFT.ConfigFactoryClass.service> & Joi.StringSchema & {
+export declare function NewInstance(injectKey: string): MongoInMemoryConfigFactoryWithLegacy<CS.ExtractFromSchema<CS.XObject & CS.ObjectSchema & {
+    __tsTypeO: {
+        class: CS.XPrimitive<CFT.ConfigFactoryClass.service> & CS.StringSchema & {
             __isRequired: "T";
         };
-        type: JoiX.XPrimitive<CFT.ConfigFactoryTypes.mock> & Joi.StringSchema & {
+        type: CS.XPrimitive<CFT.ConfigFactoryTypes.mock> & CS.StringSchema & {
             __isRequired: "T";
         };
-        port: JoiX.XPrimitive<number> & Joi.NumberSchema & {
+        port: CS.XPrimitive<number> & CS.NumberSchema & {
             __isRequired: "T";
         };
-    }>;
-} & JoiX.XObject & Joi.ObjectSchema & {
+    };
+} & {
     __isRequired: "T";
 }>>;
 export declare class MongoInMemoryConfigFactoryWithLegacy<T extends CS.ConfigSchema> extends MongoInMemoryConfigFactory<CS.ConfigSchema> implements ILegacyConfig {
