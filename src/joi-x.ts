@@ -214,7 +214,7 @@ export type _ExtractFromObject<T>
    }
 */
 
-const objectSchdema = {
+const objectSchema = {
   numberRequired: number().required().min(100).max(200),
   numberNotRequired: number().min(100).allow(null),
   myString: string().regex(/sdfsfd/).required(),
@@ -249,209 +249,49 @@ const instanyce: ExtractFromObject<typeof objectSchema>= {
 
 export type _ExtractFromSchema<T> = _ExtractFromObject<{__tsTypeO: T}>['__tsTypeO']
 
-
-export type ExtractALL<T, K extends keyof T> = T extends {K:any} ? ExtractRequired<T, ExtractNull<T, _ExtractFromObject<T>[K]>> : 'unkownKey'
-
-
 export type _ExtractFromObject<T>
  = 
    {
   [P in keyof T]: 
   T[P] extends {__tsType:any} ? ExtractRequired<T[P], ExtractNull<T[P], T[P]['__tsType']>> :
-  T[P] extends {__tsTypeAr:any} ? ExtractRequired<T[P], ExtractNull<T[P],_ExtractFromObject<T[P]>['__tsTypeAr']>> [] ://ExtractRequired<T[P], ExtractNull<T[P], _ExtractFromObject<T[P]>['__tsTypeAr'] []>> :
+  T[P] extends {__tsTypeAr:any} ? ExtractRequired<T[P], ExtractNull<T[P],_ExtractFromObject<T[P]>['__tsTypeAr']>> [] :
   T[P] extends {__tsTypeO:any} ?  ExtractRequired<T[P], ExtractNull<T[P],_ExtractFromObject<T[P]>['__tsTypeO']>> : 
-  T[P] extends {__tsTypeOP:any} ? ExtractRequired<T[P], ExtractNull<T[P],Record<string,_ExtractFromObject<T[P]>['__tsTypeOP']>>> : //ExtractRequired<T[P], ExtractNull<T[P], _ExtractFromObject<T[P]>['__tsTypeOP']>> :
+  T[P] extends {__tsTypeOP:any} ? ExtractRequired<T[P], ExtractNull<T[P],Record<string,_ExtractFromObject<T[P]>['__tsTypeOP']>>> : 
   T[P] extends {__tsTypeAl:any} ? ExtractRequired<T[P], ExtractNull<T[P],_ExtractFromObject<T[P]>['__tsTypeAl']>> : 
   T[P] extends {} ? _ExtractFromObject<T[P]> : never//'mistake' & T[P]
-   }
-
-// export type _ExtractFromObject<T>
-//  = 
-//    {
-//   [P in keyof T]: 
-//   T[P] extends {__tsType:any} ? ExtractRequired<T[P], ExtractNull<T[P], T[P]['__tsType']>> :
-//   T[P] extends {__tsTypeAr:any} ? ExtractRequired<T[P], ExtractNull<T[P],_ExtractFromObject<T[P]>['__tsTypeAr']>> [] ://ExtractRequired<T[P], ExtractNull<T[P], _ExtractFromObject<T[P]>['__tsTypeAr'] []>> :
-//   T[P] extends {__tsTypeO:any} ?  ExtractRequired<T[P], ExtractNull<T[P],_ExtractFromObject<T[P]>['__tsTypeO']>> : 
-//   T[P] extends {__tsTypeOP:any} ? ExtractRequired<T[P], ExtractNull<T[P],Record<string,_ExtractFromObject<T[P]>['__tsTypeOP']>>> : //ExtractRequired<T[P], ExtractNull<T[P], _ExtractFromObject<T[P]>['__tsTypeOP']>> :
-//   T[P] extends {__tsTypeAl:any} ? ExtractRequired<T[P], ExtractNull<T[P],_ExtractFromObject<T[P]>['__tsTypeAl']>> : 
-//   T[P] extends {} ? _ExtractFromObject<T[P]> : never//'mistake' & T[P]
-//   // this is then object, mabye best to just strip objects
-//   // & 'sdfsdf'
-//   //'unknow'//ExtractRequired<T[P], ExtractNull<T[P], _ExtractFromObject<T[P]['__tsTypeAl']>>> : 'unknow'
-//   //T[P] extends XArray ? T[P] extends {__tsTypeAr:any} ? ExtractRequired<T[P], ExtractNull<T[P], _ExtractFromSchema<T[P]['__tsTypeAr']> []>> : T[P] & 'Ar Type not defined' :
-//   //T[P] extends XObject ? T[P] extends {__tsTypeO:any} ? ExtractRequired<T[P], ExtractNull<T[P], _ExtractFromSchema<T[P]>>> : 
-//  // T[P] extends {__tsTypeOP:any} ? ExtractRequired<T[P], ExtractNull<T[P], _ExtractFromSchema<T[P]>>> : ' O or Op Type not defined' :
-//   //T[P] extends XAlternatives ? T[P] extends {__tsTypeAl:any} ? ExtractRequired<T[P], ExtractNull<T[P], _ExtractFromSchema<T[P]['__tsTypeAl']>>> : T[P] & ' Al Type not defined' :
-//   //_ExtractFromSchema<T[P]>
-//   //T[P] extends XPrimitive<any> ? _ExtractFromSchema<T[P]> : 'Unkown Type' & T
-//  }
- /*&
- {
-  __isRequired : never
-  __isNullable : never
- })
- */
-
-/*
-export type _ExtractFromObject<T>
- = ({
-  [P in keyof T]: 
-  T[P] extends {__tsType:any} ? ExtractRequired<T[P], ExtractNull<T[P], T[P]['__tsType']>> :
-  T[P] extends {__tsTypeAr:any} ? ExtractRequired<T[P], ExtractNull<T[P], _ExtractFromObject<T[P]>['__tsTypeAr'] []>> :
-  T[P] extends {__tsTypeO:any} ? ExtractRequired<T[P], ExtractNull<T[P], _ExtractFromObject<T[P]>['__tsTypeO']>> : 
-  T[P] extends {__tsTypeOP:any} ? ExtractRequired<T[P], ExtractNull<T[P], _ExtractFromObject<T[P]>['__tsTypeOP']>> :
-  T[P] extends {__tsTypeAl:any} ? ExtractRequired<T[P], ExtractNull<T[P], _ExtractFromObject<T[P]['__tsTypeAl']>>> : 'unknow'
-  //T[P] extends XArray ? T[P] extends {__tsTypeAr:any} ? ExtractRequired<T[P], ExtractNull<T[P], _ExtractFromSchema<T[P]['__tsTypeAr']> []>> : T[P] & 'Ar Type not defined' :
-  //T[P] extends XObject ? T[P] extends {__tsTypeO:any} ? ExtractRequired<T[P], ExtractNull<T[P], _ExtractFromSchema<T[P]>>> : 
- // T[P] extends {__tsTypeOP:any} ? ExtractRequired<T[P], ExtractNull<T[P], _ExtractFromSchema<T[P]>>> : ' O or Op Type not defined' :
-  //T[P] extends XAlternatives ? T[P] extends {__tsTypeAl:any} ? ExtractRequired<T[P], ExtractNull<T[P], _ExtractFromSchema<T[P]['__tsTypeAl']>>> : T[P] & ' Al Type not defined' :
-  //_ExtractFromSchema<T[P]>
-  //T[P] extends XPrimitive<any> ? _ExtractFromSchema<T[P]> : 'Unkown Type' & T
- }
- &
- {
-  __isRequired : never
-  __isNullable : never
- })*/
- 
+   } 
 
 export type ExtractWithFactoriesFromSchema<T extends XSchema> = _ExtractWithFactoriesFromSchema<T> & XTSchema
 export type ExtractWithFactoriesFromObject<T extends XSchemaMap> = _ExtractWithFactoriesFromObject<T> & XTSchema
   
 
-export type _ExtractWithFactoriesFromSchema<T> = 
-
-// An array can contain an single object or an array, but in this case it is handle as single primative, since just has tsType
-T extends XArray ? T extends {__tsTypeAr:any} ? ExtractRequired<T, ExtractNull<T, ExtractWithFactoriesFromObject<T['__tsTypeAr']> []>> : T & 'Ar Type not defined' :
-T extends XObject ? T extends {__tsTypeO:any} ? ExtractRequired<T, ExtractNull<T, ExtractWithFactoriesFromObject<T['__tsTypeO']>>> : T & 'O Type not defined' :
-T extends XAlternatives ? T extends {__tsTypeAl:any} ? ExtractRequired<T, ExtractNull<T, ExtractWithFactoriesFromObject<T['__tsTypeAl']>>> : T & 'Al Type not defined' :
-T extends XFactory<any> ? T extends {__factoryType:any} ? T['__factoryType'] :'Fact not defined' : 
-T extends XPrimitive<any> ? ExtractRequired<T, ExtractNull<T,ExtractTSType<T,T>>> : 'Unkown Type' & T
-
+export type _ExtractWithFactoriesFromSchema<T> = _ExtractFromObject<{__tsTypeO: T}>['__tsTypeO']
 
 export type _ExtractWithFactoriesFromObject<T>
- = {
+ = 
+   {
   [P in keyof T]: 
-  T[P] extends XArray ? T[P] extends {__tsTypeAr:any} ? ExtractRequired<T[P], ExtractNull<T[P], ExtractWithFactoriesFromSchema<T[P]['__tsTypeAr']> []>> : T[P] & 'Ar Type not defined' :
-  T[P] extends XObject ? T[P] extends {__tsTypeO:any} ? ExtractRequired<T[P], ExtractNull<T[P], ExtractWithFactoriesFromSchema<T[P]>>> : ' O Type not defined' :
-  T[P] extends XFactory<any> ? T[P] extends {__factoryType:any} ? T[P]['__factoryType'] :'Fact not defined' :
-  T[P] extends XAlternatives ? T[P] extends {__tsTypeAl:any} ? ExtractRequired<T[P], ExtractNull<T[P], ExtractWithFactoriesFromSchema<T[P]['__tsTypeAl']>>> : T[P] & ' Al Type not defined' :
-  _ExtractFromSchema<T[P]>
- }
+  T[P] extends {__factoryType:any} ? T[P]['__factoryType'] :
+  T[P] extends {__tsType:any} ? ExtractRequired<T[P], ExtractNull<T[P], T[P]['__tsType']>> :
+  T[P] extends {__tsTypeAr:any} ? ExtractRequired<T[P], ExtractNull<T[P],_ExtractFromObject<T[P]>['__tsTypeAr']>> [] :
+  T[P] extends {__tsTypeO:any} ?  ExtractRequired<T[P], ExtractNull<T[P],_ExtractFromObject<T[P]>['__tsTypeO']>> : 
+  T[P] extends {__tsTypeOP:any} ? ExtractRequired<T[P], ExtractNull<T[P],Record<string,_ExtractFromObject<T[P]>['__tsTypeOP']>>> : 
+  T[P] extends {__tsTypeAl:any} ? ExtractRequired<T[P], ExtractNull<T[P],_ExtractFromObject<T[P]>['__tsTypeAl']>> : 
+  T[P] extends {} ? _ExtractFromObject<T[P]> : never//'mistake' & T[P]
+   } 
 
 
- // We typically now need to still potentially flatten this list, that is extracted by feeding it toughtitself recusively.
- export type ExtractFactoriesFromSchema<T> = 
+export type _ExtractFactoriesFromSchema<T> = _ExtractFromObject<{__tsTypeO: T}>['__tsTypeO']
 
- // An array can contain an single object or an array, but in this case it is handle as single primative, since just has tsType
- T extends XArray ? T extends {__tsTypeAr:any} ? ExtractRequired<T, ExtractNull<T, ExtractFactoriesFromObject<T['__tsTypeAr']> []>> : T & 'Ar Type not defined' :
- T extends XObject ? T extends {__tsTypeO:any} ? ExtractRequired<T, ExtractNull<T, ExtractFactoriesFromObject<T['__tsTypeO']>>> : T & 'O Type not defined' :
- T extends XFactory<any> ? T extends {__factoryType:any} ? T['__factoryType'] :'Fact not defined' : 
- T extends XAlternatives ? T extends {__tsTypeAl:any} ? ExtractRequired<T, ExtractNull<T, ExtractFactoriesFromObject<T['__tsTypeAl']>>> : T & 'Al Type not defined' :
- T extends XPrimitive<any> ? undefined: 'Unkown Type' & T
- 
- 
- export type ExtractFactoriesFromObject<T>
-  = {
-   [P in keyof T]: 
-   T[P] extends XArray ? T[P] extends {__tsTypeAr:any} ? ExtractRequired<T[P], ExtractNull<T[P], ExtractFactoriesFromSchema<T[P]['__tsTypeAr']> []>> : T[P] & 'Ar Type not defined' :
-   T[P] extends XObject ? T[P] extends {__tsTypeO:any} ? ExtractRequired<T[P], ExtractNull<T[P], ExtractFactoriesFromSchema<T[P]>>> : ' O Type not defined' :
-   T[P] extends XFactory<any> ? T[P] extends {__factoryType:any} ? T[P]['__factoryType'] :'Fact not defined' :
-   T[P] extends XAlternatives ? T[P] extends {__tsTypeAl:any} ? ExtractRequired<T[P], ExtractNull<T[P], ExtractFactoriesFromSchema<T[P]['__tsTypeAl']>>> : T[P] & ' Al Type not defined' :
-   //T[P] extends XPrimitive<any> ? _ExtractFromSchema<T[P]> : 'Unkown Type' & T
-   ExtractFactoriesFromSchema<T[P]>
-  }
-
-
-/*
-export type ExtractFactoriesFromSchema<T extends XSchema> = ExtractFactory<T, undefined>;
-
-export type ExtractFactoriesFromObject<T extends XSchemaMap> = {
-  [K in keyof T] : ExtractFactoriesFromSchema<T[K]>
-}
-*/
-
-/*
-export type ExtractWithFactoriesFromSchema<T extends XSchema> = ExtractFactoryOrTsType<T, T>;
-export type ExtractWithFactoriesFromObject<T extends XSchemaMap> = {
-  [K in keyof T] : ExtractWithFactoriesFromSchema<T[K]>
-}
-*/
-
-
-/*
-export type ExtractFactoryFromSchema<T extends XSchema> = If<ObjectHasKey<T,'__isFactory'>, T['__isFactory'], never>
-export type ExtractFacotryFromObject<T extends XSchemaMap> = {
-  [K in keyof T] : ExtractFactoryFromSchema<T[K]>
-}*/
-
-
-/*
-export type OptionalKeys<T extends Record<string, JoiXSchema>> = ({
-  [P in keyof T]: If<IsRequired<T[P]>, never, P>
-})[keyof T];
-export type RequiredKeys<T extends Record<string, JoiXSchema>> = StringOmit<keyof T, OptionalKeys<T>>;
-
-
-export type ExtractFromObject<T extends Record<string, JoiXSchema>> = Clean<{ 
-  [P in RequiredKeys<T>]: ExtractFromSchema<T[P]>
-} & {
-  [P in OptionalKeys<T>]?: ExtractFromSchema<T[P]>
-}>;
-*/
-
-
-//export type GodFunction<T> = T extends JoiXSchema ? ExtractFromSchema<T> : T extends Record<string, JoiXSchema> ? ExtractFromObject<T> : never
-
-
-const objectSchema = {
-  numberRequired: number().required().min(100).max(200),
-  numberNotRequired: number().min(100).allow(null),
-  myString: string().regex(/sdfsfd/).required(),
-  myObj: object().keys({
-    a: string().required(),
-    b: object().keys({
-      c: number().required()
-    }).required()
-  }).required(),
-  myArray: array().items(object().keys({
-    a1: number().required()
-  }).required()).required()
-};
-
-
-const instance: ExtractFromObject<typeof objectSchema>= {
-  numberRequired: 42,
-
-  numberNotRequired : undefined,
-  myString: '',
-  myObj: {
-    a: 'sdsa',
-    b: {
-      c: 234
-    }
-  },
-  myArray: [{
-    a1: 2
-  }]
-};
-
-const schema = object().keys({
-  a: string().required(),
-  b: object().keys({
-    c: number().required(),
-    d: object().keys({
-      f : number().allow(null)
-    })
-  }).required()
-});
-
-const subInstance: ExtractFromSchema<typeof schema> = {
-  a: 'sdsa',
-  b: {
-    c: 1,
-     d: {
-      f: null
-     }
-  }
-};
+export type _ExtractFactoriesFromObject<T>
+ = 
+   {
+  [P in keyof T]: 
+  T[P] extends {__factoryType:any} ? T[P]['__factoryType'] :
+  T[P] extends {__tsType:any} ? never:
+  T[P] extends {__tsTypeAr:any} ? ExtractRequired<T[P], ExtractNull<T[P],_ExtractFromObject<T[P]>['__tsTypeAr']>> [] :
+  T[P] extends {__tsTypeO:any} ?  ExtractRequired<T[P], ExtractNull<T[P],_ExtractFromObject<T[P]>['__tsTypeO']>> : 
+  T[P] extends {__tsTypeOP:any} ? ExtractRequired<T[P], ExtractNull<T[P],Record<string,_ExtractFromObject<T[P]>['__tsTypeOP']>>> : 
+  T[P] extends {__tsTypeAl:any} ? ExtractRequired<T[P], ExtractNull<T[P],_ExtractFromObject<T[P]>['__tsTypeAl']>> : 
+  T[P] extends {} ? _ExtractFromObject<T[P]> : never//'mistake' & T[P]
+   } 

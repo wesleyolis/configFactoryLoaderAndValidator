@@ -15,7 +15,7 @@ hyphenLoadReportPrefix
 
 export const configSchema = JoiX.objectBundle(bundleName).keys({
     pendingNc : JoiX.boolean().required(),
-    banking : JoiX.object().keys({
+    //banking : JoiX.object().keys({
         hyphenPaymentDocumentType : JoiX.LiteralString(["PT","RC"]).required(),
         bankingSystem : JoiX.LiteralString(["redblade-hyphen-banking"]).required(),
         hyphenFacsUrl : JoiV.Url().required(),
@@ -37,7 +37,7 @@ export const configSchema = JoiX.objectBundle(bundleName).keys({
         hyphenAccountValidationUrl : JoiX.string().required(),
         hyphenAccountVerificationUserProfile : JoiX.string().required(),
         hyphenKey : JoiV.port().required(),
-    }).required()
+   // }).required()
 }).required();
 
 const parentConfigSchema = {
@@ -48,6 +48,7 @@ const parentConfigSchema = {
 type StandAloneConfigSchema = JoiX.ExtractFromSchema<typeof standAloneConfigSchema>
 
 const standAloneConfigSchema = configSchema.keys(parentConfigSchema);
+
 
 /*
 documents : JoiX.object().keys({

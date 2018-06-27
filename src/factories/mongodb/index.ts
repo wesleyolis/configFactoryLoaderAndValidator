@@ -163,8 +163,8 @@ const mongoDBSettings : ConfigSchema = {
         op2 : '2'
     }
 };
-
 /*
+
 export const factorySchema = JoiX.Factory(JoiX.FactoryType.issolated).try([mongoDBSchema, inMemorySchema]).required();
 
 export const majorSchema = JoiX.object().keys(
@@ -202,6 +202,6 @@ const factories : Factory<IMongoSettings> [] = [
 export function NewFactory(settings : ConfigFactories) : IMongoSettings {
     return _NewFactory(factories, settings);
 }
+
+
 */
-
-
