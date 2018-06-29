@@ -27,16 +27,64 @@ export const port = (port : DPorts = DPorts.undefined) => {
 
 export enum PassType
 {
-    plainText = 'plainText',
-    encrypt = "encrypt"
+    password = 'password',
+    publicKey = "publicKey",
+    any = 'any'
 }
 
-export const password = (passType : PassType = PassType.plainText) => {
+export type AuthTypes = AuthPassword | AuthPublicKey | AuthAny;
+
+export type AuthPassword = JoiX.ExtractFromSchema<typeof authPassword>
+export type AuthPublicKey = JoiX.ExtractFromSchema<typeof authPublicKey>
+export type AuthAny = JoiX.ExtractFromSchema<typeof authAny>
+
+export const authPassword = JoiX.object().keys({
+    type : JoiX.kind(PassType.password),
+    password : JoiX.string().required()
+}).required()
+
+export const authPublicKey = JoiX.object().keys(
+{
+    type : JoiX.kind(PassType.publicKey),
+    phrase : JoiX.string().required(),
+    passKey : JoiX.string().required()
+}).required();
+
+export const authAny = JoiX.object().keys({
+    type : JoiX.kind(PassType.any),
+    password : JoiX.string().required(),
+    phrase : JoiX.string().required(),
+    passKey : JoiX.string().required()   
+}).required();
+
+
+export function isAuthPassword(x : AuthTypes) : x is AuthPassword
+{
+    return x.type === PassType.password;
+}
+
+export function isAuthPublicKey(x : AuthTypes) : x is AuthPublicKey
+{
+    return x.type === PassType.publicKey;
+}
+
+export function isAuthAny(x : AuthTypes) : x is AuthAny
+{
+    return x.type === PassType.any;
+}
+
+
+export const authentication = () => {
     
+    return JoiX.alternatives().try([authPassword, authPublicKey, authAny]).required();
+}
+
+export const credentials = () =>
+{
     return JoiX.object().keys({
-        phrase : JoiX.string().required(),
-        type : JoiX.enumString([PassType.plainText, PassType.encrypt]).description("spesified preprocessor, adapter transform to apply, support adapters:'encrypt'")
-    }).description("Password, which consists of a phrase and type, were type is adapter tranformation.");
+        username : JoiX.string().required(),
+        auth : authentication()
+    });
 }
 
 export const mongoConnectionString = () =>

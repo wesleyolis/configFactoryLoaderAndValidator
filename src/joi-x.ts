@@ -108,6 +108,11 @@ export const objectBundle = (unqiueBundleName : string) =>
   return object as XObjectBundleSchema
 }
 
+export getXObjectKeys(obj : XObject)
+{
+  
+}
+
 export function isJoiError(err: any): err is Joi.ValidationError {
   return err.isJoi && err.name == 'ValidationError' && (err instanceof Error);
 }

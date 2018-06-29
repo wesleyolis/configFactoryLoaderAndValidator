@@ -48,17 +48,3 @@ const parentConfigSchema = {
 type StandAloneConfigSchema = JoiX.ExtractFromSchema<typeof standAloneConfigSchema>
 
 const standAloneConfigSchema = configSchema.keys(parentConfigSchema);
-
-
-/*
-documents : JoiX.object().keys({
-        s3 : JoiX.object().keys({
-            expires : JoiX.number().required()
-        }).required()
-    }).required(),
-    pubSubUrl : JoiX.string().required(),
-    serviceBus: JoiX.object().keys({
-        service : JoiX.LiteralString(["redblade-servicebus-aws"]).required()
-    }).required(),
-    mongodb: Factories.MongoDB.configSchema.required()
-*/

@@ -54,7 +54,7 @@ export interface IConfigFactoriesInstancesResolver extends IConfigFactoriesInsta
     startAsync() : Promise<void>;
     stopAsync() : Promise<void>;
 }
-/*
+
 type ObjectFactoryInstances = IConfigFactory | FactoryInstances
 type FactoryInstances = {
     [index:string] : ObjectFactoryInstances
@@ -78,8 +78,17 @@ export class FactoriesInstancesResolver implements IConfigFactoriesInstances
     }
 }
 
-export function LoadConfig(localConfig : JoiX.XObject, parentConfig : JoiX.XObject) : FactoriesInstancesResolver
-{
 
+export function LoadConfig(localConfig : JoiX.XObject, parentConfig : JoiX.XObject | null = null) : FactoriesInstancesResolver
+{
+    const keys = Object.keys(localConfig);
+
+    let config = {};
+    
+    keys.forEach(key => {
+        let value = localConfig[key];
+
+
+        if (config[key]__factoryType
+    });
 }
-*/

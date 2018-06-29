@@ -4,7 +4,8 @@ import { ABaseConfigFactory } from '.././../../../src/config-factory/abase-confi
 import { ConfigFactoryClass, ConfigFactoryTypes } from '../../../config-factory/config-factory-types'
 
 
-import {ISftpSettings} from '../isftp-config-factory'
+import {ISftpSettings, ILegacyConfig} from '../isftp-config-factory'
+import { JoiV } from '../../..';
 
 export class SftpClient<T extends CS.ConfigSchema> extends ABaseConfigFactory implements ISftpSettings 
 {
@@ -38,8 +39,18 @@ export class SftpClient<T extends CS.ConfigSchema> extends ABaseConfigFactory im
         await super.stopAsync();
     }
 
-    public getConnectionString() : string
+    public getLegacyConfig() : ILegacyConfig
     {
-        return "";
+        return {
+        host : this.configSettings.host,
+        port : this.configSettings.port,
+        username : this.configSettings.credentials? this.configSettings.credentials.username : "",
+        password : this.configSettings.credentials.auth.type == JoiV.PassType.password 
+        || this.configSettings.credentials.auth.type == JoiV.PassType.any ? this.configSettings.credentials.auth.password : null,
+        phrase : this.configSettings.credentials.auth.type == JoiV.PassType.publicKey
+        || this.configSettings.credentials.auth.type == JoiV.PassType.any ? this.configSettings.credentials.auth.phrase : "",
+        privateKey : this.configSettings.credentials.auth.type == JoiV.PassType.publicKey
+            || this.configSettings.credentials.auth.type == JoiV.PassType.any ? this.configSettings.credentials.auth.passKey : ""
+        };
     }
 }
