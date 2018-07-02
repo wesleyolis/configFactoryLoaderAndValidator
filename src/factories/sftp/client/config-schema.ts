@@ -9,5 +9,5 @@ export type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>;
 export const configSchema = JoiX.object().keys({
     host : JoiX.string().required(),
     port : JoiV.port(JoiV.DPorts.sftp).required(),
-    credentials : JoiV.credentials(JoiV.PassType.Any).required()
+    credentials : JoiV.credentials().required()
 }).required();

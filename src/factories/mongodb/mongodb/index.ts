@@ -125,12 +125,6 @@ export class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABaseConfig
   
       connString = connString + encodeURI(settings.credentials.username) + ':' + encodeURI(settings.credentials.password.phrase) + '@';
     }
-  
-
-
-    settings.hosts.forEach((host) => {
-      
-    });
 
     settings.hosts.forEach((host) =>{
       connString = connString + host.hostname;

@@ -10,7 +10,9 @@ export declare const configSchema: JoiX.XObject & JoiX.ObjectSchema & {
         port: JoiX.XPrimitive<number> & JoiX.NumberSchema & {
             __isRequired: "T";
         };
-        credentials: JoiX.XObject & JoiX.ObjectSchema & any;
+        credentials: JoiX.XObject & JoiX.ObjectSchema & any & {
+            __isRequired: "T";
+        };
     };
 } & {
     __isRequired: "T";

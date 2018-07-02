@@ -1,5 +1,6 @@
 import { CFT, JoiX } from '../index';
 export declare type GlobalConfigSchema = JoiX.ExtractFromObject<typeof globalConfigSchema>;
+export declare type MOngoDB = JoiX.ExtractFromSchema<typeof globalConfigSchema.mongodb>;
 export declare const globalConfigSchema: {
     mongodb: JoiX.XAlternatives & JoiX.AlternativesSchema & {
         __tsTypeAl: (JoiX.XObject & JoiX.ObjectSchema & {

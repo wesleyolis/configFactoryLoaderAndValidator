@@ -46,6 +46,15 @@ export type XFactory<T> = XAlternativesSchema & {
   __factoryType : T
 }
 
+export type ObjectChildren = {
+  key: string,
+  schema : Joi.AnySchema
+};
+
+export type ObjectSchemaHidden = Joi.ObjectSchema & {_inner : {
+  children : ObjectChildren []
+}};
+
 export type XAnySchema = XPrimitive<any> & Joi.AnySchema;
 export type XBooleanSchema<T extends boolean = boolean> = XPrimitive<boolean> & Joi.BooleanSchema;
 export type XNumberSchema<T extends number = number> = XPrimitive<T> & Joi.NumberSchema;
@@ -108,9 +117,60 @@ export const objectBundle = (unqiueBundleName : string) =>
   return object as XObjectBundleSchema
 }
 
-export getXObjectKeys(obj : XObject)
+export function getXObjectChildrens(obj : XObjectSchema) : ObjectChildren [] | undefined
 {
-  
+  return getXObjectChildren(obj);
+}
+
+export function getXObjectChildren(obj : Joi.ObjectSchema) : ObjectChildren [] | undefined
+{
+  const objHidden = (<ObjectSchemaHidden>obj);
+
+  if (obj)
+    return obj && objHidden._inner && objHidden._inner.children;
+  else
+    return undefined;
+}
+
+export function isChildrenAnArray(children : ObjectChildren [] | (ObjectChildren | undefined)) : children is ObjectChildren []
+{
+  return Array.isArray(children);
+}
+
+export function isXObjectAndHasChildren(obj : Joi.AnySchema) : obj is ObjectSchemaHidden
+{
+  const objHidden = (<ObjectSchemaHidden>obj);
+
+  return objHidden && objHidden._inner && isChildrenAnArray(objHidden._inner.children);
+}
+
+
+export type acc = any;
+
+export function OperateOnXObjectKeys(children : any,
+operate : (key : string, schema : Joi.AnySchema, acc : acc) => void,
+newObject : (key : string, acc : acc) => any,
+acc : acc)
+{
+  if (isChildrenAnArray(children))
+  {
+    children.map(child => {
+
+      if (isXObjectAndHasChildren(child.schema))
+      {
+        const newAcc = newObject(child.key, acc);
+        OperateOnXObjectKeys(child.schema._inner.children, operate, newObject, newAcc)
+      }
+      else if (child !== undefined)
+      {
+        operate(child.key, child.schema, acc);
+      }
+    });
+  }
+  else if (children !== undefined)
+  {
+    operate(children.key, children.schema, acc);
+  }
 }
 
 export function isJoiError(err: any): err is Joi.ValidationError {

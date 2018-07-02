@@ -47,6 +47,15 @@ export interface XAlternatives extends XBase {
 export declare type XFactory<T> = XAlternativesSchema & {
     __factoryType: T;
 };
+export declare type ObjectChildren = {
+    key: string;
+    schema: Joi.AnySchema;
+};
+export declare type ObjectSchemaHidden = Joi.ObjectSchema & {
+    _inner: {
+        children: ObjectChildren[];
+    };
+};
 export declare type XAnySchema = XPrimitive<any> & Joi.AnySchema;
 export declare type XBooleanSchema<T extends boolean = boolean> = XPrimitive<boolean> & Joi.BooleanSchema;
 export declare type XNumberSchema<T extends number = number> = XPrimitive<T> & Joi.NumberSchema;
@@ -88,6 +97,12 @@ export declare enum FactoryType {
 }
 export declare const Factory: <FInteface>(type: FactoryType) => XFactory<FInteface>;
 export declare const objectBundle: (unqiueBundleName: string) => XObjectBundleSchema;
+export declare function getXObjectChildrens(obj: XObjectSchema): ObjectChildren[] | undefined;
+export declare function getXObjectChildren(obj: Joi.ObjectSchema): ObjectChildren[] | undefined;
+export declare function isChildrenAnArray(children: ObjectChildren[] | (ObjectChildren | undefined)): children is ObjectChildren[];
+export declare function isXObjectAndHasChildren(obj: Joi.AnySchema): obj is ObjectSchemaHidden;
+export declare type acc = any;
+export declare function OperateOnXObjectKeys(children: any, operate: (key: string, schema: Joi.AnySchema, acc: acc) => void, newObject: (key: string, acc: acc) => any, acc: acc): void;
 export declare function isJoiError(err: any): err is Joi.ValidationError;
 export declare type IXSchema = _XSchema | IXSchemaMap;
 export interface IXSchemaMap {
@@ -112,9 +127,6 @@ export declare type ExtractFromObject<T extends XSchemaMap> = _ExtractFromObject
 export declare type _ExtractFromSchema<T> = _ExtractFromObject<{
     __tsTypeO: T;
 }>['__tsTypeO'];
-export declare type ExtractALL<T, K extends keyof T> = T extends {
-    K: any;
-} ? ExtractRequired<T, ExtractNull<T, _ExtractFromObject<T>[K]>> : 'unkownKey';
 export declare type _ExtractFromObject<T> = {
     [P in keyof T]: T[P] extends {
         __tsType: any;
@@ -130,43 +142,39 @@ export declare type _ExtractFromObject<T> = {
 };
 export declare type ExtractWithFactoriesFromSchema<T extends XSchema> = _ExtractWithFactoriesFromSchema<T> & XTSchema;
 export declare type ExtractWithFactoriesFromObject<T extends XSchemaMap> = _ExtractWithFactoriesFromObject<T> & XTSchema;
-export declare type _ExtractWithFactoriesFromSchema<T> = T extends XArray ? T extends {
-    __tsTypeAr: any;
-} ? ExtractRequired<T, ExtractNull<T, ExtractWithFactoriesFromObject<T['__tsTypeAr']>[]>> : T & 'Ar Type not defined' : T extends XObject ? T extends {
-    __tsTypeO: any;
-} ? ExtractRequired<T, ExtractNull<T, ExtractWithFactoriesFromObject<T['__tsTypeO']>>> : T & 'O Type not defined' : T extends XAlternatives ? T extends {
-    __tsTypeAl: any;
-} ? ExtractRequired<T, ExtractNull<T, ExtractWithFactoriesFromObject<T['__tsTypeAl']>>> : T & 'Al Type not defined' : T extends XFactory<any> ? T extends {
-    __factoryType: any;
-} ? T['__factoryType'] : 'Fact not defined' : T extends XPrimitive<any> ? ExtractRequired<T, ExtractNull<T, ExtractTSType<T, T>>> : 'Unkown Type' & T;
+export declare type _ExtractWithFactoriesFromSchema<T> = _ExtractFromObject<{
+    __tsTypeO: T;
+}>['__tsTypeO'];
 export declare type _ExtractWithFactoriesFromObject<T> = {
-    [P in keyof T]: T[P] extends XArray ? T[P] extends {
-        __tsTypeAr: any;
-    } ? ExtractRequired<T[P], ExtractNull<T[P], ExtractWithFactoriesFromSchema<T[P]['__tsTypeAr']>[]>> : T[P] & 'Ar Type not defined' : T[P] extends XObject ? T[P] extends {
-        __tsTypeO: any;
-    } ? ExtractRequired<T[P], ExtractNull<T[P], ExtractWithFactoriesFromSchema<T[P]>>> : ' O Type not defined' : T[P] extends XFactory<any> ? T[P] extends {
+    [P in keyof T]: T[P] extends {
         __factoryType: any;
-    } ? T[P]['__factoryType'] : 'Fact not defined' : T[P] extends XAlternatives ? T[P] extends {
+    } ? T[P]['__factoryType'] : T[P] extends {
+        __tsType: any;
+    } ? ExtractRequired<T[P], ExtractNull<T[P], T[P]['__tsType']>> : T[P] extends {
+        __tsTypeAr: any;
+    } ? ExtractRequired<T[P], ExtractNull<T[P], _ExtractFromObject<T[P]>['__tsTypeAr']>>[] : T[P] extends {
+        __tsTypeO: any;
+    } ? ExtractRequired<T[P], ExtractNull<T[P], _ExtractFromObject<T[P]>['__tsTypeO']>> : T[P] extends {
+        __tsTypeOP: any;
+    } ? ExtractRequired<T[P], ExtractNull<T[P], Record<string, _ExtractFromObject<T[P]>['__tsTypeOP']>>> : T[P] extends {
         __tsTypeAl: any;
-    } ? ExtractRequired<T[P], ExtractNull<T[P], ExtractWithFactoriesFromSchema<T[P]['__tsTypeAl']>>> : T[P] & ' Al Type not defined' : _ExtractFromSchema<T[P]>;
+    } ? ExtractRequired<T[P], ExtractNull<T[P], _ExtractFromObject<T[P]>['__tsTypeAl']>> : T[P] extends {} ? _ExtractFromObject<T[P]> : never;
 };
-export declare type ExtractFactoriesFromSchema<T> = T extends XArray ? T extends {
-    __tsTypeAr: any;
-} ? ExtractRequired<T, ExtractNull<T, ExtractFactoriesFromObject<T['__tsTypeAr']>[]>> : T & 'Ar Type not defined' : T extends XObject ? T extends {
-    __tsTypeO: any;
-} ? ExtractRequired<T, ExtractNull<T, ExtractFactoriesFromObject<T['__tsTypeO']>>> : T & 'O Type not defined' : T extends XFactory<any> ? T extends {
-    __factoryType: any;
-} ? T['__factoryType'] : 'Fact not defined' : T extends XAlternatives ? T extends {
-    __tsTypeAl: any;
-} ? ExtractRequired<T, ExtractNull<T, ExtractFactoriesFromObject<T['__tsTypeAl']>>> : T & 'Al Type not defined' : T extends XPrimitive<any> ? undefined : 'Unkown Type' & T;
-export declare type ExtractFactoriesFromObject<T> = {
-    [P in keyof T]: T[P] extends XArray ? T[P] extends {
-        __tsTypeAr: any;
-    } ? ExtractRequired<T[P], ExtractNull<T[P], ExtractFactoriesFromSchema<T[P]['__tsTypeAr']>[]>> : T[P] & 'Ar Type not defined' : T[P] extends XObject ? T[P] extends {
-        __tsTypeO: any;
-    } ? ExtractRequired<T[P], ExtractNull<T[P], ExtractFactoriesFromSchema<T[P]>>> : ' O Type not defined' : T[P] extends XFactory<any> ? T[P] extends {
+export declare type _ExtractFactoriesFromSchema<T> = _ExtractFromObject<{
+    __tsTypeO: T;
+}>['__tsTypeO'];
+export declare type _ExtractFactoriesFromObject<T> = {
+    [P in keyof T]: T[P] extends {
         __factoryType: any;
-    } ? T[P]['__factoryType'] : 'Fact not defined' : T[P] extends XAlternatives ? T[P] extends {
+    } ? T[P]['__factoryType'] : T[P] extends {
+        __tsType: any;
+    } ? never : T[P] extends {
+        __tsTypeAr: any;
+    } ? ExtractRequired<T[P], ExtractNull<T[P], _ExtractFromObject<T[P]>['__tsTypeAr']>>[] : T[P] extends {
+        __tsTypeO: any;
+    } ? ExtractRequired<T[P], ExtractNull<T[P], _ExtractFromObject<T[P]>['__tsTypeO']>> : T[P] extends {
+        __tsTypeOP: any;
+    } ? ExtractRequired<T[P], ExtractNull<T[P], Record<string, _ExtractFromObject<T[P]>['__tsTypeOP']>>> : T[P] extends {
         __tsTypeAl: any;
-    } ? ExtractRequired<T[P], ExtractNull<T[P], ExtractFactoriesFromSchema<T[P]['__tsTypeAl']>>> : T[P] & ' Al Type not defined' : ExtractFactoriesFromSchema<T[P]>;
+    } ? ExtractRequired<T[P], ExtractNull<T[P], _ExtractFromObject<T[P]>['__tsTypeAl']>> : T[P] extends {} ? _ExtractFromObject<T[P]> : never;
 };

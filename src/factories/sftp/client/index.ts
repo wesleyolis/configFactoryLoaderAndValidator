@@ -45,12 +45,12 @@ export class SftpClient<T extends CS.ConfigSchema> extends ABaseConfigFactory im
         host : this.configSettings.host,
         port : this.configSettings.port,
         username : this.configSettings.credentials? this.configSettings.credentials.username : "",
-        password : this.configSettings.credentials.auth.type == JoiV.PassType.password 
-        || this.configSettings.credentials.auth.type == JoiV.PassType.any ? this.configSettings.credentials.auth.password : null,
-        phrase : this.configSettings.credentials.auth.type == JoiV.PassType.publicKey
-        || this.configSettings.credentials.auth.type == JoiV.PassType.any ? this.configSettings.credentials.auth.phrase : "",
-        privateKey : this.configSettings.credentials.auth.type == JoiV.PassType.publicKey
-            || this.configSettings.credentials.auth.type == JoiV.PassType.any ? this.configSettings.credentials.auth.passKey : ""
+        password : this.configSettings.credentials.auth.type == JoiV.AuthType.password 
+        || this.configSettings.credentials.auth.type == JoiV.AuthType.any ? this.configSettings.credentials.auth.password : null,
+        phrase : this.configSettings.credentials.auth.type == JoiV.AuthType.publicKey
+        || this.configSettings.credentials.auth.type == JoiV.AuthType.any ? this.configSettings.credentials.auth.phrase : "",
+        privateKey : this.configSettings.credentials.auth.type == JoiV.AuthType.publicKey
+            || this.configSettings.credentials.auth.type == JoiV.AuthType.any ? this.configSettings.credentials.auth.passKey : ""
         };
     }
 }

@@ -60,7 +60,7 @@ type FactoryInstances = {
     [index:string] : ObjectFactoryInstances
 }
 
-
+/*
 export class FactoriesInstancesResolver implements IConfigFactoriesInstances
 {
     constructor(public localInstances : FactoryInstances, public parentInstances : FactoryInstances )
@@ -92,3 +92,5 @@ export function LoadConfig(localConfig : JoiX.XObject, parentConfig : JoiX.XObje
         if (config[key]__factoryType
     });
 }
+
+*/

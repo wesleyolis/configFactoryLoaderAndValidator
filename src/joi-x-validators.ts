@@ -1,5 +1,6 @@
 import * as JoiX from './joi-x'
 import * as Joi from 'joi'
+import * as _ from 'lodash'
 
 // this can be fixed in version 2.9 if I recall, were generic template parameter can be used to instaniate a base class,
 // in which case we can preserve the settings.
@@ -25,11 +26,17 @@ export const port = (port : DPorts = DPorts.undefined) => {
     return joi.description(desc);   // Remeber that you are overiding the super impose type value build ups.
 }
 
-export enum PassType
+export enum AuthType
 {
     password = 'password',
     publicKey = "publicKey",
     any = 'any'
+}
+
+export enum PassType
+{
+    plainText = 'plainText',
+    encrypt = "encrypt"
 }
 
 export type AuthTypes = AuthPassword | AuthPublicKey | AuthAny;
@@ -38,20 +45,27 @@ export type AuthPassword = JoiX.ExtractFromSchema<typeof authPassword>
 export type AuthPublicKey = JoiX.ExtractFromSchema<typeof authPublicKey>
 export type AuthAny = JoiX.ExtractFromSchema<typeof authAny>
 
+export const password = (passType : PassType = PassType.plainText) => {
+    return JoiX.object().keys({
+        phrase : JoiX.string().required(),
+        type : JoiX.enumString([PassType.plainText, PassType.encrypt]).description("spesified preprocessor, adapter transform to apply, support adapters:'encrypt'")
+    }).description("Password, which consists of a phrase and type, were type is adapter tranformation.");
+}
+
 export const authPassword = JoiX.object().keys({
-    type : JoiX.kind(PassType.password),
+    type : JoiX.kind(AuthType.password),
     password : JoiX.string().required()
 }).required()
 
 export const authPublicKey = JoiX.object().keys(
 {
-    type : JoiX.kind(PassType.publicKey),
+    type : JoiX.kind(AuthType.publicKey),
     phrase : JoiX.string().required(),
     passKey : JoiX.string().required()
 }).required();
 
 export const authAny = JoiX.object().keys({
-    type : JoiX.kind(PassType.any),
+    type : JoiX.kind(AuthType.any),
     password : JoiX.string().required(),
     phrase : JoiX.string().required(),
     passKey : JoiX.string().required()   
@@ -60,19 +74,23 @@ export const authAny = JoiX.object().keys({
 
 export function isAuthPassword(x : AuthTypes) : x is AuthPassword
 {
-    return x.type === PassType.password;
+    return x.type === AuthType.password;
 }
 
 export function isAuthPublicKey(x : AuthTypes) : x is AuthPublicKey
 {
-    return x.type === PassType.publicKey;
+    return x.type === AuthType.publicKey;
 }
 
 export function isAuthAny(x : AuthTypes) : x is AuthAny
 {
-    return x.type === PassType.any;
+    return x.type === AuthType.any;
 }
 
+export const authPasswordOnly = () => {
+
+    return _.cloneDeep(authPassword);
+};
 
 export const authentication = () => {
     

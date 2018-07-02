@@ -5,7 +5,6 @@ import { SftpClient } from '../client/index';
 import * as Ssh2 from 'ssh2';
 export { Ssh2 };
 export declare class SftpInMemoryClientWrapper<T extends CS.ConfigSchema> extends SftpClient<T> {
-    configSettings: T;
     factoryName: string;
     factoryClass: ConfigFactoryClass;
     type: ConfigFactoryTypes;
@@ -17,7 +16,9 @@ export declare class SftpInMemoryClientWrapper<T extends CS.ConfigSchema> extend
             port: JoiX.XPrimitive<number> & JoiX.NumberSchema & {
                 __isRequired: "T";
             };
-            credentials: JoiX.XObject & JoiX.ObjectSchema & any;
+            credentials: JoiX.XObject & JoiX.ObjectSchema & any & {
+                __isRequired: "T";
+            };
         };
     } & {
         __isRequired: "T";
@@ -31,7 +32,9 @@ export declare class SftpInMemoryClientWrapper<T extends CS.ConfigSchema> extend
             port: JoiX.XPrimitive<number> & JoiX.NumberSchema & {
                 __isRequired: "T";
             };
-            credentials: JoiX.XObject & JoiX.ObjectSchema & any;
+            credentials: JoiX.XObject & JoiX.ObjectSchema & any & {
+                __isRequired: "T";
+            };
         };
     } & {
         __isRequired: "T";
@@ -40,5 +43,5 @@ export declare class SftpInMemoryClientWrapper<T extends CS.ConfigSchema> extend
     createAsync(config: JoiX.XJSchemaMap): Promise<void>;
     startAsync(): Promise<void>;
     stopAsync(): Promise<void>;
-    private ServerConnectionListern(client, info);
+    private ServerConnectionListern(clientConnection, info);
 }

@@ -72,7 +72,24 @@ function getFSNode(root : FSNodeItem, path : string) : FSNodeItem | undefined | 
   if (!path)
     return undefined;
   else if (path === "/")
-    return {items: null, attribs: 777, type: constants.S_IFDIR} as FSNodeItem;
+    return {items: null, attribs: {
+      mode : constants.S_IRWXU | constants.S_IRWXG | constants.S_IRWXO,
+      atime : 0,
+      gid : 0,
+      mtime : 0,
+      size : 0,
+      uid : 0
+    } as Attributes, type: constants.S_IFDIR, data: null} as FSNodeItem;
+
+  /*
+
+interface FSNodeItem {
+  items : FSNode | null,
+  attribs : Attributes,
+  type : FSNodeTypes
+  data : Buffer | null
+}
+  */
 
   // Assume it is not the route node that we need.
   const nodePathSegmentNames = path.split('/');
@@ -191,7 +208,7 @@ export class SftpInMemoryClientWrapper<T extends CS.ConfigSchema> extends SftpCl
         
         else if (authCtx.method === 'publickey')
         {
-          if (this.configSettings.credentials.auth.type === JoiV.PassType.publicKey || this.configSettings.credentials.auth.type === JoiV.PassType.any)
+          if (this.configSettings.credentials.auth.type === JoiV.AuthType.publicKey || this.configSettings.credentials.auth.type === JoiV.AuthType.any)
           {
             function isParsedKey(x : ParsedKey | Error) : x is ParsedKey
             {
@@ -235,7 +252,7 @@ export class SftpInMemoryClientWrapper<T extends CS.ConfigSchema> extends SftpCl
         }
         else if (authCtx.method === 'password')
         {
-          if (this.configSettings.credentials.auth.type == JoiV.PassType.password || this.configSettings.credentials.auth.type == JoiV.PassType.any)
+          if (this.configSettings.credentials.auth.type == JoiV.AuthType.password || this.configSettings.credentials.auth.type == JoiV.AuthType.any)
           {
             if (authCtx.password == this.configSettings.credentials.auth.password)
             {
@@ -244,7 +261,7 @@ export class SftpInMemoryClientWrapper<T extends CS.ConfigSchema> extends SftpCl
             }
             else
             {
-              authCtx.reject(this.configSettings.credentials.auth.type == JoiV.PassType.any ? ['publicKey'] : [], true);
+              authCtx.reject(this.configSettings.credentials.auth.type == JoiV.AuthType.any ? ['publicKey'] : [], true);
             }
           }
           else
