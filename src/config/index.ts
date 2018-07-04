@@ -3,8 +3,6 @@ import * as hyphenBanking from './hyphen-banking'
 
 export type GlobalConfigSchema = JoiX.ExtractFromObject<typeof globalConfigSchema>
 
-export type MOngoDB = JoiX.ExtractFromSchema<typeof globalConfigSchema.mongodb>;
-
 // As far as we know.
 export const globalConfigSchema = {
     mongodb: Factories.MongoDB.configSchema.required().tags('mongoConnectionString'),

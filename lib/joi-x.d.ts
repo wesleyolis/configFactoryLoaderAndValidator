@@ -1,7 +1,10 @@
 /// <reference types="node" />
 import * as Joi from 'joi';
 import { If, ObjectHasKey } from 'typelevel-ts';
+import { JoiX } from '.';
+import { IConfigFactory } from './config-factory';
 export * from 'joi';
+export { IConfigFactory };
 export interface XBase {
     required: () => this & {
         __isRequired: 'T';
@@ -46,6 +49,11 @@ export interface XAlternatives extends XBase {
 }
 export declare type XFactory<T> = XAlternativesSchema & {
     __factoryType: T;
+    __NewFactory: <T extends ({
+        factory: string;
+    } & JoiX.XTSchema)>(settings: T) => IConfigFactory;
+    configSchema: JoiX.XObjectSchema;
+    configSettings: JoiX.XTSchema;
 };
 export declare type ObjectChildren = {
     key: string;
@@ -72,37 +80,42 @@ export declare type XKindSchema<T extends string> = XStringSchema<T>;
 export declare type XObjectBundleSchema = XObject & Joi.ObjectSchema & {
     __bundleName: 'T';
 };
-export declare const any: () => XAnySchema;
-export declare const bool: () => XBooleanSchema<T>;
-export declare const boolean: () => XBooleanSchema<T>;
-export declare const number: () => XNumberSchema<number>;
-export declare const string: () => XStringSchema<string>;
-export declare const date: () => XDateSchema;
-export declare const binary: () => XBinarySchema;
-export declare const func: () => XFunctionSchema;
-export declare const object: () => XObjectSchema;
-export declare const array: () => XArraySchema;
-export declare const alternatives: () => XAlternativesSchema;
-export declare const kind: <T extends string>(value: T) => XPrimitive<T> & Joi.StringSchema & {
+export declare const any: () => JoiX.XAnySchema;
+export declare const bool: () => JoiX.XBooleanSchema<T>;
+export declare const boolean: () => JoiX.XBooleanSchema<T>;
+export declare const number: () => JoiX.XNumberSchema<number>;
+export declare const string: () => JoiX.XStringSchema<string>;
+export declare const date: () => JoiX.XDateSchema;
+export declare const binary: () => JoiX.XBinarySchema;
+export declare const func: () => JoiX.XFunctionSchema;
+export declare const object: () => JoiX.XObjectSchema;
+export declare const array: () => JoiX.XArraySchema;
+export declare const alternatives: () => JoiX.XAlternativesSchema;
+export declare const kind: <T extends string>(value: T) => JoiX.XPrimitive<T> & Joi.StringSchema & {
     __isRequired: "T";
 };
-export declare const LiteralString: <T extends string>(value: T[]) => XStringSchema<T>;
-export declare const LiteralNumber: <T extends number>(value: T[]) => XNumberSchema<T>;
-export declare const LiteralBoolean: <T extends boolean>(value: T[]) => XBooleanSchema<T>;
-export declare const enumString: <T extends string>(values: T[]) => XStringSchema<T>;
+export declare const LiteralString: <T extends string>(value: T[]) => JoiX.XStringSchema<T>;
+export declare const LiteralNumber: <T extends number>(value: T[]) => JoiX.XNumberSchema<T>;
+export declare const LiteralBoolean: <T extends boolean>(value: T[]) => JoiX.XBooleanSchema<T>;
+export declare const enumString: <T extends string>(values: T[]) => JoiX.XStringSchema<T>;
+export declare const isFactory: (x: JoiX.XFactory<any>) => x is JoiX.XFactory<any>;
 export declare enum FactoryType {
     issolated = 0,
     dependent = 1,
     manual = 2,
 }
-export declare const Factory: <FInteface>(type: FactoryType) => XFactory<FInteface>;
-export declare const objectBundle: (unqiueBundleName: string) => XObjectBundleSchema;
+export declare const Factory: <FInteface>(type: JoiX.FactoryType, newFactory: (settings: any) => JoiX.IConfigFactory) => JoiX.XFactory<FInteface>;
+export declare type XBundle = (XObjectBundleSchema & {
+    unqiueBundleName: string;
+});
+export declare function isObjectBundle(x: XObjectBundleSchema): x is XBundle;
+export declare const objectBundle: (unqiueBundleName: string) => JoiX.XObjectBundleSchema;
 export declare function getXObjectChildrens(obj: XObjectSchema): ObjectChildren[] | undefined;
 export declare function getXObjectChildren(obj: Joi.ObjectSchema): ObjectChildren[] | undefined;
 export declare function isChildrenAnArray(children: ObjectChildren[] | (ObjectChildren | undefined)): children is ObjectChildren[];
 export declare function isXObjectAndHasChildren(obj: Joi.AnySchema): obj is ObjectSchemaHidden;
 export declare type acc = any;
-export declare function OperateOnXObjectKeys(children: any, operate: (key: string, schema: Joi.AnySchema, acc: acc) => void, newObject: (key: string, acc: acc) => any, acc: acc): void;
+export declare function OperateOnXObjectKeys(children: ObjectChildren[] | (ObjectChildren | undefined), operate: (key: string, schema: Joi.AnySchema, acc: acc, config: any) => void, newObject: (key: string, acc: acc) => acc, acc: acc, config?: any): void;
 export declare function isJoiError(err: any): err is Joi.ValidationError;
 export declare type IXSchema = _XSchema | IXSchemaMap;
 export interface IXSchemaMap {
@@ -142,7 +155,7 @@ export declare type _ExtractFromObject<T> = {
 };
 export declare type ExtractWithFactoriesFromSchema<T extends XSchema> = _ExtractWithFactoriesFromSchema<T> & XTSchema;
 export declare type ExtractWithFactoriesFromObject<T extends XSchemaMap> = _ExtractWithFactoriesFromObject<T> & XTSchema;
-export declare type _ExtractWithFactoriesFromSchema<T> = _ExtractFromObject<{
+export declare type _ExtractWithFactoriesFromSchema<T> = _ExtractWithFactoriesFromObject<{
     __tsTypeO: T;
 }>['__tsTypeO'];
 export declare type _ExtractWithFactoriesFromObject<T> = {
@@ -152,15 +165,15 @@ export declare type _ExtractWithFactoriesFromObject<T> = {
         __tsType: any;
     } ? ExtractRequired<T[P], ExtractNull<T[P], T[P]['__tsType']>> : T[P] extends {
         __tsTypeAr: any;
-    } ? ExtractRequired<T[P], ExtractNull<T[P], _ExtractFromObject<T[P]>['__tsTypeAr']>>[] : T[P] extends {
+    } ? ExtractRequired<T[P], ExtractNull<T[P], _ExtractWithFactoriesFromObject<T[P]>['__tsTypeAr']>>[] : T[P] extends {
         __tsTypeO: any;
-    } ? ExtractRequired<T[P], ExtractNull<T[P], _ExtractFromObject<T[P]>['__tsTypeO']>> : T[P] extends {
+    } ? ExtractRequired<T[P], ExtractNull<T[P], _ExtractWithFactoriesFromObject<T[P]>['__tsTypeO']>> : T[P] extends {
         __tsTypeOP: any;
-    } ? ExtractRequired<T[P], ExtractNull<T[P], Record<string, _ExtractFromObject<T[P]>['__tsTypeOP']>>> : T[P] extends {
+    } ? ExtractRequired<T[P], ExtractNull<T[P], Record<string, _ExtractWithFactoriesFromObject<T[P]>['__tsTypeOP']>>> : T[P] extends {
         __tsTypeAl: any;
-    } ? ExtractRequired<T[P], ExtractNull<T[P], _ExtractFromObject<T[P]>['__tsTypeAl']>> : T[P] extends {} ? _ExtractFromObject<T[P]> : never;
+    } ? ExtractRequired<T[P], ExtractNull<T[P], _ExtractWithFactoriesFromObject<T[P]>['__tsTypeAl']>> : T[P] extends {} ? _ExtractWithFactoriesFromObject<T[P]> : never;
 };
-export declare type _ExtractFactoriesFromSchema<T> = _ExtractFromObject<{
+export declare type _ExtractFactoriesFromSchema<T> = _ExtractFactoriesFromObject<{
     __tsTypeO: T;
 }>['__tsTypeO'];
 export declare type _ExtractFactoriesFromObject<T> = {
@@ -170,11 +183,11 @@ export declare type _ExtractFactoriesFromObject<T> = {
         __tsType: any;
     } ? never : T[P] extends {
         __tsTypeAr: any;
-    } ? ExtractRequired<T[P], ExtractNull<T[P], _ExtractFromObject<T[P]>['__tsTypeAr']>>[] : T[P] extends {
+    } ? ExtractRequired<T[P], ExtractNull<T[P], _ExtractFactoriesFromObject<T[P]>['__tsTypeAr']>>[] : T[P] extends {
         __tsTypeO: any;
-    } ? ExtractRequired<T[P], ExtractNull<T[P], _ExtractFromObject<T[P]>['__tsTypeO']>> : T[P] extends {
+    } ? ExtractRequired<T[P], ExtractNull<T[P], _ExtractFactoriesFromObject<T[P]>['__tsTypeO']>> : T[P] extends {
         __tsTypeOP: any;
-    } ? ExtractRequired<T[P], ExtractNull<T[P], Record<string, _ExtractFromObject<T[P]>['__tsTypeOP']>>> : T[P] extends {
+    } ? ExtractRequired<T[P], ExtractNull<T[P], Record<string, _ExtractFactoriesFromObject<T[P]>['__tsTypeOP']>>> : T[P] extends {
         __tsTypeAl: any;
-    } ? ExtractRequired<T[P], ExtractNull<T[P], _ExtractFromObject<T[P]>['__tsTypeAl']>> : T[P] extends {} ? _ExtractFromObject<T[P]> : never;
+    } ? ExtractRequired<T[P], ExtractNull<T[P], _ExtractFactoriesFromObject<T[P]>['__tsTypeAl']>> : T[P] extends {} ? _ExtractFactoriesFromObject<T[P]> : never;
 };

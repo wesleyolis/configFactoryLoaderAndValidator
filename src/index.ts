@@ -21,6 +21,8 @@ import {validateAsync} from './config-factory/config'
 
 export {describe as describeConfigSchema, validateAsync as validatConfigSchemaAsync} from './config-factory/config'
 
+import * as _ from 'lodash';
+
 export abstract class IConfigBundle
 {
     static async newBundleAndResolveConfigAsync (settings: JoiX.XJSchemaMap | undefined = undefined, configSchema : JoiX.XObjectSchema, requireConfig : (file:string) => any = require('config')) : Promise<any>
@@ -33,7 +35,7 @@ export abstract class IConfigBundle
             return config
             
         }
-        return JSON.parse(JSON.stringify(settings));
+        return settings;
     }
 
     // Typically were you would inject any configuraiton for other modules.
@@ -43,54 +45,111 @@ export abstract class IConfigBundle
 
 export interface IConfigFactoriesInstances
 {
-    
-    startAsync() : Promise<void>;
-    stopAsync() : Promise<void>;
+    startAsync() : Promise<void []>;
+    stopAsync() : Promise<void []>;
 }
 
 
 export interface IConfigFactoriesInstancesResolver extends IConfigFactoriesInstances
 {
-    startAsync() : Promise<void>;
-    stopAsync() : Promise<void>;
+    startAsync() : Promise<void []>;
+    stopAsync() : Promise<void []>;
 }
 
-type ObjectFactoryInstances = IConfigFactory | FactoryInstances
-type FactoryInstances = {
-    [index:string] : ObjectFactoryInstances
-}
 
-/*
-export class FactoriesInstancesResolver implements IConfigFactoriesInstances
+export class FactoriesInstancesResolver<L extends JoiX.XObjectSchema,
+LF = JoiX.ExtractWithFactoriesFromSchema<L>
+> 
+implements IConfigFactoriesInstances
 {
-    constructor(public localInstances : FactoryInstances, public parentInstances : FactoryInstances )
+    constructor (public config : LF, private factoryInstances : (() => IConfigFactory)[])
     {
-
     }
 
-    startAsync() : Promise<void>
+    startAsync() : Promise<void []>
     {
-
+        return Promise.all(this.factoryInstances.map(f => f().startAsync()));
     }
-    stopAsync() : Promise<void>
-    {
 
+    stopAsync() : Promise<void []>
+    {
+        return Promise.all(this.factoryInstances.map(f => f().stopAsync()));
     }
 }
 
-
-export function LoadConfig(localConfig : JoiX.XObject, parentConfig : JoiX.XObject | null = null) : FactoriesInstancesResolver
+export async function LoadConfig<L extends JoiX.XObjectSchema, 
+LF = JoiX.ExtractWithFactoriesFromSchema<L>>
+(configSettings : any, configSchema : L, lazyLoad : boolean = false, configOptional : Error | null = null) : Promise<FactoriesInstancesResolver<L, LF>>
 {
-    const keys = Object.keys(localConfig);
+    const originalConfigSchema = _.cloneDeep(configSchema);
 
-    let config = {};
-    
-    keys.forEach(key => {
-        let value = localConfig[key];
+    const children = JoiX.getXObjectChildrens(configSchema);
 
+    if (configOptional)
+        JoiX.OperateOnXObjectKeys(children, (key : string, schema : any, acc : any, config : any) => {
+            (schema as Joi.AnySchema).optional();
+    }, (key : string, acc : any) => {}, null);
 
-        if (config[key]__factoryType
-    });
+    const validateConfigSettings : any = await JoiX.validate(configSettings, originalConfigSchema);
+
+    let loadedConfig : any;
+    let factoryConfig : (() => IConfigFactory) [] = [];
+
+    JoiX.OperateOnXObjectKeys(children, (key : string, schema : any, acc : any, config : any) => {
+        
+        if (JoiX.isFactory(schema))
+        {
+            const lazyLoader = () =>
+            {
+                let factoryInstance : IConfigFactory | undefined = undefined
+
+                if (factoryInstance)
+                {
+                    try
+                    {
+                        factoryInstance = schema.__NewFactory(config[key]);
+                    }
+                    catch(e)
+                    {
+                        if (configOptional)
+                            throw new Error().message += JSON.stringify(e);
+                    }
+                }
+
+                return factoryInstance as IConfigFactory;
+            }
+
+            if (!lazyLoad)
+                lazyLoader();
+
+            factoryConfig.push(lazyLoader);
+            Object.defineProperty(acc, key, { get : lazyLoader });
+        }
+        else
+        {
+            let value = config[key];
+
+            if (configOptional)
+            {
+                try
+                {
+                    value = JoiX.validate(config[key], schema);
+                }
+                catch(e)
+                {
+                    throw new Error().message += JSON.stringify(e);
+                }
+            }
+
+            acc[key] = value;
+        }
+    },
+    (key : string, acc : any) => {
+        acc[key] = {};
+        return acc[key];
+    }, loadedConfig, validateConfigSettings);
+
+    return Promise.resolve(new FactoriesInstancesResolver(loadedConfig, factoryConfig));
 }
 
-*/
+

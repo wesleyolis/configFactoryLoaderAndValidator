@@ -10,4 +10,4 @@ import * as configFactories from './config-factories'
 export {configFactories as ConfigFactories}
 
 import * as abaseConfigFactory from './abase-config-factory'
-export {abaseConfigFactory as ABaseConfigFactory}
+export {abaseConfigFactory as BaseConfigFactory}

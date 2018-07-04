@@ -64,6 +64,13 @@ export declare const inMemorySchema: InMemory.CS.XObject & InMemory.CS.ObjectSch
 export declare type ConfigFactories = MongoDBSchema | InMemorySchema;
 export declare type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>;
 export declare const configSchema: InMemory.CS.XAlternatives & InMemory.CS.AlternativesSchema & {
+    __factoryType: IMongoSettings;
+    __NewFactory: <T extends {
+        factory: string;
+    } & InMemory.CS.XTSchema>(settings: T) => InMemory.CS.IConfigFactory;
+    configSchema: InMemory.CS.XObjectSchema;
+    configSettings: InMemory.CS.XTSchema;
+} & {
     __tsTypeAl: (InMemory.CS.XObject & InMemory.CS.ObjectSchema & {
         __tsTypeO: {
             class: InMemory.CS.XPrimitive<CFT.ConfigFactoryClass.netService> & InMemory.CS.StringSchema & {
@@ -122,3 +129,4 @@ export declare const configSchema: InMemory.CS.XAlternatives & InMemory.CS.Alter
 } & {
     __isRequired: "T";
 };
+export declare function NewFactory(settings: ConfigFactories): IMongoSettings;

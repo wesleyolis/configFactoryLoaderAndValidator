@@ -1,6 +1,11 @@
 import * as Joi from 'joi';
 import {If, ObjectHasKey, ObjectOverwrite} from 'typelevel-ts';
+import { JoiX } from '.';
+import { IConfigFactory } from './config-factory';
 export * from 'joi';
+
+export {IConfigFactory}
+
 
 export interface XBase {
   required: () => this & {__isRequired: 'T'};
@@ -44,6 +49,10 @@ export interface XAlternatives extends XBase {
 // Using symbols, would be the best thing ever, for this type of hacking.
 export type XFactory<T> = XAlternativesSchema & {
   __factoryType : T
+  __NewFactory : <T extends ({factory: string} & JoiX.XTSchema)>(settings : T) => IConfigFactory
+
+
+configSchema : JoiX.XObjectSchema, configSettings : JoiX.XTSchema
 }
 
 export type ObjectChildren = {
@@ -91,6 +100,12 @@ export const LiteralNumber = <T extends number>(value : T[]) => Joi.number().all
 export const LiteralBoolean = <T extends boolean>(value : T[]) => Joi.boolean().allow(value) as XBooleanSchema<T>
 export const enumString = <T extends string>(values : T []) => Joi.string().allow(values) as XStringSchema<T>
 
+
+export const isFactory = (x : XFactory<any>) : x is XFactory<any> =>
+{
+  return x.__factoryType !== null;
+}
+
 export enum FactoryType
 {
   issolated,
@@ -98,12 +113,22 @@ export enum FactoryType
   manual
 }
 
-export const Factory = <FInteface>(type : FactoryType) => {
+export const Factory = <FInteface>(type : FactoryType, newFactory : (settings : any) => IConfigFactory) => {
   
   const factory = Joi.alternatives() as any;
   factory.__factoryType = type;
+  factory.__NewFactory = newFactory
   
   return factory as XFactory<FInteface>;
+}
+
+export type XBundle = (XObjectBundleSchema & {unqiueBundleName : string});
+
+export function isObjectBundle(x : XObjectBundleSchema) : x is XBundle
+{
+  const bundle = <XBundle>(x);
+
+  return bundle.unqiueBundleName !== undefined;
 }
 
 // figure out weather I can check for ducplicates..
@@ -147,10 +172,10 @@ export function isXObjectAndHasChildren(obj : Joi.AnySchema) : obj is ObjectSche
 
 export type acc = any;
 
-export function OperateOnXObjectKeys(children : any,
-operate : (key : string, schema : Joi.AnySchema, acc : acc) => void,
-newObject : (key : string, acc : acc) => any,
-acc : acc)
+export function OperateOnXObjectKeys(children : ObjectChildren [] | (ObjectChildren | undefined),
+operate : (key : string, schema : Joi.AnySchema, acc : acc, config : any) => void,
+newObject : (key : string, acc : acc) => acc,
+acc : acc, config : any = undefined)
 {
   if (isChildrenAnArray(children))
   {
@@ -159,17 +184,17 @@ acc : acc)
       if (isXObjectAndHasChildren(child.schema))
       {
         const newAcc = newObject(child.key, acc);
-        OperateOnXObjectKeys(child.schema._inner.children, operate, newObject, newAcc)
+        OperateOnXObjectKeys(child.schema._inner.children, operate, newObject, newAcc, config && config[child.key])
       }
       else if (child !== undefined)
       {
-        operate(child.key, child.schema, acc);
+        operate(child.key, child.schema, acc, config && config[child.key]);
       }
     });
   }
   else if (children !== undefined)
   {
-    operate(children.key, children.schema, acc);
+    operate(children.key, children.schema, acc, config && config[children.key]);
   }
 }
 
@@ -330,7 +355,7 @@ export type ExtractWithFactoriesFromSchema<T extends XSchema> = _ExtractWithFact
 export type ExtractWithFactoriesFromObject<T extends XSchemaMap> = _ExtractWithFactoriesFromObject<T> & XTSchema
   
 
-export type _ExtractWithFactoriesFromSchema<T> = _ExtractFromObject<{__tsTypeO: T}>['__tsTypeO']
+export type _ExtractWithFactoriesFromSchema<T> = _ExtractWithFactoriesFromObject<{__tsTypeO: T}>['__tsTypeO']
 
 export type _ExtractWithFactoriesFromObject<T>
  = 
@@ -338,15 +363,15 @@ export type _ExtractWithFactoriesFromObject<T>
   [P in keyof T]: 
   T[P] extends {__factoryType:any} ? T[P]['__factoryType'] :
   T[P] extends {__tsType:any} ? ExtractRequired<T[P], ExtractNull<T[P], T[P]['__tsType']>> :
-  T[P] extends {__tsTypeAr:any} ? ExtractRequired<T[P], ExtractNull<T[P],_ExtractFromObject<T[P]>['__tsTypeAr']>> [] :
-  T[P] extends {__tsTypeO:any} ?  ExtractRequired<T[P], ExtractNull<T[P],_ExtractFromObject<T[P]>['__tsTypeO']>> : 
-  T[P] extends {__tsTypeOP:any} ? ExtractRequired<T[P], ExtractNull<T[P],Record<string,_ExtractFromObject<T[P]>['__tsTypeOP']>>> : 
-  T[P] extends {__tsTypeAl:any} ? ExtractRequired<T[P], ExtractNull<T[P],_ExtractFromObject<T[P]>['__tsTypeAl']>> : 
-  T[P] extends {} ? _ExtractFromObject<T[P]> : never//'mistake' & T[P]
+  T[P] extends {__tsTypeAr:any} ? ExtractRequired<T[P], ExtractNull<T[P],_ExtractWithFactoriesFromObject<T[P]>['__tsTypeAr']>> [] :
+  T[P] extends {__tsTypeO:any} ?  ExtractRequired<T[P], ExtractNull<T[P],_ExtractWithFactoriesFromObject<T[P]>['__tsTypeO']>> : 
+  T[P] extends {__tsTypeOP:any} ? ExtractRequired<T[P], ExtractNull<T[P],Record<string,_ExtractWithFactoriesFromObject<T[P]>['__tsTypeOP']>>> : 
+  T[P] extends {__tsTypeAl:any} ? ExtractRequired<T[P], ExtractNull<T[P],_ExtractWithFactoriesFromObject<T[P]>['__tsTypeAl']>> : 
+  T[P] extends {} ? _ExtractWithFactoriesFromObject<T[P]> : never//'mistake' & T[P]
    } 
 
 
-export type _ExtractFactoriesFromSchema<T> = _ExtractFromObject<{__tsTypeO: T}>['__tsTypeO']
+export type _ExtractFactoriesFromSchema<T> = _ExtractFactoriesFromObject<{__tsTypeO: T}>['__tsTypeO']
 
 export type _ExtractFactoriesFromObject<T>
  = 
@@ -354,9 +379,9 @@ export type _ExtractFactoriesFromObject<T>
   [P in keyof T]: 
   T[P] extends {__factoryType:any} ? T[P]['__factoryType'] :
   T[P] extends {__tsType:any} ? never:
-  T[P] extends {__tsTypeAr:any} ? ExtractRequired<T[P], ExtractNull<T[P],_ExtractFromObject<T[P]>['__tsTypeAr']>> [] :
-  T[P] extends {__tsTypeO:any} ?  ExtractRequired<T[P], ExtractNull<T[P],_ExtractFromObject<T[P]>['__tsTypeO']>> : 
-  T[P] extends {__tsTypeOP:any} ? ExtractRequired<T[P], ExtractNull<T[P],Record<string,_ExtractFromObject<T[P]>['__tsTypeOP']>>> : 
-  T[P] extends {__tsTypeAl:any} ? ExtractRequired<T[P], ExtractNull<T[P],_ExtractFromObject<T[P]>['__tsTypeAl']>> : 
-  T[P] extends {} ? _ExtractFromObject<T[P]> : never//'mistake' & T[P]
+  T[P] extends {__tsTypeAr:any} ? ExtractRequired<T[P], ExtractNull<T[P],_ExtractFactoriesFromObject<T[P]>['__tsTypeAr']>> [] :
+  T[P] extends {__tsTypeO:any} ?  ExtractRequired<T[P], ExtractNull<T[P],_ExtractFactoriesFromObject<T[P]>['__tsTypeO']>> : 
+  T[P] extends {__tsTypeOP:any} ? ExtractRequired<T[P], ExtractNull<T[P],Record<string,_ExtractFactoriesFromObject<T[P]>['__tsTypeOP']>>> : 
+  T[P] extends {__tsTypeAl:any} ? ExtractRequired<T[P], ExtractNull<T[P],_ExtractFactoriesFromObject<T[P]>['__tsTypeAl']>> : 
+  T[P] extends {} ? _ExtractFactoriesFromObject<T[P]> : never//'mistake' & T[P]
    } 

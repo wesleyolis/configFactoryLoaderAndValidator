@@ -2,3 +2,4 @@ node_modules
 .vscode
 lib-test
 .nyc_output
+npm-debug.log

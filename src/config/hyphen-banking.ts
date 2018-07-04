@@ -40,11 +40,3 @@ export const configSchema = JoiX.objectBundle(bundleName).keys({
    // }).required()
 }).required();
 
-const parentConfigSchema = {
-    mongoConnectionString : Parent.globalConfigSchema.mongoConnectionString,
-    mongodb : Parent.globalConfigSchema.mongodb
-}
-
-type StandAloneConfigSchema = JoiX.ExtractFromSchema<typeof standAloneConfigSchema>
-
-const standAloneConfigSchema = configSchema.keys(parentConfigSchema);

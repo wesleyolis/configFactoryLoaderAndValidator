@@ -1,8 +1,14 @@
-import { CFT, JoiX } from '../index';
+import { Factories, CFT, JoiX } from '../index';
 export declare type GlobalConfigSchema = JoiX.ExtractFromObject<typeof globalConfigSchema>;
-export declare type MOngoDB = JoiX.ExtractFromSchema<typeof globalConfigSchema.mongodb>;
 export declare const globalConfigSchema: {
     mongodb: JoiX.XAlternatives & JoiX.AlternativesSchema & {
+        __factoryType: Factories.MongoDB.IMongoSettings;
+        __NewFactory: <T extends {
+            factory: string;
+        } & JoiX.XTSchema>(settings: T) => JoiX.IConfigFactory;
+        configSchema: JoiX.XObjectSchema;
+        configSettings: JoiX.XTSchema;
+    } & {
         __tsTypeAl: (JoiX.XObject & JoiX.ObjectSchema & {
             __tsTypeO: {
                 class: JoiX.XPrimitive<CFT.ConfigFactoryClass.netService> & JoiX.StringSchema & {
@@ -125,6 +131,13 @@ export declare const configSchema: JoiX.XObject & JoiX.ObjectSchema & {
 } & {
     __tsTypeO: {
         mongodb: JoiX.XAlternatives & JoiX.AlternativesSchema & {
+            __factoryType: Factories.MongoDB.IMongoSettings;
+            __NewFactory: <T extends {
+                factory: string;
+            } & JoiX.XTSchema>(settings: T) => JoiX.IConfigFactory;
+            configSchema: JoiX.XObjectSchema;
+            configSettings: JoiX.XTSchema;
+        } & {
             __tsTypeAl: (JoiX.XObject & JoiX.ObjectSchema & any & {
                 __isRequired: "T";
             } & any) | (JoiX.XObject & JoiX.ObjectSchema & any & {

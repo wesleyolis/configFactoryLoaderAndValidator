@@ -40,7 +40,7 @@ describe("JoiX binds with Joi", () =>
 
         let extractedKeys : any = {};
 
-        JoiX.OperateOnXObjectKeys(children, (key, schema, acc) => {
+        JoiX.OperateOnXObjectKeys(children, (key, schema, acc)  => {
             acc[key] = schema;
         },
         (key, acc) => {

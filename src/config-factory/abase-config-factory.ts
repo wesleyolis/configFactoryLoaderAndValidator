@@ -22,7 +22,6 @@ export abstract class ABaseConfigFactory extends Config implements IConfigFactor
 
     protected _created : boolean = false;
 
-
     async createFactoryAsync<T extends ({factory: string} & JoiX.XTSchema)>(settings : T) : Promise<void>{
 
         delete settings.factory;
