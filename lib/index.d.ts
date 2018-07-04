@@ -31,4 +31,4 @@ export declare class FactoriesInstancesResolver<L extends JoiX.XObjectSchema, LF
     startAsync(): Promise<void[]>;
     stopAsync(): Promise<void[]>;
 }
-export declare function LoadConfig<L extends JoiX.XObjectSchema, LF = JoiX.ExtractWithFactoriesFromSchema<L>>(configSettings: any, configSchema: L, lazyLoad?: boolean, configOptional?: Error | null): Promise<FactoriesInstancesResolver<L, LF>>;
+export declare function LoadConfig<L extends JoiX.XObjectSchema, LF = JoiX.ExtractWithFactoriesFromSchema<L>>(configSettings: any, configSchema: L, lazyLoad?: boolean, configOptional?: boolean): Promise<FactoriesInstancesResolver<L, LF>>;

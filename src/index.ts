@@ -18,6 +18,7 @@ import * as JoiV from './joi-x-validators'
 import { ConfigFactories, IConfigFactory } from './config-factory';
 export {JoiV as JoiV}
 import {validateAsync} from './config-factory/config'
+import {MultiError, VError} from 'VError'
 
 export {describe as describeConfigSchema, validateAsync as validatConfigSchemaAsync} from './config-factory/config'
 
@@ -77,42 +78,56 @@ implements IConfigFactoriesInstances
     }
 }
 
+class Errors {
+    static readonly configurationMissing : string = "ConfigurationMissing:" + Math.round(Math.random() * 1000);
+    static readonly failedToNewFactory : string = "FailedToLoadFactory";
+}
+
+
 export async function LoadConfig<L extends JoiX.XObjectSchema, 
 LF = JoiX.ExtractWithFactoriesFromSchema<L>>
-(configSettings : any, configSchema : L, lazyLoad : boolean = false, configOptional : Error | null = null) : Promise<FactoriesInstancesResolver<L, LF>>
+(configSettings : any, configSchema : L, lazyLoad : boolean = false, configOptional : boolean = false) : Promise<FactoriesInstancesResolver<L, LF>>
 {
     const originalConfigSchema = _.cloneDeep(configSchema);
 
-    const children = JoiX.getXObjectChildrens(configSchema);
-
     if (configOptional)
+    {
+        const children = JoiX.getXObjectChildrens(configSchema);
+
         JoiX.OperateOnXObjectKeys(children, (key : string, schema : any, acc : any, config : any) => {
             (schema as Joi.AnySchema).optional();
-    }, (key : string, acc : any) => {}, null);
+        }, (key : string, acc : any) => {}, null);
+    }
 
-    const validateConfigSettings : any = await JoiX.validate(configSettings, originalConfigSchema);
+    const children = JoiX.getXObjectChildrens(originalConfigSchema);
 
-    let loadedConfig : any;
+    const validateConfigSettings : any = await JoiX.validate(configSettings, configSchema);
+
+    let loadedConfig : any = {};
     let factoryConfig : (() => IConfigFactory) [] = [];
 
-    JoiX.OperateOnXObjectKeys(children, (key : string, schema : any, acc : any, config : any) => {
+    JoiX.OperateOnXObjectKeys(children, async (key : string, schema : any, acc : any, configValue : any) => {
         
-        if (JoiX.isFactory(schema))
+        const factory = JoiX.findFactory(schema)
+        
+        if (factory)
         {
             const lazyLoader = () =>
             {
                 let factoryInstance : IConfigFactory | undefined = undefined
 
-                if (factoryInstance)
+                if (factoryInstance === undefined)
                 {
                     try
                     {
-                        factoryInstance = schema.__NewFactory(config[key]);
+                        factoryInstance = factory.__newFactory(configValue);
                     }
                     catch(e)
                     {
                         if (configOptional)
-                            throw new Error().message += JSON.stringify(e);
+                            throw new VError({name:Errors.configurationMissing, cause: e}, `factory at key [$key] missing`);
+                        else
+                            throw new VError({name:Errors.failedToNewFactory, cause: e}, `failed to new factory [$key]`);
                     }
                 }
 
@@ -127,17 +142,17 @@ LF = JoiX.ExtractWithFactoriesFromSchema<L>>
         }
         else
         {
-            let value = config[key];
+            let value = configValue;
 
             if (configOptional)
             {
                 try
                 {
-                    value = JoiX.validate(config[key], schema);
+                    value = await JoiX.validate(configValue, schema);
                 }
                 catch(e)
                 {
-                    throw new Error().message += JSON.stringify(e);
+                    throw new VError({name:Errors.configurationMissing, cause: e}, `factory at key [$key] missing`);
                 }
             }
 

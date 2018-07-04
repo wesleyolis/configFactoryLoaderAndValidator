@@ -49,11 +49,6 @@ export interface XAlternatives extends XBase {
 }
 export declare type XFactory<T> = XAlternativesSchema & {
     __factoryType: T;
-    __NewFactory: <T extends ({
-        factory: string;
-    } & JoiX.XTSchema)>(settings: T) => IConfigFactory;
-    configSchema: JoiX.XObjectSchema;
-    configSettings: JoiX.XTSchema;
 };
 export declare type ObjectChildren = {
     key: string;
@@ -98,12 +93,25 @@ export declare const LiteralString: <T extends string>(value: T[]) => JoiX.XStri
 export declare const LiteralNumber: <T extends number>(value: T[]) => JoiX.XNumberSchema<T>;
 export declare const LiteralBoolean: <T extends boolean>(value: T[]) => JoiX.XBooleanSchema<T>;
 export declare const enumString: <T extends string>(values: T[]) => JoiX.XStringSchema<T>;
-export declare const isFactory: (x: JoiX.XFactory<any>) => x is JoiX.XFactory<any>;
+export declare const findFactory: (x: any) => JoiX.FactoryMeta | undefined;
 export declare enum FactoryType {
-    issolated = 0,
-    dependent = 1,
-    manual = 2,
+    issolated = 1,
+    dependent = 2,
+    manual = 3,
 }
+export declare type FactoryMeta = {
+    __factoryType: FactoryType;
+    __newFactory: <T extends ({
+        factory: string;
+    } & JoiX.XTSchema)>(settings: T) => IConfigFactory;
+};
+export declare type FactoryMetaContainer = {
+    __factory: FactoryMeta;
+};
+export declare type XFactoryMeta = {
+    _meta: (FactoryMetaContainer)[];
+    meta: (meta: FactoryMetaContainer) => XFactoryMeta;
+};
 export declare const Factory: <FInteface>(type: JoiX.FactoryType, newFactory: (settings: any) => JoiX.IConfigFactory) => JoiX.XFactory<FInteface>;
 export declare type XBundle = (XObjectBundleSchema & {
     unqiueBundleName: string;
@@ -115,7 +123,7 @@ export declare function getXObjectChildren(obj: Joi.ObjectSchema): ObjectChildre
 export declare function isChildrenAnArray(children: ObjectChildren[] | (ObjectChildren | undefined)): children is ObjectChildren[];
 export declare function isXObjectAndHasChildren(obj: Joi.AnySchema): obj is ObjectSchemaHidden;
 export declare type acc = any;
-export declare function OperateOnXObjectKeys(children: ObjectChildren[] | (ObjectChildren | undefined), operate: (key: string, schema: Joi.AnySchema, acc: acc, config: any) => void, newObject: (key: string, acc: acc) => acc, acc: acc, config?: any): void;
+export declare function OperateOnXObjectKeys(children: ObjectChildren[] | (ObjectChildren | undefined), operate: (key: string, schema: Joi.AnySchema, acc: acc, configValue: any) => void, newObject: (key: string, acc: acc) => acc, acc: acc, config?: any): Promise<void>;
 export declare function isJoiError(err: any): err is Joi.ValidationError;
 export declare type IXSchema = _XSchema | IXSchemaMap;
 export interface IXSchemaMap {

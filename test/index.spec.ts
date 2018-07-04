@@ -4,110 +4,111 @@ import { IConfigFactory } from "../src/joi-x";
 import { ABaseConfigFactory } from "../src/config-factory/abase-config-factory";
 import { Factory, _NewFactory } from "../src/config-factory/config-factories";
 import * as chai from 'chai'
+import * as _ from 'lodash'
 
-const mongoDBSettings : ConfigSchema = {
-    factory : 'Network',     
-    class : CFT.ConfigFactoryClass.netService,
-    type : CFT.ConfigFactoryTypes.production,
-    provider : "mongodb",
-    credentials : {
-        username : 'myusername',
-        password : {
-            phrase : 'mypassword',
-            type : JoiV.PassType.plainText
-        }
-    },
-    database : 'database',
-    hosts : [{hostname:'myhostname', port : 3465}, {hostname:'myhostname2', port : 3467}],
-    options : {
-        op1 : 'opVal1',
-        op2 : 'opVal2'
-    }
-};
+// const mongoDBSettings : ConfigSchema = {
+//     factory : 'Network',     
+//     class : CFT.ConfigFactoryClass.netService,
+//     type : CFT.ConfigFactoryTypes.production,
+//     provider : "mongodb",
+//     credentials : {
+//         username : 'myusername',
+//         password : {
+//             phrase : 'mypassword',
+//             type : JoiV.PassType.plainText
+//         }
+//     },
+//     database : 'database',
+//     hosts : [{hostname:'myhostname', port : 3465}, {hostname:'myhostname2', port : 3467}],
+//     options : {
+//         op1 : 'opVal1',
+//         op2 : 'opVal2'
+//     }
+// };
 
-const staticConfig : FactoryConfigSchema = {
-    a:'a',
-    mongodb:  mongoDBSettings,
-    b: 'b'
-}
+// const staticConfig : FactoryConfigSchema = {
+//     a:'a',
+//     mongodb:  mongoDBSettings,
+//     b: 'b'
+// }
 
-export type FactoryConfigSchema = JoiX.ExtractFromSchema<typeof factoryConfigSchema>;
+// export type FactoryConfigSchema = JoiX.ExtractFromSchema<typeof factoryConfigSchema>;
 
-export const factoryConfigSchema = JoiX.object().keys({
-    a: JoiX.string().required(),
-    mongodb : configSchema,
-    b: JoiX.string().required()
-});
+// export const factoryConfigSchema = JoiX.object().keys({
+//     a: JoiX.string().required(),
+//     mongodb : configSchema,
+//     b: JoiX.string().required()
+// });
 
-export class ConfigBundle implements IConfigBundle
-{
-    async newBundleAndResolveConfigAsync(settings : JoiX.XJSchemaMap | undefined = undefined) : Promise<ConfigFactoryInstance>
-    {
-        const requireConfig = function (file : string) {
-            return staticConfig;
-        }
+// export class ConfigBundle implements IConfigBundle
+// {
+//     async newBundleAndResolveConfigAsync(settings : JoiX.XJSchemaMap | undefined = undefined) : Promise<ConfigFactoryInstance>
+//     {
+//         const requireConfig = function (file : string) {
+//             return staticConfig;
+//         }
 
-        let rawConfig = await IConfigBundle.newBundleAndResolveConfigAsync(settings, factoryConfigSchema, requireConfig);
+//         let rawConfig = await IConfigBundle.newBundleAndResolveConfigAsync(settings, factoryConfigSchema, requireConfig);
 
-        const config = JSON.parse(JSON.stringify(rawConfig)) as FactoryConfigSchema;
+//         const config = JSON.parse(JSON.stringify(rawConfig)) as FactoryConfigSchema;
 
-        const mongodbInstance = Factories.MongoDB.NewFactory(config.mongodb);
+//         const mongodbInstance = Factories.MongoDB.NewFactory(config.mongodb);
 
-        await mongodbInstance.createFactoryAsync(config.mongodb);
+//         await mongodbInstance.createFactoryAsync(config.mongodb);
 
-        const mongoConnectionStr : string = mongodbInstance.getConnectionString();
+//         const mongoConnectionStr : string = mongodbInstance.getConnectionString();
 
-        rawConfig['mongoConnectionString'] = mongoConnectionStr;
+//         rawConfig['mongoConnectionString'] = mongoConnectionStr;
 
-        return new ConfigFactoryInstance(config, mongodbInstance);
-    }
-}
+//         return new ConfigFactoryInstance(config, mongodbInstance);
+//     }
+// }
 
-export class ConfigFactoryInstance implements IConfigFactoriesInstances
-{
-    constructor(private config : FactoryConfigSchema, private mongodbInstance : IMongoSettings){
+// export class ConfigFactoryInstance implements IConfigFactoriesInstances
+// {
+//     constructor(private config : FactoryConfigSchema, private mongodbInstance : IMongoSettings){
 
-    }
+//     }
 
-    async startAsync() : Promise<void []>
-    {
-        return Promise.all([this.mongodbInstance.startAsync()]);
-    }
+//     async startAsync() : Promise<void []>
+//     {
+//         return Promise.all([this.mongodbInstance.startAsync()]);
+//     }
 
-    async stopAsync() : Promise<void []>
-    {
-        return Promise.all([this.mongodbInstance.stopAsync()]);
-    }
-}
+//     async stopAsync() : Promise<void []>
+//     {
+//         return Promise.all([this.mongodbInstance.stopAsync()]);
+//     }
+// }
 
-describe("Mongo Network Factory ConfigLoad and Inject\n", function()
-{
-    it("ensure always overwrite values in config, backwards compatability.", function() {
-        let config = require('config');
-        chai.expect(delete config.deletableKey).eq(true);
+// describe("Mongo Network Factory ConfigLoad and Inject\n", function()
+// {
+//     it("ensure always overwrite values in config, backwards compatability.", function() {
+//         let config = require('config');
+//         chai.expect(delete config.deletableKey).eq(true);
 
-        chai.expect(config).not.have.property('deletableKey');
-        chai.expect(config).to.have.property('a');
-        chai.expect(config).to.have.property('b');
-    });
+//         chai.expect(config).not.have.property('deletableKey');
+//         chai.expect(config).to.have.property('a');
+//         chai.expect(config).to.have.property('b');
+//     });
 
-    it("Resolves Configuration, returning ConfigBundleInstance, using passed in settings", async function () {
+//     it("Resolves Configuration, returning ConfigBundleInstance, using passed in settings", async function () {
 
-        const factoryInstances = await new ConfigBundle().newBundleAndResolveConfigAsync(staticConfig);
+//         const factoryInstances = await new ConfigBundle().newBundleAndResolveConfigAsync(staticConfig);
 
-        chai.expect((<any>staticConfig)['mongoConnectionString'])
-        .eql("mongodb://myusername:mypassword@myhostname:3465,myhostname2:3465/database?op1=opVal1&op2=opVal2");
-    });
+//         chai.expect((<any>staticConfig)['mongoConnectionString'])
+//         .eql("mongodb://myusername:mypassword@myhostname:3465,myhostname2:3465/database?op1=opVal1&op2=opVal2");
+//     });
 
-    it("Resolves Configuration, returning ConfigBundleInstance, using a mock config load", async function () {
+//     it("Resolves Configuration, returning ConfigBundleInstance, using a mock config load", async function () {
 
-        const factoryInstances = await new ConfigBundle().newBundleAndResolveConfigAsync();
+//         const factoryInstances = await new ConfigBundle().newBundleAndResolveConfigAsync();
 
-        chai.expect((<any>staticConfig)['mongoConnectionString'])
-        .eql("mongodb://myusername:mypassword@myhostname:3465,myhostname2:3465/database?op1=opVal1&op2=opVal2"); 
-    });
+//         chai.expect((<any>staticConfig)['mongoConnectionString'])
+//         .eql("mongodb://myusername:mypassword@myhostname:3465,myhostname2:3465/database?op1=opVal1&op2=opVal2"); 
+//     });
     
-});
+// });
 
 export interface IConfigFactoryMongo extends IConfigFactory, MockConfigInterface
 {
@@ -120,17 +121,19 @@ export interface MockConfigInterface
     valueB : number
 }
 
-export type FactoryAConfigSchema = JoiX.ExtractFromSchema<typeof factoryAConfigSchema>;
-
-export const factoryAConfigSchema = JoiX.object().keys({
-    FactoryA : JoiX.string().required()
-}).required();
-
-export const factoryAConfigSchemaKind = factoryAConfigSchema.keys({
-    factory : JoiX.kind("FactoryA")
-}).required();
+export type FactoryAConfigSchema = JoiX.ExtractFromSchema<typeof factoryAConfigSchemaKind>;
 
 export const factoryAName : string = "MockFactoryA";
+
+export const factoryAConfigSchema = JoiX.object().keys({
+    FactoryA : JoiX.string().required(),
+    class : JoiX.LiteralString([CFT.ConfigFactoryClass.netService]).required(),
+    type : JoiX.LiteralString([CFT.ConfigFactoryTypes.production]).required()
+});
+
+export const factoryAConfigSchemaKind = factoryAConfigSchema.keys({
+    factory : JoiX.kind(factoryAName)
+});
 
 export class FactoryA<T extends FactoryAConfigSchema> extends ABaseConfigFactory implements MockConfigInterface, IConfigFactoryMongo
 { 
@@ -138,8 +141,8 @@ export class FactoryA<T extends FactoryAConfigSchema> extends ABaseConfigFactory
     valueB: number = 234;
     
     readonly factoryName = factoryAName;
-    readonly factoryClass: CFT.ConfigFactoryClass = CFT.ConfigFactoryClass.module;
-    readonly type: CFT.ConfigFactoryTypes.mock = CFT.ConfigFactoryTypes.mock;
+    readonly factoryClass: CFT.ConfigFactoryClass = CFT.ConfigFactoryClass.netService;
+    readonly type: CFT.ConfigFactoryTypes = CFT.ConfigFactoryTypes.production;
     readonly configSchema  = factoryAConfigSchema;
 
     static NewInstance()
@@ -168,17 +171,20 @@ export class FactoryA<T extends FactoryAConfigSchema> extends ABaseConfigFactory
     }
 }
 
-export type FactoryBConfigSchema = JoiX.ExtractFromSchema<typeof factoryBConfigSchema>;
+
+export const factoryBName : string = "MockFactoryB";
+
+export type FactoryBConfigSchema = JoiX.ExtractFromSchema<typeof factoryBConfigSchemaKind>;
 
 export const factoryBConfigSchema = JoiX.object().keys({
-    FactoryB : JoiX.string().required()
+    FactoryB : JoiX.string().required(),
+    class : JoiX.LiteralString([CFT.ConfigFactoryClass.module]).required(),
+    type : JoiX.LiteralString([CFT.ConfigFactoryTypes.mock]).required(),
 })
 
 export const factoryBConfigSchemaKind = factoryBConfigSchema.keys({
-    factory : JoiX.kind("FactoryB")
+    factory : JoiX.kind(factoryBName)
 });
-
-export const factoryBName : string = "MockFactoryB";
 
 export class FactoryB<T extends FactoryBConfigSchema> extends ABaseConfigFactory implements MockConfigInterface, IConfigFactoryMongo
 { 
@@ -187,7 +193,7 @@ export class FactoryB<T extends FactoryBConfigSchema> extends ABaseConfigFactory
 
     readonly factoryName = factoryBName;
     readonly factoryClass: CFT.ConfigFactoryClass = CFT.ConfigFactoryClass.module;
-    readonly type: CFT.ConfigFactoryTypes.mock = CFT.ConfigFactoryTypes.mock;
+    readonly type: CFT.ConfigFactoryTypes = CFT.ConfigFactoryTypes.mock;
     readonly configSchema  = factoryBConfigSchema;
 
     static NewInstance()
@@ -234,7 +240,7 @@ export function NewABFactory(settings : any) : IConfigFactoryMongo {
 
 
     
-export const factoryABConfigSchema = JoiX.Factory<MockConfigInterface>(JoiX.FactoryType.issolated, NewABFactory).try([factoryAConfigSchema, factoryBConfigSchema]).required();
+export const factoryABConfigSchema = JoiX.Factory<MockConfigInterface>(JoiX.FactoryType.issolated, NewABFactory).try([factoryAConfigSchemaKind, factoryBConfigSchemaKind]).required();
 
 describe("Configurations loader and validator routines", () => {
 
@@ -246,38 +252,135 @@ describe("Configurations loader and validator routines", () => {
             h : JoiX.string().required()
         },
         p : {
-            k : factoryABConfigSchema
+            k : JoiX.Factory<MockConfigInterface>(JoiX.FactoryType.issolated, NewABFactory).try([factoryAConfigSchemaKind, factoryBConfigSchemaKind]).required()
+
         }
     });
 
-    it("Test", async function() {
+    let settings = {
+        a : "abc",
+        b : 555,
+        c : {
+            g : "def",
+            h : "hij"
+        },
+        p : {
+            k : undefined as any
+        }
+    };
+
+    const factoryA = {
+        factory : "MockFactoryA",
+        class : "NetworkService",
+        type: "Production",
+        FactoryA : "FactoryAAA"
+    } as FactoryAConfigSchema
+
+    const factoryB = {
+        factory : "MockFactoryB",
+        class : "Module",
+        type: "Mock",
+        FactoryB : "FactoryBBB"
+    } as FactoryBConfigSchema
+
+
+    function validateAll(instances : any)
+    {
+        chai.expect(instances.config).to.have.property('a').eq('abc');
+        chai.expect(instances.config).to.have.property('b').equal(555);
+        chai.expect(instances.config).to.have.property('c');
+        chai.expect(instances.config.c).to.have.property('g').equal('def');
+        chai.expect(instances.config.c).to.have.property('h').equal('hij');
+        chai.expect(instances.config).to.have.property('p');
+        chai.expect(instances.config.p).to.have.property('k');
+    }
+
+    function validateFactoryA(instances : any)
+    {
+        chai.expect(instances.config.p.k).to.have.property('valueA').to.equal('FactoryValueA');
+        chai.expect(instances.config.p.k).to.have.property('valueB').to.equal(234);
+    }
+
+    function validateFactoryB(instances : any)
+    {
+
+        chai.expect(instances.config.p.k).to.have.property('valueA').to.equal('FactoryValueB');
+        chai.expect(instances.config.p.k).to.have.property('valueB').to.equal(768);
+    }
+
+    it("FactoryA - upfront", async function() {
         
-        const settings = {
-            a : "abc",
-            b : 555,
-            c : {
-                g : "def",
-                h : "hij"
-            },
-            p : {
-                k : {
-                    factory : "FactoryA",
-                    FactoryA : "FactoryAAA"
-                } as FactoryAConfigSchema
-            }
-        };
+        let settingsWithFactoryA = _.cloneDeep(settings);
+        settingsWithFactoryA.p.k = factoryA;
 
-        const instances = await LoadConfig(settings, schema);
-       // instances.startAsync();
-
-       // instances.config.p.k.
+        const instances = await LoadConfig(settingsWithFactoryA, schema);
        
+        validateAll(instances);
+        validateFactoryA(instances);
+    });
 
-        //instances.startAsync();
-        //instances.stopAsync();
+
+    it("FactoryA - lazy", async function() {
         
+        let settingsWithFactoryA = _.cloneDeep(settings);
+        settingsWithFactoryA.p.k = factoryA;
+
+        const instances = await LoadConfig(settingsWithFactoryA, schema, true);
+       
+        validateAll(instances);
+        validateFactoryA(instances);
+    });
 
 
+    it("FactoryB - upfront", async function() {
+        
+        let settingsWithFactoryA = _.cloneDeep(settings);
+        settingsWithFactoryA.p.k = factoryB;
 
+        const instances = await LoadConfig(settingsWithFactoryA, schema);
+       
+        
+        validateAll(instances);
+        validateFactoryB(instances);
+    });
+
+    it("FactoryB - lazy", async function() {
+        
+        let settingsWithFactoryA = _.cloneDeep(settings);
+        settingsWithFactoryA.p.k = factoryB;
+
+        const instances = await LoadConfig(settingsWithFactoryA, schema, true);
+        
+        validateAll(instances);
+        validateFactoryB(instances);
+    });
+
+
+    describe("lazy loading, and throw error is config parameter missing", () =>
+    {
+        it("FactoryA - all config present", async function() {
+            
+            let settingsWithFactoryA = _.cloneDeep(settings);
+            settingsWithFactoryA.p.k = factoryA;
+
+            const instances = await LoadConfig(settingsWithFactoryA, schema, true, true);
+        
+            validateAll(instances);
+            validateFactoryA(instances);
+        });
+
+        it("FactoryB - all config present", async function() {
+            
+            let settingsWithFactoryA = _.cloneDeep(settings);
+            settingsWithFactoryA.p.k = factoryB;
+
+            const instances = await LoadConfig(settingsWithFactoryA, schema, true, true);
+            
+            validateAll(instances);
+            validateFactoryB(instances);
+        });
+
+        // ToDo, add bunch of empty missing varible test cases that should throw and error.
+        // Then also test the factory loading, to ensure that start and stop can be triggered correctly.
     });
 });

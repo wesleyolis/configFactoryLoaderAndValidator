@@ -2,6 +2,7 @@ import * as Joi from 'joi';
 import {If, ObjectHasKey, ObjectOverwrite} from 'typelevel-ts';
 import { JoiX } from '.';
 import { IConfigFactory } from './config-factory';
+import { settings } from 'cluster';
 export * from 'joi';
 
 export {IConfigFactory}
@@ -49,10 +50,6 @@ export interface XAlternatives extends XBase {
 // Using symbols, would be the best thing ever, for this type of hacking.
 export type XFactory<T> = XAlternativesSchema & {
   __factoryType : T
-  __NewFactory : <T extends ({factory: string} & JoiX.XTSchema)>(settings : T) => IConfigFactory
-
-
-configSchema : JoiX.XObjectSchema, configSettings : JoiX.XTSchema
 }
 
 export type ObjectChildren = {
@@ -100,26 +97,55 @@ export const LiteralNumber = <T extends number>(value : T[]) => Joi.number().all
 export const LiteralBoolean = <T extends boolean>(value : T[]) => Joi.boolean().allow(value) as XBooleanSchema<T>
 export const enumString = <T extends string>(values : T []) => Joi.string().allow(values) as XStringSchema<T>
 
-
-export const isFactory = (x : XFactory<any>) : x is XFactory<any> =>
+export const findFactory = (x : any) : FactoryMeta | undefined=>
 {
-  return x.__factoryType !== null;
+  let factory : FactoryMetaContainer [] | undefined = undefined;
+  
+  if ((x as any as XFactoryMeta)._meta)
+  {
+    factory = (x as any as XFactoryMeta)._meta.filter(m => (m && m['__factory'] !== undefined));
+  }
+
+  if (factory == undefined || factory.length === 0)
+    return undefined;
+  else
+    return factory[0].__factory;
 }
 
 export enum FactoryType
 {
-  issolated,
-  dependent,
-  manual
+  issolated = 1,
+  dependent = 2,
+  manual = 3
 }
+
+export type FactoryMeta = {
+  __factoryType : FactoryType,
+  __newFactory : <T extends ({factory: string} & JoiX.XTSchema)>(settings : T) => IConfigFactory
+}
+
+export type FactoryMetaContainer = {
+  __factory : FactoryMeta
+}
+
+export type XFactoryMeta =
+{
+  _meta : (FactoryMetaContainer)[] 
+  meta : (meta : FactoryMetaContainer) => XFactoryMeta // this is an internal hack so I don't really care, what it returns, shouldb't be chaning with this hack.
+} 
+
 
 export const Factory = <FInteface>(type : FactoryType, newFactory : (settings : any) => IConfigFactory) => {
   
-  const factory = Joi.alternatives() as any;
-  factory.__factoryType = type;
-  factory.__NewFactory = newFactory
+  let factory = (Joi.alternatives() as any) as XFactoryMeta;
+
+  factory = factory.meta({
+    __factory: {
+      __factoryType : type,
+      __newFactory : newFactory
+    }});
   
-  return factory as XFactory<FInteface>;
+  return (factory as any) as XFactory<FInteface>;
 }
 
 export type XBundle = (XObjectBundleSchema & {unqiueBundleName : string});
@@ -172,29 +198,30 @@ export function isXObjectAndHasChildren(obj : Joi.AnySchema) : obj is ObjectSche
 
 export type acc = any;
 
-export function OperateOnXObjectKeys(children : ObjectChildren [] | (ObjectChildren | undefined),
-operate : (key : string, schema : Joi.AnySchema, acc : acc, config : any) => void,
+export async function OperateOnXObjectKeys(
+children : ObjectChildren [] | (ObjectChildren | undefined),
+operate : (key : string, schema : Joi.AnySchema, acc : acc, configValue : any) => void,
 newObject : (key : string, acc : acc) => acc,
 acc : acc, config : any = undefined)
 {
   if (isChildrenAnArray(children))
   {
-    children.map(child => {
+    children.map(async child => {
 
       if (isXObjectAndHasChildren(child.schema))
       {
         const newAcc = newObject(child.key, acc);
-        OperateOnXObjectKeys(child.schema._inner.children, operate, newObject, newAcc, config && config[child.key])
+        await OperateOnXObjectKeys(child.schema._inner.children, operate, newObject, newAcc, config && config[child.key])
       }
       else if (child !== undefined)
       {
-        operate(child.key, child.schema, acc, config && config[child.key]);
+        await operate(child.key, child.schema, acc, config && config[child.key]);
       }
     });
   }
   else if (children !== undefined)
   {
-    operate(children.key, children.schema, acc, config && config[children.key]);
+    await operate(children.key, children.schema, acc, config && config[children.key]);
   }
 }
 
@@ -304,6 +331,7 @@ export type _ExtractFromObject<T>
    }
 */
 
+/*
 const objectSchema = {
   numberRequired: number().required().min(100).max(200),
   numberNotRequired: number().min(100).allow(null),
@@ -335,7 +363,7 @@ const instanyce: ExtractFromObject<typeof objectSchema>= {
     a1: 2
   }]
 };
-
+*/
 
 export type _ExtractFromSchema<T> = _ExtractFromObject<{__tsTypeO: T}>['__tsTypeO']
 
