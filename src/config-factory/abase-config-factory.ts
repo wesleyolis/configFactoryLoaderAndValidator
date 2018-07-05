@@ -45,8 +45,6 @@ export abstract class ABaseConfigFactory extends Config implements IConfigFactor
         }
         
         this._created = true;
-
-        return Promise.resolve();
     }
 
     startAsync () : Promise<void>

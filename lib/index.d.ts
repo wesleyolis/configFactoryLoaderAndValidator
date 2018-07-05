@@ -27,7 +27,7 @@ export interface IConfigFactoriesInstancesResolver extends IConfigFactoriesInsta
 export declare class FactoriesInstancesResolver<L extends JoiX.XObjectSchema, LF = JoiX.ExtractWithFactoriesFromSchema<L>> implements IConfigFactoriesInstances {
     config: LF;
     private factoryInstances;
-    constructor(config: LF, factoryInstances: (() => IConfigFactory)[]);
+    constructor(config: LF, factoryInstances: (() => Promise<IConfigFactory>)[]);
     startAsync(): Promise<void[]>;
     stopAsync(): Promise<void[]>;
 }

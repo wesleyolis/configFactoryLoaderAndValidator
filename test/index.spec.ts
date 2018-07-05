@@ -252,12 +252,11 @@ describe("Configurations loader and validator routines", () => {
             h : JoiX.string().required()
         },
         p : {
-            k : JoiX.Factory<MockConfigInterface>(JoiX.FactoryType.issolated, NewABFactory).try([factoryAConfigSchemaKind, factoryBConfigSchemaKind]).required()
-
+            Mockfactory : factoryABConfigSchema
         }
     });
 
-    let settings = {
+    const settings = {
         a : "abc",
         b : 555,
         c : {
@@ -265,7 +264,7 @@ describe("Configurations loader and validator routines", () => {
             h : "hij"
         },
         p : {
-            k : undefined as any
+            Mockfactory : undefined as any
         }
     };
 
@@ -292,67 +291,66 @@ describe("Configurations loader and validator routines", () => {
         chai.expect(instances.config.c).to.have.property('g').equal('def');
         chai.expect(instances.config.c).to.have.property('h').equal('hij');
         chai.expect(instances.config).to.have.property('p');
-        chai.expect(instances.config.p).to.have.property('k');
+        chai.expect(instances.config.p).to.have.property('Mockfactory');
     }
 
-    function validateFactoryA(instances : any)
+    async function validateFactoryAAsync(instances : any)
     {
-        chai.expect(instances.config.p.k).to.have.property('valueA').to.equal('FactoryValueA');
-        chai.expect(instances.config.p.k).to.have.property('valueB').to.equal(234);
+        chai.expect(await instances.config.p.Mockfactory).to.have.property('valueA').to.equal('FactoryValueA');
+        chai.expect(await instances.config.p.Mockfactory).to.have.property('valueB').to.equal(234);
     }
 
-    function validateFactoryB(instances : any)
+    async function validateFactoryBAsync(instances : any)
     {
 
-        chai.expect(instances.config.p.k).to.have.property('valueA').to.equal('FactoryValueB');
-        chai.expect(instances.config.p.k).to.have.property('valueB').to.equal(768);
+        chai.expect(await instances.config.p.Mockfactory).to.have.property('valueA').to.equal('FactoryValueB');
+        chai.expect(await instances.config.p.Mockfactory).to.have.property('valueB').to.equal(768);
     }
 
     it("FactoryA - upfront", async function() {
         
         let settingsWithFactoryA = _.cloneDeep(settings);
-        settingsWithFactoryA.p.k = factoryA;
+        settingsWithFactoryA.p.Mockfactory = factoryA;
 
         const instances = await LoadConfig(settingsWithFactoryA, schema);
-       
+
         validateAll(instances);
-        validateFactoryA(instances);
+        await validateFactoryAAsync(instances);
     });
 
 
     it("FactoryA - lazy", async function() {
         
         let settingsWithFactoryA = _.cloneDeep(settings);
-        settingsWithFactoryA.p.k = factoryA;
+        settingsWithFactoryA.p.Mockfactory = factoryA;
 
         const instances = await LoadConfig(settingsWithFactoryA, schema, true);
        
         validateAll(instances);
-        validateFactoryA(instances);
+        await validateFactoryAAsync(instances);
     });
 
 
     it("FactoryB - upfront", async function() {
         
         let settingsWithFactoryA = _.cloneDeep(settings);
-        settingsWithFactoryA.p.k = factoryB;
+        settingsWithFactoryA.p.Mockfactory = factoryB;
 
-        const instances = await LoadConfig(settingsWithFactoryA, schema);
-       
+        const instances = await LoadConfig(settingsWithFactoryA, schema)
         
         validateAll(instances);
-        validateFactoryB(instances);
+        await validateFactoryBAsync(instances);
     });
 
     it("FactoryB - lazy", async function() {
         
         let settingsWithFactoryA = _.cloneDeep(settings);
-        settingsWithFactoryA.p.k = factoryB;
+        settingsWithFactoryA.p.Mockfactory = factoryB;
 
         const instances = await LoadConfig(settingsWithFactoryA, schema, true);
         
         validateAll(instances);
-        validateFactoryB(instances);
+        await validateFactoryBAsync(instances);
     });
 
 
@@ -361,26 +359,31 @@ describe("Configurations loader and validator routines", () => {
         it("FactoryA - all config present", async function() {
             
             let settingsWithFactoryA = _.cloneDeep(settings);
-            settingsWithFactoryA.p.k = factoryA;
+            settingsWithFactoryA.p.Mockfactory = factoryA;
 
             const instances = await LoadConfig(settingsWithFactoryA, schema, true, true);
         
             validateAll(instances);
-            validateFactoryA(instances);
+            await validateFactoryAAsync(instances);
         });
 
         it("FactoryB - all config present", async function() {
             
             let settingsWithFactoryA = _.cloneDeep(settings);
-            settingsWithFactoryA.p.k = factoryB;
+            settingsWithFactoryA.p.Mockfactory = factoryB;
 
             const instances = await LoadConfig(settingsWithFactoryA, schema, true, true);
+
+            await instances;
+
+            instances.config.p.Mockfactory.then
             
             validateAll(instances);
-            validateFactoryB(instances);
+            await validateFactoryBAsync(instances);
         });
 
         // ToDo, add bunch of empty missing varible test cases that should throw and error.
         // Then also test the factory loading, to ensure that start and stop can be triggered correctly.
     });
 });
+

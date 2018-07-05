@@ -25,7 +25,7 @@ describe("JoiX binds with Joi", () =>
         }
     });
 
-    it("OperateOnXObjectKeys", () =>
+    it("OperateOnXObjectKeys", async () =>
     {
         const objecSchema = JoiX.object().keys({
             a : JoiX.string(),
@@ -40,7 +40,7 @@ describe("JoiX binds with Joi", () =>
 
         let extractedKeys : any = {};
 
-        JoiX.OperateOnXObjectKeys(children, (key, schema, acc)  => {
+        await JoiX.OperateOnXObjectKeys(children, async (key, schema, acc)  => {
             acc[key] = schema;
         },
         (key, acc) => {

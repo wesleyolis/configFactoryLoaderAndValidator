@@ -200,29 +200,33 @@ export type acc = any;
 
 export async function OperateOnXObjectKeys(
 children : ObjectChildren [] | (ObjectChildren | undefined),
-operate : (key : string, schema : Joi.AnySchema, acc : acc, configValue : any) => void,
+operate : (key : string, schema : Joi.AnySchema, acc : acc, configValue : any) => Promise<void>,
 newObject : (key : string, acc : acc) => acc,
-acc : acc, config : any = undefined)
+acc : acc, config : any = undefined) : Promise<void>
 {
   if (isChildrenAnArray(children))
   {
-    children.map(async child => {
+      for (let i = 0; i < children.length; i++)
+      {
+        const child = children[i];
 
-      if (isXObjectAndHasChildren(child.schema))
-      {
-        const newAcc = newObject(child.key, acc);
-        await OperateOnXObjectKeys(child.schema._inner.children, operate, newObject, newAcc, config && config[child.key])
+        if (isXObjectAndHasChildren(child.schema))
+        {
+          const newAcc = newObject(child.key, acc);
+          await OperateOnXObjectKeys(child.schema._inner.children, operate, newObject, newAcc, config && config[child.key])
+        }
+        else if (child !== undefined)
+        {
+          await operate(child.key, child.schema, acc, config && config[child.key]);
+        }
       }
-      else if (child !== undefined)
-      {
-        await operate(child.key, child.schema, acc, config && config[child.key]);
-      }
-    });
   }
   else if (children !== undefined)
   {
     await operate(children.key, children.schema, acc, config && config[children.key]);
   }
+
+  const test = acc;
 }
 
 export function isJoiError(err: any): err is Joi.ValidationError {
@@ -389,7 +393,7 @@ export type _ExtractWithFactoriesFromObject<T>
  = 
    {
   [P in keyof T]: 
-  T[P] extends {__factoryType:any} ? T[P]['__factoryType'] :
+  T[P] extends {__factoryType:any} ? Promise<T[P]['__factoryType']> :
   T[P] extends {__tsType:any} ? ExtractRequired<T[P], ExtractNull<T[P], T[P]['__tsType']>> :
   T[P] extends {__tsTypeAr:any} ? ExtractRequired<T[P], ExtractNull<T[P],_ExtractWithFactoriesFromObject<T[P]>['__tsTypeAr']>> [] :
   T[P] extends {__tsTypeO:any} ?  ExtractRequired<T[P], ExtractNull<T[P],_ExtractWithFactoriesFromObject<T[P]>['__tsTypeO']>> : 

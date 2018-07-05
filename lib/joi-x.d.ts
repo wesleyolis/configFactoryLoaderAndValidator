@@ -123,7 +123,7 @@ export declare function getXObjectChildren(obj: Joi.ObjectSchema): ObjectChildre
 export declare function isChildrenAnArray(children: ObjectChildren[] | (ObjectChildren | undefined)): children is ObjectChildren[];
 export declare function isXObjectAndHasChildren(obj: Joi.AnySchema): obj is ObjectSchemaHidden;
 export declare type acc = any;
-export declare function OperateOnXObjectKeys(children: ObjectChildren[] | (ObjectChildren | undefined), operate: (key: string, schema: Joi.AnySchema, acc: acc, configValue: any) => void, newObject: (key: string, acc: acc) => acc, acc: acc, config?: any): Promise<void>;
+export declare function OperateOnXObjectKeys(children: ObjectChildren[] | (ObjectChildren | undefined), operate: (key: string, schema: Joi.AnySchema, acc: acc, configValue: any) => Promise<void>, newObject: (key: string, acc: acc) => acc, acc: acc, config?: any): Promise<void>;
 export declare function isJoiError(err: any): err is Joi.ValidationError;
 export declare type IXSchema = _XSchema | IXSchemaMap;
 export interface IXSchemaMap {
@@ -169,7 +169,7 @@ export declare type _ExtractWithFactoriesFromSchema<T> = _ExtractWithFactoriesFr
 export declare type _ExtractWithFactoriesFromObject<T> = {
     [P in keyof T]: T[P] extends {
         __factoryType: any;
-    } ? T[P]['__factoryType'] : T[P] extends {
+    } ? Promise<T[P]['__factoryType']> : T[P] extends {
         __tsType: any;
     } ? ExtractRequired<T[P], ExtractNull<T[P], T[P]['__tsType']>> : T[P] extends {
         __tsTypeAr: any;

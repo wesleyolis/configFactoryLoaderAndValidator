@@ -63,18 +63,18 @@ LF = JoiX.ExtractWithFactoriesFromSchema<L>
 > 
 implements IConfigFactoriesInstances
 {
-    constructor (public config : LF, private factoryInstances : (() => IConfigFactory)[])
+    constructor (public config : LF, private factoryInstances : (() => Promise<IConfigFactory>)[])
     {
     }
 
     startAsync() : Promise<void []>
     {
-        return Promise.all(this.factoryInstances.map(f => f().startAsync()));
+        return Promise.all(this.factoryInstances.map(f => f().then((self) => self.startAsync())));
     }
 
     stopAsync() : Promise<void []>
     {
-        return Promise.all(this.factoryInstances.map(f => f().stopAsync()));
+        return Promise.all(this.factoryInstances.map(f => f().then((self) => self.stopAsync())));
     }
 }
 
@@ -82,7 +82,6 @@ class Errors {
     static readonly configurationMissing : string = "ConfigurationMissing:" + Math.round(Math.random() * 1000);
     static readonly failedToNewFactory : string = "FailedToLoadFactory";
 }
-
 
 export async function LoadConfig<L extends JoiX.XObjectSchema, 
 LF = JoiX.ExtractWithFactoriesFromSchema<L>>
@@ -94,7 +93,7 @@ LF = JoiX.ExtractWithFactoriesFromSchema<L>>
     {
         const children = JoiX.getXObjectChildrens(configSchema);
 
-        JoiX.OperateOnXObjectKeys(children, (key : string, schema : any, acc : any, config : any) => {
+        JoiX.OperateOnXObjectKeys(children, async (key : string, schema : any, acc : any, config : any) => {
             (schema as Joi.AnySchema).optional();
         }, (key : string, acc : any) => {}, null);
     }
@@ -104,59 +103,69 @@ LF = JoiX.ExtractWithFactoriesFromSchema<L>>
     const validateConfigSettings : any = await JoiX.validate(configSettings, configSchema);
 
     let loadedConfig : any = {};
-    let factoryConfig : (() => IConfigFactory) [] = [];
+    let factoryConfig : (() => Promise<IConfigFactory>) [] = [];
 
-    JoiX.OperateOnXObjectKeys(children, async (key : string, schema : any, acc : any, configValue : any) => {
+    await JoiX.OperateOnXObjectKeys(children, async (key : string, schema : any, acc : any, configValue : any) : Promise<void> => {
         
         const factory = JoiX.findFactory(schema)
         
         if (factory)
         {
-            const lazyLoader = () =>
-            {
-                let factoryInstance : IConfigFactory | undefined = undefined
+            let factoryInstance : IConfigFactory | undefined = undefined;
 
+            const lazyLoader = async () =>
+            {
                 if (factoryInstance === undefined)
                 {
                     try
                     {
                         factoryInstance = factory.__newFactory(configValue);
+                        
+                        await factoryInstance.createFactoryAsync(configValue);
+
+                        if (lazyLoad)
+                            await factoryInstance.startAsync();
                     }
                     catch(e)
                     {
                         if (configOptional)
-                            throw new VError({name:Errors.configurationMissing, cause: e}, `factory at key [$key] missing`);
+                            throw new VError({name:Errors.configurationMissing, cause: e}, `factory at key [${key}] missing`);
                         else
-                            throw new VError({name:Errors.failedToNewFactory, cause: e}, `failed to new factory [$key]`);
+                            throw new VError({name:Errors.failedToNewFactory, cause: e}, `failed to new factory [${key}]`);
                     }
                 }
 
                 return factoryInstance as IConfigFactory;
             }
 
-            if (!lazyLoad)
-                lazyLoader();
+            let lazyLoaderPromise: () => Promise<IConfigFactory> = () => {return lazyLoader()};
+            
+            if (!lazyLoad) {
+                const resolved =  await lazyLoader();
+                lazyLoaderPromise = () => Promise.resolve(resolved);
+            }
 
-            factoryConfig.push(lazyLoader);
-            Object.defineProperty(acc, key, { get : lazyLoader });
+            factoryConfig.push(lazyLoaderPromise);
+            Object.defineProperty(acc, key, { get : lazyLoaderPromise });
         }
         else
         {
-            let value = configValue;
+            let propertyValue : () => string = () => configValue;
 
             if (configOptional)
             {
                 try
                 {
-                    value = await JoiX.validate(configValue, schema);
+                    const value = await JoiX.validate(configValue, schema);
+                    propertyValue = () => value;
                 }
                 catch(e)
                 {
-                    throw new VError({name:Errors.configurationMissing, cause: e}, `factory at key [$key] missing`);
+                    propertyValue = () => {throw new VError({name:Errors.configurationMissing, cause: e}, `factory at key [${key}] missing`)};
                 }
             }
 
-            acc[key] = value;
+            Object.defineProperty(acc, key, { get : propertyValue });
         }
     },
     (key : string, acc : any) => {
