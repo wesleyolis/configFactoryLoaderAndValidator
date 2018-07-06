@@ -78,7 +78,7 @@ implements IConfigFactoriesInstances
     }
 }
 
-class Errors {
+export class LoadConfigErrors {
     static readonly configurationMissing : string = "ConfigurationMissing:" + Math.round(Math.random() * 1000);
     static readonly failedToNewFactory : string = "FailedToLoadFactory";
 }
@@ -91,11 +91,62 @@ LF = JoiX.ExtractWithFactoriesFromSchema<L>>
 
     if (configOptional)
     {
+        const optionalConfigSchema : {ref:JoiX.XObjectSchema} = {ref:JoiX.object()};
+
         const children = JoiX.getXObjectChildrens(configSchema);
 
-        JoiX.OperateOnXObjectKeys(children, async (key : string, schema : any, acc : any, config : any) => {
-            (schema as Joi.AnySchema).optional();
-        }, (key : string, acc : any) => {}, null);
+        try
+        {
+            // await JoiX.OperateOnXObjectKeys(children, async (key : string, schema : any, acc : {ref:JoiX.XObjectSchema}, config : any) => {
+                
+            //     let object : Record<string,JoiX.AnySchema> = {};
+            //     object[key] = (schema as Joi.AnySchema).optional();
+
+            //     acc.ref = acc.ref.keys(object);
+
+            // }, (key : string, acc : {ref : JoiX.XObjectSchema}) => {
+
+            //     let object = JoiX.object();
+
+            //     let keysObject : Record<string, JoiX.AnySchema> = {};
+            //     keysObject[key] = object;
+
+            //     // has to be delayed.
+            //     acc.ref = acc.ref.keys(keysObject);
+                
+            //     return {ref : object};
+            // }, (key : string, parentAcc, acc ) => {
+
+            //     return parentAcc
+            // },
+            // {ref:optionalConfigSchema});
+
+            await JoiX.OperateOnXObjectKeys<{ref:JoiX.XObjectSchema}>(children, async (key : string, schema : any, acc : {ref : JoiX.XObjectSchema}, config : any) => {
+                
+                let keysObject : Record<string,JoiX.AnySchema> = {};
+                keysObject[key] = (schema as Joi.AnySchema).optional();
+
+                acc.ref = acc.ref.keys(keysObject);
+
+            }, (key : string, schema : any, acc) => {
+
+                return {ref:_.cloneDeep(schema)};
+
+            }, (key : string, parentAcc, acc ) => {
+
+                let keysObject : Record<string, JoiX.AnySchema> = {};
+                keysObject[key] = acc.ref;
+
+                return {ref: parentAcc.ref.keys(keysObject)};
+            },
+            optionalConfigSchema);
+        }
+        catch(e)
+        {
+            console.log(JSON.stringify(e));
+        }
+
+        (configSchema as JoiX.XObjectSchema) = optionalConfigSchema.ref;
     }
 
     const children = JoiX.getXObjectChildrens(originalConfigSchema);
@@ -129,9 +180,9 @@ LF = JoiX.ExtractWithFactoriesFromSchema<L>>
                     catch(e)
                     {
                         if (configOptional)
-                            throw new VError({name:Errors.configurationMissing, cause: e}, `factory at key [${key}] missing`);
+                            throw new VError({name:LoadConfigErrors.configurationMissing, cause: e}, `factory at key [${key}] missing`);
                         else
-                            throw new VError({name:Errors.failedToNewFactory, cause: e}, `failed to new factory [${key}]`);
+                            throw new VError({name:LoadConfigErrors.failedToNewFactory, cause: e}, `failed to new factory [${key}]`);
                     }
                 }
 
@@ -161,7 +212,7 @@ LF = JoiX.ExtractWithFactoriesFromSchema<L>>
                 }
                 catch(e)
                 {
-                    propertyValue = () => {throw new VError({name:Errors.configurationMissing, cause: e}, `factory at key [${key}] missing`)};
+                    propertyValue = () => {throw new VError({name:LoadConfigErrors.configurationMissing, cause: e}, `factory at key [${key}] missing`)};
                 }
             }
 
@@ -169,9 +220,14 @@ LF = JoiX.ExtractWithFactoriesFromSchema<L>>
         }
     },
     (key : string, acc : any) => {
-        acc[key] = {};
-        return acc[key];
-    }, loadedConfig, validateConfigSettings);
+        return {};
+    },
+    (key, parentAcc, acc) => {
+
+        parentAcc[key] = acc;
+        return parentAcc;
+    },
+    loadedConfig, validateConfigSettings);
 
     return Promise.resolve(new FactoriesInstancesResolver(loadedConfig, factoryConfig));
 }

@@ -59,6 +59,16 @@ export declare type ObjectSchemaHidden = Joi.ObjectSchema & {
         children: ObjectChildren[];
     };
 };
+export declare type ArraySchemaHidden = Joi.ArraySchema & {
+    _inner: {
+        items: Joi.AnySchema[];
+    };
+};
+export declare type AlternativesSchemaHidden = Joi.AlternativesSchema & {
+    _inner: {
+        matches: Joi.AnySchema[];
+    };
+};
 export declare type XAnySchema = XPrimitive<any> & Joi.AnySchema;
 export declare type XBooleanSchema<T extends boolean = boolean> = XPrimitive<boolean> & Joi.BooleanSchema;
 export declare type XNumberSchema<T extends number = number> = XPrimitive<T> & Joi.NumberSchema;
@@ -122,8 +132,9 @@ export declare function getXObjectChildrens(obj: XObjectSchema): ObjectChildren[
 export declare function getXObjectChildren(obj: Joi.ObjectSchema): ObjectChildren[] | undefined;
 export declare function isChildrenAnArray(children: ObjectChildren[] | (ObjectChildren | undefined)): children is ObjectChildren[];
 export declare function isXObjectAndHasChildren(obj: Joi.AnySchema): obj is ObjectSchemaHidden;
-export declare type acc = any;
-export declare function OperateOnXObjectKeys(children: ObjectChildren[] | (ObjectChildren | undefined), operate: (key: string, schema: Joi.AnySchema, acc: acc, configValue: any) => Promise<void>, newObject: (key: string, acc: acc) => acc, acc: acc, config?: any): Promise<void>;
+export declare type ConfigValue = any;
+export declare type Config = Record<string, ConfigValue> | undefined;
+export declare function OperateOnXObjectKeys<ACC>(children: ObjectChildren[] | (ObjectChildren | undefined), operate: (key: string, schema: Joi.AnySchema, acc: ACC, configValue: ConfigValue) => Promise<void>, initAcc: (key: string, schema: Joi.AnySchema, acc: ACC) => ACC, updateParentAcc: (key: string, parentAcc: ACC, acc: ACC) => ACC, acc: ACC, config?: Config): Promise<void>;
 export declare function isJoiError(err: any): err is Joi.ValidationError;
 export declare type IXSchema = _XSchema | IXSchemaMap;
 export interface IXSchemaMap {

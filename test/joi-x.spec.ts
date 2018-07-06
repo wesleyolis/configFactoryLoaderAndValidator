@@ -43,9 +43,11 @@ describe("JoiX binds with Joi", () =>
         await JoiX.OperateOnXObjectKeys(children, async (key, schema, acc)  => {
             acc[key] = schema;
         },
-        (key, acc) => {
-            acc[key] = {};
-            return acc[key];
+        (key, acc) => { 
+            return {};
+        },(key, parentAcc, acc) => {
+            parentAcc[key] = acc
+            return parentAcc;
         },
         extractedKeys);
     

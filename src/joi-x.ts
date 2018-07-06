@@ -61,6 +61,14 @@ export type ObjectSchemaHidden = Joi.ObjectSchema & {_inner : {
   children : ObjectChildren []
 }};
 
+export type ArraySchemaHidden = Joi.ArraySchema & {_inner : {
+  items : Joi.AnySchema []
+}};
+
+export type AlternativesSchemaHidden = Joi.AlternativesSchema & {_inner : {
+  matches : Joi.AnySchema []
+}};
+
 export type XAnySchema = XPrimitive<any> & Joi.AnySchema;
 export type XBooleanSchema<T extends boolean = boolean> = XPrimitive<boolean> & Joi.BooleanSchema;
 export type XNumberSchema<T extends number = number> = XPrimitive<T> & Joi.NumberSchema;
@@ -195,14 +203,15 @@ export function isXObjectAndHasChildren(obj : Joi.AnySchema) : obj is ObjectSche
   return objHidden && objHidden._inner && isChildrenAnArray(objHidden._inner.children);
 }
 
+export type ConfigValue = any;
+export type Config = Record<string, ConfigValue> | undefined;
 
-export type acc = any;
-
-export async function OperateOnXObjectKeys(
+export async function OperateOnXObjectKeys<ACC>(
 children : ObjectChildren [] | (ObjectChildren | undefined),
-operate : (key : string, schema : Joi.AnySchema, acc : acc, configValue : any) => Promise<void>,
-newObject : (key : string, acc : acc) => acc,
-acc : acc, config : any = undefined) : Promise<void>
+operate : (key : string, schema : Joi.AnySchema, acc : ACC, configValue : ConfigValue) => Promise<void>,
+initAcc : (key : string, schema : Joi.AnySchema, acc : ACC) => ACC,
+updateParentAcc : (key : string, parentAcc : ACC, acc : ACC) => ACC,
+acc : ACC, config : Config = undefined) : Promise<void>
 {
   if (isChildrenAnArray(children))
   {
@@ -212,8 +221,9 @@ acc : acc, config : any = undefined) : Promise<void>
 
         if (isXObjectAndHasChildren(child.schema))
         {
-          const newAcc = newObject(child.key, acc);
-          await OperateOnXObjectKeys(child.schema._inner.children, operate, newObject, newAcc, config && config[child.key])
+          const newAcc = initAcc(child.key, child.schema, acc);
+          await OperateOnXObjectKeys(child.schema._inner.children, operate, initAcc, updateParentAcc, newAcc, config && config[child.key]);
+          acc = updateParentAcc(child.key, acc, newAcc);
         }
         else if (child !== undefined)
         {
@@ -225,8 +235,6 @@ acc : acc, config : any = undefined) : Promise<void>
   {
     await operate(children.key, children.schema, acc, config && config[children.key]);
   }
-
-  const test = acc;
 }
 
 export function isJoiError(err: any): err is Joi.ValidationError {
