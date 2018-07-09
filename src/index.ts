@@ -97,6 +97,93 @@ LF = JoiX.ExtractWithFactoriesFromSchema<L>>
 
         try
         {
+            /*
+            object : Joi.AnySchema,
+  operate : (schema : Joi.AnySchema, acc : ACC, configValue : ConfigValue) => Promise<void>,
+  initAcc : (schema : Joi.AnySchema) => ACC,
+  updateParentAcc : (key : string, schema : Joi.AnySchema, parentAcc : ACC, acc : ACC) => ACC,
+  acc : ACC, config : Config = undefined, key : string | undefined = undefined) : Promise<void>
+            */
+            await JoiX.OperateOnJoiSchema<JoiX.OperateOnJoiSchemaAcc>(configSchema,
+            async (schema : Joi.AnySchema, acc : JoiX.OperateOnJoiSchemaAcc, configValue : JoiX.ConfigValue) : Promise<void> => {
+              
+            },
+            (schema : Joi.AnySchema) : JoiX.OperateOnJoiSchemaAcc =>
+            {
+                if (JoiX.isXAlternativesHasChildren(schema))
+                {
+                    const newAcc : JoiX.ChildArrayAcc = 
+                    {
+                        kind : 'array',
+                        items : []
+                    }
+
+                    return newAcc;
+                }
+                else if (JoiX.isXAlternativesHasChildren(schema))
+                {
+                    const newAcc : JoiX.ChildAlterAcc = 
+                    {
+                        kind : 'alter',
+                        matches : []
+                    }
+
+                    return newAcc;
+                }
+                else
+                {
+                   const newAcc : JoiX.ChildObjectAcc =
+                   {
+                        kind : 'object',
+                        keys : {}
+                   }
+
+                   return newAcc;
+                }
+            },
+            (key : string | undefined, schema : Joi.AnySchema, parentAcc : JoiX.OperateOnJoiSchemaAcc, acc : JoiX.OperateOnJoiSchemaAcc) : JoiX.OperateOnJoiSchemaAcc => {
+
+                switch(acc.kind)
+                {
+                    case 'array' : {
+                      
+                        let typeParentAcc : Joi.ArraySchema = parentAcc as any as Joi.ArraySchema;
+
+                        if (key == undefined)
+                            typeParentAcc = JoiX.array();
+                        
+                        typeParentAcc.items(acc.items);
+
+                        return typeParentAcc as any as JoiX.ParentAcc;
+                    }
+                    break;
+
+                    case 'alter' : {
+
+                        let typeParentAcc : Joi.AlternativesSchema = parentAcc as any as Joi.AlternativesSchema;
+
+                        if (key == undefined)
+                            typeParentAcc = JoiX.alternatives();
+                        
+                        typeParentAcc.try(acc.matches);
+                    }
+                    break;
+
+                    case 'object' : {
+
+                    }
+                    break;
+                }
+                
+                else if (JoiX.isXObjectAndHasChildren(schema))
+                {
+                    const keyObject : Record<string, Joi.AnySchema> = {};
+                    keyObject[key] = acc;
+
+                    return (<Joi.ObjectSchema>parentAcc).keys(keyObject);
+                }
+            }
+
             // await JoiX.OperateOnXObjectKeys(children, async (key : string, schema : any, acc : {ref:JoiX.XObjectSchema}, config : any) => {
                 
             //     let object : Record<string,JoiX.AnySchema> = {};
@@ -128,9 +215,9 @@ LF = JoiX.ExtractWithFactoriesFromSchema<L>>
 
                 acc.ref = acc.ref.keys(keysObject);
 
-            }, (key : string, schema : any, acc) => {
+            }, (key : string, schema, acc) => {
 
-                return {ref:_.cloneDeep(schema)};
+                return {ref:_.dep};
 
             }, (key : string, parentAcc, acc ) => {
 

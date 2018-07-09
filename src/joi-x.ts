@@ -237,6 +237,108 @@ acc : ACC, config : Config = undefined) : Promise<void>
   }
 }
 
+export function isXArrayHasChildren(schema : Joi.AnySchema) : schema is ArraySchemaHidden
+{
+  const arrayChidlren = (<ArraySchemaHidden>schema);
+  
+  return arrayChidlren && arrayChidlren._inner && arrayChidlren._inner.items != undefined;
+}
+
+export function isXAlternativesHasChildren(schema : Joi.AnySchema) : schema is AlternativesSchemaHidden
+{
+  const arrayChildren = (<AlternativesSchemaHidden>schema);
+
+  return arrayChildren && arrayChildren._inner && arrayChildren._inner.matches != undefined;
+}
+
+export type ArrayHiddenAcc = _ArrayHiddenAcc & Joi.Schema
+
+export interface _ArrayHiddenAcc {
+  __acc : Joi.AnySchema []
+}
+
+export interface ChildObjectAcc
+{
+  kind : 'object'
+  keys : Record<string, Joi.AnySchema>
+}
+
+export interface ChildArrayAcc
+{
+  kind : 'array'
+  items : Joi.AnySchema [];
+}
+
+
+export interface ChildAlterAcc
+{
+  kind : 'alter'
+  matches : Joi.AnySchema [];
+}
+
+export interface ParentAcc extends Joi.AnySchema
+{
+  kind : 'parent'
+}
+
+export type OperateOnJoiSchemaAcc = ChildObjectAcc | ChildArrayAcc | ChildAlterAcc | ParentAcc;
+
+export async function OperateOnJoiSchema<ACC>(
+  object : Joi.AnySchema,
+  operate : (schema : Joi.AnySchema, acc : ACC, configValue : ConfigValue) => Promise<void>,
+  initAcc : (schema : Joi.AnySchema) => ACC,
+  updateParentAcc : (key : string | undefined, schema : Joi.AnySchema, parentAcc : ACC, acc : ACC) => ACC,
+  acc : ACC, config : Config = undefined, key : string | undefined = undefined) : Promise<void>
+  {
+    if (isXObjectAndHasChildren(object))
+    {
+      const newAcc = initAcc(object);
+
+      for (let i = 0; i < object._inner.children.length; i++)
+      {
+        const child = object._inner.children[i];
+
+        await OperateOnJoiSchema(child.schema, operate, initAcc, updateParentAcc, newAcc, config && config[child.key], child.key);
+      }
+      
+      acc = updateParentAcc(key, object, acc, newAcc);
+    }
+    else if (isXArrayHasChildren(object))
+    {
+      const schemas = object._inner.items;
+
+      const newAcc = initAcc(object);
+
+      for (let i = 0; i < schemas.length; i++)
+      {
+        let configValue = config && config[j];
+
+        await OperateOnJoiSchema(schemas[i], operate, initAcc, updateParentAcc, newAcc, undefined, configValue);
+      }
+
+      acc = updateParentAcc(key, object, acc, newAcc);
+    }
+    else if (isXAlternativesHasChildren(object))
+    {
+      const schemas = object._inner.matches;
+
+      const newAcc = initAcc(object);
+
+      for (let i = 0; i < schemas.length; i++)
+      {
+        let configValue = config && config[j];
+
+        await OperateOnJoiSchema(schemas[i], operate, initAcc, updateParentAcc, newAcc, undefined, configValue);
+      }
+
+      acc = updateParentAcc(key, object, acc, newAcc);
+    }
+    else
+    {
+      await operate(object, acc, config);
+    }
+  }
+
 export function isJoiError(err: any): err is Joi.ValidationError {
   return err.isJoi && err.name == 'ValidationError' && (err instanceof Error);
 }
