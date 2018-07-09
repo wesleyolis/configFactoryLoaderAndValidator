@@ -35,4 +35,25 @@ export declare class LoadConfigErrors {
     static readonly configurationMissing: string;
     static readonly failedToNewFactory: string;
 }
+export declare type AccSchemaTypes = JoiX.SchemaTypes<'accumulator'>;
+export interface AccBase<T extends Joi.AnySchema | undefined> {
+    kind: AccSchemaTypes;
+    newContainerObject: () => T;
+}
+export interface ChildObjectAcc extends AccBase<Joi.ObjectSchema> {
+    kind: 'object';
+    keys: Record<string, Joi.AnySchema>;
+}
+export interface ChildArrayAcc extends AccBase<Joi.ArraySchema> {
+    kind: 'array';
+    items: Joi.AnySchema[];
+}
+export interface ChildAlterAcc extends AccBase<Joi.AlternativesSchema> {
+    kind: 'alter';
+    matches: Joi.AnySchema[];
+}
+export interface Accumulator extends Joi.AnySchema, AccBase<undefined> {
+    kind: 'accumulator';
+    accumulator: Joi.AnySchema | null;
+}
 export declare function LoadConfig<L extends JoiX.XObjectSchema, LF = JoiX.ExtractWithFactoriesFromSchema<L>>(configSettings: any, configSchema: L, lazyLoad?: boolean, configOptional?: boolean): Promise<FactoriesInstancesResolver<L, LF>>;

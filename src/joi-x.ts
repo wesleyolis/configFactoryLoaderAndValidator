@@ -257,95 +257,153 @@ export interface _ArrayHiddenAcc {
   __acc : Joi.AnySchema []
 }
 
-// I must see If I am able of striping away the undefined, behaveour, so not their as option
-// by creating another layer.
-export interface AccBase<T extends Joi.AnySchema | undefined>
+export type JoiSchemaTypes = 'object' | 'array' | 'alter'
+
+export type SchemaTypes<T extends string> = JoiSchemaTypes | T;
+
+export type Keys = string [];
+
+export type HasKeysIsKind = {keys : Keys, kind : JoiSchemaTypes, childrenKey : string | undefined};
+
+// export type isType<B, T extends B> = (schema : B) => schema is T
+
+// export type isTypeKind = {isType : isType<any, any>, kind : JoiSchemaTypes };
+
+// function isType<B extends Joi.AnySchema, T extends B>(schema : B) : schema is T
+// {
+//   return schema. required to know the property here, which is a problem.
+// }
+
+// Need to things of a way in which I can improve this with more stricter type constaints,
+// I will think of something and the suggested it to the technical commity.
+function isTypeIfPropertyGetAnySchema<B extends Joi.AnySchema>(schema : B, keys : string []) : (Joi.AnySchema []) | undefined
 {
-  newContainerObject : () => T
+  let item : any = schema;
+
+  keys.forEach((key) => {
+
+    item = item[key];
+
+    if(item == undefined)
+      return undefined; 
+  });
+
+  return item as Joi.AnySchema [];
 }
 
-export interface ChildObjectAcc extends AccBase<Joi.ObjectSchema>
+// What would be nice here is to be able to say I expect and implmentation for each item of type
+// JoiSchemaTypes at least, don't have any obvious idears on how to do that just yet.
+// mabye somthing like this [property extends/implements : keys], which would a 
+// it would also be nice, to be able to constaint the keys, ref to keys, need this else were to, selection of exesting set of
+// interface, that implement a common base with kind, were it has to meet keys constaint above.
+// ref type should be and array of string, that have an index type.
+// I have need this before as well.
+const joiSchemaType : HasKeysIsKind [] = [
 {
-  kind : 'object'
-  keys : Record<string, Joi.AnySchema>
-}
-
-export interface ChildArrayAcc extends AccBase<Joi.ArraySchema>
+  keys : ['_inner','children'],
+  kind : 'object',
+  childrenKey : 'schema'
+},
 {
-  kind : 'array'
-  items : Joi.AnySchema [];
-}
-
-
-export interface ChildAlterAcc extends AccBase<Joi.AlternativesSchema>
+  keys : ['_inner','items'],
+  kind : 'object',
+  childrenKey : undefined
+},
 {
-  kind : 'alter'
-  matches : Joi.AnySchema [];
+  keys : ['_inner','matches'],
+  kind : 'alter',
+  childrenKey : 'schema'
 }
+];
 
-export interface UndefinedAcc extends Joi.AnySchema, AccBase<undefined>
-{
-  kind : 'undefined'
-}
 
-export type OperateOnJoiSchemaAcc = ChildObjectAcc | ChildArrayAcc | ChildAlterAcc | UndefinedAcc;
 
-export async function OperateOnJoiSchema<ACC>(
+
+
+
+// export type OperateOnJoiSchemaAcc<T extends {}> = ChildObjectAcc | ChildArrayAcc | ChildAlterAcc | T;
+
+// export type OperateOnJoiSchemaAccBase<T extends {} > = ChildAlterAcc | ChildArrayAcc | ChildAlterAcc | T;
+
+// export type ParentOperateOnJoiSchemaAcc = OperateOnJoiSchemaAccBase<UndefinedAcc>
+
+// export type BaseKinds<T extends string> = 'A1' | 'A2' | 'A3' | T
+
+// export  interface Base<T> {
+//   kind : BaseKinds<T>
+// }
+
+// export type ParentKinds = 'P1' | 'P2'
+
+// export interface Parentd extends Base<ParentKinds>
+// {
+//   kind : 
+// }
+
+// export type Parent = BaseKinds<'Parent'>;
+
+// function test()
+// {
+//   const param = ({kind:'undefined'} as UndefinedAcc);
+
+//   OperateOnJoiSchema2<ParentKinds>('P2');
+// }
+
+// export function OperateOnJoiSchema2<T extends string, ACC extends BaseKinds<T> = BaseKinds<T>>(acc : ACC)
+// {
+
+// }
+
+
+// can also implement a context, which can be used to build up decission matching logic.
+// pos is used for context, when their are no keys.
+// I also require a keys referance here.
+// but this will enfore the constaints proabbly too much by using typeof, because not accumulator,
+// can't just be some random joi, thing..mm, how to go about this from here.
+// I think, could mabbye look at implementing a parrell, implementation acc, which store just they key word.
+// so acc, could remain free of kind implmentation details, I guess that is the next move and improvement.
+// <ACC, KIND extends SchemaTypes<keyof ACC> = SchemaTypes<keyof ACC>>(
+export async function OperateOnJoiSchema<ACC, ACC_KIND extends string, KIND extends SchemaTypes<ACC_KIND> = SchemaTypes<ACC_KIND>>(
   object : Joi.AnySchema,
-  operate : (schema : Joi.AnySchema, acc : ACC, key : string | undefined, configValue : ConfigValue) => Promise<void>,
-  initAcc : (schema : Joi.AnySchema) => ACC,
+  operate : (schema : Joi.AnySchema, acc : ACC, pos : number, key : string | undefined, configValue : ConfigValue) => Promise<void>,
+  initAcc : (kind : KIND) => ACC,
   updateParentAcc : (key : string | undefined, schema : Joi.AnySchema, parentAcc : ACC, acc : ACC) => ACC,
   acc : ACC,
+  pos : number = -1,
   key : string | undefined = undefined,
   config : Config = undefined) : Promise<ACC>
 {
-  if (isXObjectAndHasChildren(object))
+  for (let i = 0; i < joiSchemaType.length; i++)
   {
-    const newAcc = initAcc(object);
-
-    for (let i = 0; i < object._inner.children.length; i++)
-    {
-      const child = object._inner.children[i];
-
-      await OperateOnJoiSchema(child.schema, operate, initAcc, updateParentAcc, newAcc, child.key, config && config[child.key] );
-    }
+    const type = joiSchemaType[i];
+    const children = isTypeIfPropertyGetAnySchema(object, type.keys);
     
-    acc = updateParentAcc(key, object, acc, newAcc);
-  }
-  else if (isXArrayHasChildren(object))
-  {
-    const schemas = object._inner.items;
-
-    const newAcc = initAcc(object);
-
-    for (let i = 0; i < schemas.length; i++)
+    if (children)
     {
-      let configValue = config && config[i];
+      const newAcc = initAcc(type.kind as any as KIND);  // seem to be that the compile is falling over, this constian should work, looks like another bug.
+      
+      for (let j = 0; j < children.length; j++)
+      {
+        let child = children[j] as any as Record<string , Joi.AnySchema> & Record<'key', string>;  
+        // Typically it would also be great to create a type constaint here as well, string
+        // would be and extract up a subset from SomerArray[{'key'}] .. sure can come up with constraint, if the langauge is modified.
 
-      await OperateOnJoiSchema(schemas[i], operate, initAcc, updateParentAcc, newAcc, undefined, configValue);
+        let schema = child as any as Joi.AnySchema;
+        if(type.childrenKey)
+          schema = child[type.childrenKey]; 
+          // look for ways in which to aurment this as a constain somehow, would need to think of this, need be some specila
+          // form of kind present in a different way.
+
+        await  OperateOnJoiSchema(schema, operate, initAcc, updateParentAcc, newAcc, j, child && child.key, config && config[child.key]);
+      }
+
+      return updateParentAcc(key, object, acc, newAcc);
     }
-
-    acc = updateParentAcc(key, object, acc, newAcc);
+    // possible here need to handle the case undefined, in case we would like undefined value to be somthing.
   }
-  else if (isXAlternativesHasChildren(object))
-  {
-    const schemas = object._inner.matches;
 
-    const newAcc = initAcc(object);
-
-    for (let i = 0; i < schemas.length; i++)
-    {
-      let configValue = config && config[i];
-
-      await OperateOnJoiSchema(schemas[i].schema, operate, initAcc, updateParentAcc, newAcc, undefined, configValue);
-    }
-
-    acc = updateParentAcc(key, object, acc, newAcc);
-  }
-  else
-  {
-    await operate(object, acc, key, config);
-  }
+  // remeber may want to handle direct pass tought over here as well.
+  await operate(object, acc, pos, key, config);
 
   return acc;
 }

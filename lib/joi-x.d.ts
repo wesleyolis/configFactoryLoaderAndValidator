@@ -143,26 +143,15 @@ export declare type ArrayHiddenAcc = _ArrayHiddenAcc & Joi.Schema;
 export interface _ArrayHiddenAcc {
     __acc: Joi.AnySchema[];
 }
-export interface AccBase<T extends Joi.AnySchema | undefined> {
-    newContainerObject: () => T;
-}
-export interface ChildObjectAcc extends AccBase<Joi.ObjectSchema> {
-    kind: 'object';
-    keys: Record<string, Joi.AnySchema>;
-}
-export interface ChildArrayAcc extends AccBase<Joi.ArraySchema> {
-    kind: 'array';
-    items: Joi.AnySchema[];
-}
-export interface ChildAlterAcc extends AccBase<Joi.AlternativesSchema> {
-    kind: 'alter';
-    matches: Joi.AnySchema[];
-}
-export interface UndefinedAcc extends Joi.AnySchema, AccBase<undefined> {
-    kind: 'undefined';
-}
-export declare type OperateOnJoiSchemaAcc = ChildObjectAcc | ChildArrayAcc | ChildAlterAcc | UndefinedAcc;
-export declare function OperateOnJoiSchema<ACC>(object: Joi.AnySchema, operate: (schema: Joi.AnySchema, acc: ACC, key: string | undefined, configValue: ConfigValue) => Promise<void>, initAcc: (schema: Joi.AnySchema) => ACC, updateParentAcc: (key: string | undefined, schema: Joi.AnySchema, parentAcc: ACC, acc: ACC) => ACC, acc: ACC, key?: string | undefined, config?: Config): Promise<ACC>;
+export declare type JoiSchemaTypes = 'object' | 'array' | 'alter';
+export declare type SchemaTypes<T extends string> = JoiSchemaTypes | T;
+export declare type Keys = string[];
+export declare type HasKeysIsKind = {
+    keys: Keys;
+    kind: JoiSchemaTypes;
+    childrenKey: string | undefined;
+};
+export declare function OperateOnJoiSchema<ACC, ACC_KIND extends string, KIND extends SchemaTypes<ACC_KIND> = SchemaTypes<ACC_KIND>>(object: Joi.AnySchema, operate: (schema: Joi.AnySchema, acc: ACC, pos: number, key: string | undefined, configValue: ConfigValue) => Promise<void>, initAcc: (kind: KIND) => ACC, updateParentAcc: (key: string | undefined, schema: Joi.AnySchema, parentAcc: ACC, acc: ACC) => ACC, acc: ACC, pos?: number, key?: string | undefined, config?: Config): Promise<ACC>;
 export declare function isJoiError(err: any): err is Joi.ValidationError;
 export declare type IXSchema = _XSchema | IXSchemaMap;
 export interface IXSchemaMap {

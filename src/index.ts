@@ -84,6 +84,44 @@ export class LoadConfigErrors {
     static readonly failedToNewFactory : string = "FailedToLoadFactory";
 }
 
+export type AccSchemaTypes = JoiX.SchemaTypes<'accumulator'>
+
+// I must see If I am able of striping away the undefined, behaveour, so not their as option
+// by creating another layer.
+export interface AccBase<T extends Joi.AnySchema | undefined>
+{
+  kind : AccSchemaTypes
+  newContainerObject : () => T
+}
+
+export interface ChildObjectAcc extends AccBase<Joi.ObjectSchema>
+{
+  kind : 'object'
+  keys : Record<string, Joi.AnySchema>
+}
+
+export interface ChildArrayAcc extends AccBase<Joi.ArraySchema>
+{
+  kind : 'array'
+  items : Joi.AnySchema [];
+}
+
+
+export interface ChildAlterAcc extends AccBase<Joi.AlternativesSchema>
+{
+  kind : 'alter'
+  matches : Joi.AnySchema [];
+}
+
+export interface Accumulator extends Joi.AnySchema, AccBase<undefined>
+{
+  kind : 'accumulator'
+  accumulator : Joi.AnySchema | null;
+}
+
+type JoiXSchemaAcc = Accumulator | ChildObjectAcc | ChildArrayAcc | ChildAlterAcc;
+
+
 export async function LoadConfig<L extends JoiX.XObjectSchema, 
 LF = JoiX.ExtractWithFactoriesFromSchema<L>>
 (configSettings : any, configSchema : L, lazyLoad : boolean = false, configOptional : boolean = false) : Promise<FactoriesInstancesResolver<L, LF>>
@@ -92,8 +130,10 @@ LF = JoiX.ExtractWithFactoriesFromSchema<L>>
 
     if (configOptional)
     {
-        const optionalConfigSchema = await JoiX.OperateOnJoiSchema<JoiX.OperateOnJoiSchemaAcc>(configSchema,
-        async (schema : Joi.AnySchema, acc : JoiX.OperateOnJoiSchemaAcc, key : string | undefined, configValue : JoiX.ConfigValue) : Promise<void> => {
+        // I would like to be able to define common genrics in which I then basically type this call back function
+        // back in.
+        const optionalConfigSchema = await JoiX.OperateOnJoiSchema<JoiXSchemaAcc, JoiXSchemaAcc['kind']>(configSchema,
+        async (schema : Joi.AnySchema, acc : JoiXSchemaAcc, pos : number, key : string | undefined, configValue : JoiX.ConfigValue) : Promise<void> => {
             
             const newSchema = schema.optional();
 
@@ -118,54 +158,52 @@ LF = JoiX.ExtractWithFactoriesFromSchema<L>>
                         // their was no present for the key in the first place.
                 }
                 break;
-                case 'undefined': {
-                    acc = newSchema as JoiX.UndefinedAcc;
+                case 'accumulator': {
+                    acc.accumulator = newSchema;
                 
                 break;
                 }
             }
 
         },
-        (schema : Joi.AnySchema) : JoiX.OperateOnJoiSchemaAcc =>{
-            if (JoiX.isXArrayHasChildren(schema))
+        (kind : JoiXSchemaAcc['kind']) : JoiXSchemaAcc => {
+            switch(kind)
             {
-                const newAcc : JoiX.ChildArrayAcc = 
+                case 'array':
                 {
-                    kind : 'array',
-                    items : [],
-                    newContainerObject: () => Joi.array().optional()
+                    return {
+                        kind : 'array',
+                        items : [],
+                        newContainerObject: () => Joi.array().optional()
+                    };
+                }
+                
+                case 'alter' :
+                {
+                    return {
+                        kind : 'alter',
+                        matches : [],
+                        newContainerObject: () => Joi.alternatives().optional()
+                    };
                 }
 
-                return newAcc;
-            }
-            else if (JoiX.isXAlternativesHasChildren(schema))
-            {
-                const newAcc : JoiX.ChildAlterAcc = 
+                case 'object' : 
                 {
-                    kind : 'alter',
-                    matches : [],
-                    newContainerObject: () => Joi.alternatives().optional()
+                    return {
+                        kind : 'object',
+                        keys : {},
+                        newContainerObject: () => Joi.object().optional()
+                    }
                 }
-
-                return newAcc;
-            }
-            else
-            {
-                const newAcc : JoiX.ChildObjectAcc =
-                {
-                    kind : 'object',
-                    keys : {},
-                    newContainerObject: () => Joi.object().optional()
-                }
-
-                return newAcc;
+                default :
+                    throw Error('Why the hell do I need default type'); // This is clearly another bug, in which we need to report, we starting to bleed a little.
+                    // at least we can start to improve the ecosystem.
             }
         },
-        (key : string | undefined, schema : Joi.AnySchema, parentAcc : JoiX.OperateOnJoiSchemaAcc, acc : JoiX.OperateOnJoiSchemaAcc) : JoiX.OperateOnJoiSchemaAcc => {
+        (key : string | undefined, schema : Joi.AnySchema, parentAcc : JoiXSchemaAcc, acc : JoiXSchemaAcc) : JoiXSchemaAcc => {
 
-            let typeParentAcc : Joi.AnySchema;
-
-            let typeContainer : Joi.AnySchema  = Joi.object();
+            // would just be nice here to use a read only type, which means has to be assign before ususage.
+            let typeContainer : Joi.AnySchema  = Joi.object();  
 
             // if (key == undefined && acc.newContainerObject != null)
             //     typeContainer = acc.newContainerObject();
@@ -209,18 +247,18 @@ LF = JoiX.ExtractWithFactoriesFromSchema<L>>
                         throw Error("Object must always have a key");
                 }
                 break;
-                case 'undefined': {
-                    parentAcc = typeContainer as JoiX.UndefinedAcc; // this is a little bit hacky but it should work.
+                case 'accumulator': {
+                    parentAcc.accumulator = typeContainer;
                 }
 
                 break;
             }
 
             return parentAcc;
-        }, {kind:'undefined'} as JoiX.UndefinedAcc);
+        }, {kind:'accumulator', accumulator : null} as Accumulator);
         // this could be simplified and we can get away from casting.
 
-        configSchema = optionalConfigSchema as Joi.AnySchema as L;
+        configSchema = (optionalConfigSchema as Accumulator).accumulator as L;
                 
     }
 
