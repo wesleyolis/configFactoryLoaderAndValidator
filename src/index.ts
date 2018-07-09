@@ -132,6 +132,9 @@ LF = JoiX.ExtractWithFactoriesFromSchema<L>>
     {
         // I would like to be able to define common genrics in which I then basically type this call back function
         // back in.
+        // The next step, would be to create and abstraction for the accumulator, which one then need to spesify one operator.
+        // then from, what makes things simpler is and any type accumulator, because then we don't care object distingishing the object types.
+        // that and look at migrating OperateOnXObjectKeys onto this method, which is more genric and actually handles all the cases.
         const optionalConfigSchema = await JoiX.OperateOnJoiSchema<JoiXSchemaAcc, JoiXSchemaAcc['kind']>(configSchema,
         async (schema : Joi.AnySchema, acc : JoiXSchemaAcc, pos : number, key : string | undefined, configValue : JoiX.ConfigValue) : Promise<void> => {
             
