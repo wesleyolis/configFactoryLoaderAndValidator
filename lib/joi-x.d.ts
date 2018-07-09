@@ -66,7 +66,9 @@ export declare type ArraySchemaHidden = Joi.ArraySchema & {
 };
 export declare type AlternativesSchemaHidden = Joi.AlternativesSchema & {
     _inner: {
-        matches: Joi.AnySchema[];
+        matches: {
+            schema: Joi.AnySchema;
+        }[];
     };
 };
 export declare type XAnySchema = XPrimitive<any> & Joi.AnySchema;
@@ -135,6 +137,32 @@ export declare function isXObjectAndHasChildren(obj: Joi.AnySchema): obj is Obje
 export declare type ConfigValue = any;
 export declare type Config = Record<string, ConfigValue> | undefined;
 export declare function OperateOnXObjectKeys<ACC>(children: ObjectChildren[] | (ObjectChildren | undefined), operate: (key: string, schema: Joi.AnySchema, acc: ACC, configValue: ConfigValue) => Promise<void>, initAcc: (key: string, schema: Joi.AnySchema, acc: ACC) => ACC, updateParentAcc: (key: string, parentAcc: ACC, acc: ACC) => ACC, acc: ACC, config?: Config): Promise<void>;
+export declare function isXArrayHasChildren(schema: Joi.AnySchema): schema is ArraySchemaHidden;
+export declare function isXAlternativesHasChildren(schema: Joi.AnySchema): schema is AlternativesSchemaHidden;
+export declare type ArrayHiddenAcc = _ArrayHiddenAcc & Joi.Schema;
+export interface _ArrayHiddenAcc {
+    __acc: Joi.AnySchema[];
+}
+export interface AccBase<T extends Joi.AnySchema | undefined> {
+    newContainerObject: () => T;
+}
+export interface ChildObjectAcc extends AccBase<Joi.ObjectSchema> {
+    kind: 'object';
+    keys: Record<string, Joi.AnySchema>;
+}
+export interface ChildArrayAcc extends AccBase<Joi.ArraySchema> {
+    kind: 'array';
+    items: Joi.AnySchema[];
+}
+export interface ChildAlterAcc extends AccBase<Joi.AlternativesSchema> {
+    kind: 'alter';
+    matches: Joi.AnySchema[];
+}
+export interface UndefinedAcc extends Joi.AnySchema, AccBase<undefined> {
+    kind: 'undefined';
+}
+export declare type OperateOnJoiSchemaAcc = ChildObjectAcc | ChildArrayAcc | ChildAlterAcc | UndefinedAcc;
+export declare function OperateOnJoiSchema<ACC>(object: Joi.AnySchema, operate: (schema: Joi.AnySchema, acc: ACC, key: string | undefined, configValue: ConfigValue) => Promise<void>, initAcc: (schema: Joi.AnySchema) => ACC, updateParentAcc: (key: string | undefined, schema: Joi.AnySchema, parentAcc: ACC, acc: ACC) => ACC, acc: ACC, key?: string | undefined, config?: Config): Promise<ACC>;
 export declare function isJoiError(err: any): err is Joi.ValidationError;
 export declare type IXSchema = _XSchema | IXSchemaMap;
 export interface IXSchemaMap {

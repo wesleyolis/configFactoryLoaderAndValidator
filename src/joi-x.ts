@@ -66,7 +66,7 @@ export type ArraySchemaHidden = Joi.ArraySchema & {_inner : {
 }};
 
 export type AlternativesSchemaHidden = Joi.AlternativesSchema & {_inner : {
-  matches : Joi.AnySchema []
+  matches : {schema:Joi.AnySchema} []
 }};
 
 export type XAnySchema = XPrimitive<any> & Joi.AnySchema;
@@ -257,87 +257,99 @@ export interface _ArrayHiddenAcc {
   __acc : Joi.AnySchema []
 }
 
-export interface ChildObjectAcc
+// I must see If I am able of striping away the undefined, behaveour, so not their as option
+// by creating another layer.
+export interface AccBase<T extends Joi.AnySchema | undefined>
+{
+  newContainerObject : () => T
+}
+
+export interface ChildObjectAcc extends AccBase<Joi.ObjectSchema>
 {
   kind : 'object'
   keys : Record<string, Joi.AnySchema>
 }
 
-export interface ChildArrayAcc
+export interface ChildArrayAcc extends AccBase<Joi.ArraySchema>
 {
   kind : 'array'
   items : Joi.AnySchema [];
 }
 
 
-export interface ChildAlterAcc
+export interface ChildAlterAcc extends AccBase<Joi.AlternativesSchema>
 {
   kind : 'alter'
   matches : Joi.AnySchema [];
 }
 
-export interface ParentAcc extends Joi.AnySchema
+export interface UndefinedAcc extends Joi.AnySchema, AccBase<undefined>
 {
-  kind : 'parent'
+  kind : 'undefined'
 }
 
-export type OperateOnJoiSchemaAcc = ChildObjectAcc | ChildArrayAcc | ChildAlterAcc | ParentAcc;
+export type OperateOnJoiSchemaAcc = ChildObjectAcc | ChildArrayAcc | ChildAlterAcc | UndefinedAcc;
 
 export async function OperateOnJoiSchema<ACC>(
   object : Joi.AnySchema,
-  operate : (schema : Joi.AnySchema, acc : ACC, configValue : ConfigValue) => Promise<void>,
+  operate : (schema : Joi.AnySchema, acc : ACC, key : string | undefined, configValue : ConfigValue) => Promise<void>,
   initAcc : (schema : Joi.AnySchema) => ACC,
   updateParentAcc : (key : string | undefined, schema : Joi.AnySchema, parentAcc : ACC, acc : ACC) => ACC,
-  acc : ACC, config : Config = undefined, key : string | undefined = undefined) : Promise<void>
+  acc : ACC,
+  key : string | undefined = undefined,
+  config : Config = undefined) : Promise<ACC>
+{
+  if (isXObjectAndHasChildren(object))
   {
-    if (isXObjectAndHasChildren(object))
+    const newAcc = initAcc(object);
+
+    for (let i = 0; i < object._inner.children.length; i++)
     {
-      const newAcc = initAcc(object);
+      const child = object._inner.children[i];
 
-      for (let i = 0; i < object._inner.children.length; i++)
-      {
-        const child = object._inner.children[i];
-
-        await OperateOnJoiSchema(child.schema, operate, initAcc, updateParentAcc, newAcc, config && config[child.key], child.key);
-      }
-      
-      acc = updateParentAcc(key, object, acc, newAcc);
+      await OperateOnJoiSchema(child.schema, operate, initAcc, updateParentAcc, newAcc, child.key, config && config[child.key] );
     }
-    else if (isXArrayHasChildren(object))
-    {
-      const schemas = object._inner.items;
-
-      const newAcc = initAcc(object);
-
-      for (let i = 0; i < schemas.length; i++)
-      {
-        let configValue = config && config[j];
-
-        await OperateOnJoiSchema(schemas[i], operate, initAcc, updateParentAcc, newAcc, undefined, configValue);
-      }
-
-      acc = updateParentAcc(key, object, acc, newAcc);
-    }
-    else if (isXAlternativesHasChildren(object))
-    {
-      const schemas = object._inner.matches;
-
-      const newAcc = initAcc(object);
-
-      for (let i = 0; i < schemas.length; i++)
-      {
-        let configValue = config && config[j];
-
-        await OperateOnJoiSchema(schemas[i], operate, initAcc, updateParentAcc, newAcc, undefined, configValue);
-      }
-
-      acc = updateParentAcc(key, object, acc, newAcc);
-    }
-    else
-    {
-      await operate(object, acc, config);
-    }
+    
+    acc = updateParentAcc(key, object, acc, newAcc);
   }
+  else if (isXArrayHasChildren(object))
+  {
+    const schemas = object._inner.items;
+
+    const newAcc = initAcc(object);
+
+    for (let i = 0; i < schemas.length; i++)
+    {
+      let configValue = config && config[i];
+
+      await OperateOnJoiSchema(schemas[i], operate, initAcc, updateParentAcc, newAcc, undefined, configValue);
+    }
+
+    acc = updateParentAcc(key, object, acc, newAcc);
+  }
+  else if (isXAlternativesHasChildren(object))
+  {
+    const schemas = object._inner.matches;
+
+    const newAcc = initAcc(object);
+
+    for (let i = 0; i < schemas.length; i++)
+    {
+      let configValue = config && config[i];
+
+      await OperateOnJoiSchema(schemas[i].schema, operate, initAcc, updateParentAcc, newAcc, undefined, configValue);
+    }
+
+    acc = updateParentAcc(key, object, acc, newAcc);
+  }
+  else
+  {
+    await operate(object, acc, key, config);
+  }
+
+  return acc;
+}
+
 
 export function isJoiError(err: any): err is Joi.ValidationError {
   return err.isJoi && err.name == 'ValidationError' && (err instanceof Error);

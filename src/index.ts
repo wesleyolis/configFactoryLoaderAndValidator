@@ -23,6 +23,7 @@ import {MultiError, VError} from 'VError'
 export {describe as describeConfigSchema, validateAsync as validatConfigSchemaAsync} from './config-factory/config'
 
 import * as _ from 'lodash';
+import { isXArrayHasChildren } from './joi-x';
 
 export abstract class IConfigBundle
 {
@@ -91,149 +92,136 @@ LF = JoiX.ExtractWithFactoriesFromSchema<L>>
 
     if (configOptional)
     {
-        const optionalConfigSchema : {ref:JoiX.XObjectSchema} = {ref:JoiX.object()};
+        const optionalConfigSchema = await JoiX.OperateOnJoiSchema<JoiX.OperateOnJoiSchemaAcc>(configSchema,
+        async (schema : Joi.AnySchema, acc : JoiX.OperateOnJoiSchemaAcc, key : string | undefined, configValue : JoiX.ConfigValue) : Promise<void> => {
+            
+            const newSchema = schema.optional();
 
-        const children = JoiX.getXObjectChildrens(configSchema);
-
-        try
-        {
-            /*
-            object : Joi.AnySchema,
-  operate : (schema : Joi.AnySchema, acc : ACC, configValue : ConfigValue) => Promise<void>,
-  initAcc : (schema : Joi.AnySchema) => ACC,
-  updateParentAcc : (key : string, schema : Joi.AnySchema, parentAcc : ACC, acc : ACC) => ACC,
-  acc : ACC, config : Config = undefined, key : string | undefined = undefined) : Promise<void>
-            */
-            await JoiX.OperateOnJoiSchema<JoiX.OperateOnJoiSchemaAcc>(configSchema,
-            async (schema : Joi.AnySchema, acc : JoiX.OperateOnJoiSchemaAcc, configValue : JoiX.ConfigValue) : Promise<void> => {
-              
-            },
-            (schema : Joi.AnySchema) : JoiX.OperateOnJoiSchemaAcc =>
+            switch(acc.kind)
             {
-                if (JoiX.isXAlternativesHasChildren(schema))
-                {
-                    const newAcc : JoiX.ChildArrayAcc = 
-                    {
-                        kind : 'array',
-                        items : []
-                    }
-
-                    return newAcc;
+                case 'array' : {  
+                    acc.items.push(newSchema);
                 }
-                else if (JoiX.isXAlternativesHasChildren(schema))
-                {
-                    const newAcc : JoiX.ChildAlterAcc = 
-                    {
-                        kind : 'alter',
-                        matches : []
-                    }
+                break;
 
-                    return newAcc;
+                case 'alter' : {
+                    acc.matches.push(newSchema);
                 }
-                else
-                {
-                   const newAcc : JoiX.ChildObjectAcc =
-                   {
-                        kind : 'object',
-                        keys : {}
-                   }
+                break;
 
-                   return newAcc;
+                case 'object' : {
+                    if (key != undefined)
+                        acc.keys[key] = newSchema;
+                    else
+                        throw Error("object must always have a key");   // what I could look at doing is that the key, be hidden away in the accumulator,
+                        // but that would mean, can't just operate on things.. probably what I should be doing is having and undefine key word, which means the 
+                        // their was no present for the key in the first place.
                 }
-            },
-            (key : string | undefined, schema : Joi.AnySchema, parentAcc : JoiX.OperateOnJoiSchemaAcc, acc : JoiX.OperateOnJoiSchemaAcc) : JoiX.OperateOnJoiSchemaAcc => {
-
-                switch(acc.kind)
-                {
-                    case 'array' : {
-                      
-                        let typeParentAcc : Joi.ArraySchema = parentAcc as any as Joi.ArraySchema;
-
-                        if (key == undefined)
-                            typeParentAcc = JoiX.array();
-                        
-                        typeParentAcc.items(acc.items);
-
-                        return typeParentAcc as any as JoiX.ParentAcc;
-                    }
-                    break;
-
-                    case 'alter' : {
-
-                        let typeParentAcc : Joi.AlternativesSchema = parentAcc as any as Joi.AlternativesSchema;
-
-                        if (key == undefined)
-                            typeParentAcc = JoiX.alternatives();
-                        
-                        typeParentAcc.try(acc.matches);
-                    }
-                    break;
-
-                    case 'object' : {
-
-                    }
-                    break;
-                }
+                break;
+                case 'undefined': {
+                    acc = newSchema as JoiX.UndefinedAcc;
                 
-                else if (JoiX.isXObjectAndHasChildren(schema))
-                {
-                    const keyObject : Record<string, Joi.AnySchema> = {};
-                    keyObject[key] = acc;
-
-                    return (<Joi.ObjectSchema>parentAcc).keys(keyObject);
+                break;
                 }
             }
 
-            // await JoiX.OperateOnXObjectKeys(children, async (key : string, schema : any, acc : {ref:JoiX.XObjectSchema}, config : any) => {
+        },
+        (schema : Joi.AnySchema) : JoiX.OperateOnJoiSchemaAcc =>{
+            if (JoiX.isXArrayHasChildren(schema))
+            {
+                const newAcc : JoiX.ChildArrayAcc = 
+                {
+                    kind : 'array',
+                    items : [],
+                    newContainerObject: () => Joi.array().optional()
+                }
+
+                return newAcc;
+            }
+            else if (JoiX.isXAlternativesHasChildren(schema))
+            {
+                const newAcc : JoiX.ChildAlterAcc = 
+                {
+                    kind : 'alter',
+                    matches : [],
+                    newContainerObject: () => Joi.alternatives().optional()
+                }
+
+                return newAcc;
+            }
+            else
+            {
+                const newAcc : JoiX.ChildObjectAcc =
+                {
+                    kind : 'object',
+                    keys : {},
+                    newContainerObject: () => Joi.object().optional()
+                }
+
+                return newAcc;
+            }
+        },
+        (key : string | undefined, schema : Joi.AnySchema, parentAcc : JoiX.OperateOnJoiSchemaAcc, acc : JoiX.OperateOnJoiSchemaAcc) : JoiX.OperateOnJoiSchemaAcc => {
+
+            let typeParentAcc : Joi.AnySchema;
+
+            let typeContainer : Joi.AnySchema  = Joi.object();
+
+            // if (key == undefined && acc.newContainerObject != null)
+            //     typeContainer = acc.newContainerObject();
+            
+            switch(acc.kind)
+            {
+                case 'array' : {  
+                    typeContainer = acc.newContainerObject().items(acc.items);
+                }
+                break;
+
+                case 'alter' : {
+                    typeContainer = acc.newContainerObject().try(acc.matches);
+                }
+                break;
+
+                case 'object' : {
+                    typeContainer = acc.newContainerObject().keys(acc.keys);
+                }
+                break;
+            }
+
+            // parent could also be null.
+            switch(parentAcc.kind)
+            {
+                case 'array' : {  
+                    parentAcc.items.push(typeContainer);
+                }
+                break;
+
+                case 'alter' : {
+                    parentAcc.matches.push(typeContainer);
+                }
+                break;
+
+                case 'object' : {
+
+                    if(key)
+                        parentAcc.keys[key] = typeContainer;
+                    else
+                        throw Error("Object must always have a key");
+                }
+                break;
+                case 'undefined': {
+                    parentAcc = typeContainer as JoiX.UndefinedAcc; // this is a little bit hacky but it should work.
+                }
+
+                break;
+            }
+
+            return parentAcc;
+        }, {kind:'undefined'} as JoiX.UndefinedAcc);
+        // this could be simplified and we can get away from casting.
+
+        configSchema = optionalConfigSchema as Joi.AnySchema as L;
                 
-            //     let object : Record<string,JoiX.AnySchema> = {};
-            //     object[key] = (schema as Joi.AnySchema).optional();
-
-            //     acc.ref = acc.ref.keys(object);
-
-            // }, (key : string, acc : {ref : JoiX.XObjectSchema}) => {
-
-            //     let object = JoiX.object();
-
-            //     let keysObject : Record<string, JoiX.AnySchema> = {};
-            //     keysObject[key] = object;
-
-            //     // has to be delayed.
-            //     acc.ref = acc.ref.keys(keysObject);
-                
-            //     return {ref : object};
-            // }, (key : string, parentAcc, acc ) => {
-
-            //     return parentAcc
-            // },
-            // {ref:optionalConfigSchema});
-
-            await JoiX.OperateOnXObjectKeys<{ref:JoiX.XObjectSchema}>(children, async (key : string, schema : any, acc : {ref : JoiX.XObjectSchema}, config : any) => {
-                
-                let keysObject : Record<string,JoiX.AnySchema> = {};
-                keysObject[key] = (schema as Joi.AnySchema).optional();
-
-                acc.ref = acc.ref.keys(keysObject);
-
-            }, (key : string, schema, acc) => {
-
-                return {ref:_.dep};
-
-            }, (key : string, parentAcc, acc ) => {
-
-                let keysObject : Record<string, JoiX.AnySchema> = {};
-                keysObject[key] = acc.ref;
-
-                return {ref: parentAcc.ref.keys(keysObject)};
-            },
-            optionalConfigSchema);
-        }
-        catch(e)
-        {
-            console.log(JSON.stringify(e));
-        }
-
-        (configSchema as JoiX.XObjectSchema) = optionalConfigSchema.ref;
     }
 
     const children = JoiX.getXObjectChildrens(originalConfigSchema);

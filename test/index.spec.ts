@@ -354,69 +354,61 @@ describe("Configurations loader and validator routines", () => {
     });
 
 
-    // describe("lazy loading, and throw error is config parameter missing", () =>
-    // {
-    //     it("FactoryA - all config present", async function() {
+    describe("lazy loading, and throw error is config parameter missing", () =>
+    {
+        it("FactoryA - all config present", async function() {
             
-    //         let settingsWithFactoryA = _.cloneDeep(settings);
-    //         settingsWithFactoryA.p.Mockfactory = factoryA;
+            let settingsWithFactoryA = _.cloneDeep(settings);
+            settingsWithFactoryA.p.Mockfactory = factoryA;
 
-    //         const instances = await LoadConfig(settingsWithFactoryA, schema, true, true);
+            const instances = await LoadConfig(settingsWithFactoryA, schema, true, true);
         
-    //         validateAll(instances);
-    //         await validateFactoryAAsync(instances);
-    //     });
+            validateAll(instances);
+            await validateFactoryAAsync(instances);
+        });
 
-    //     it("FactoryB - all config present", async function() {
+        it("FactoryB - all config present", async function() {
             
-    //         let settingsWithFactoryA = _.cloneDeep(settings);
-    //         settingsWithFactoryA.p.Mockfactory = factoryB;
+            let settingsWithFactoryA = _.cloneDeep(settings);
+            settingsWithFactoryA.p.Mockfactory = factoryB;
 
-    //         const instances = await LoadConfig(settingsWithFactoryA, schema, true, true);
+            const instances = await LoadConfig(settingsWithFactoryA, schema, true, true);
             
-    //         validateAll(instances);
-    //         await validateFactoryBAsync(instances);
-    //     });
+            validateAll(instances);
+            await validateFactoryBAsync(instances);
+        });
 
-    //     it("FactoryA - config key 'a' mising", async function() {
+        it("FactoryA - config key 'a' mising", async function() {
             
-    //         let settingsWithFactoryA = _.cloneDeep(settings) as any;
-    //         settingsWithFactoryA.p.Mockfactory = factoryA;
-    //         settingsWithFactoryA.a = undefined;
+            let settingsWithFactoryA = _.cloneDeep(settings) as any;
+            settingsWithFactoryA.p.Mockfactory = factoryA;
+            settingsWithFactoryA.a = undefined;
 
-    //         try
-    //         {
-    //             const instances = await LoadConfig(settingsWithFactoryA, schema, true, true);
-    //             console.log("ConfigDump" + instances.config);
+            const instances = await LoadConfig(settingsWithFactoryA, schema, true, true);
 
-    //             chai.expect(() => instances.config.a).to.throw(LoadConfigErrors.configurationMissing);
-    //         }
-    //         catch(e)
-    //         {
-    //             JSON.stringify(e);
-    //         }
-    //     });
+            chai.expect(() => instances.config.a).to.throw(LoadConfigErrors.configurationMissing);
+        });
 
-    //     it("FactoryA - config key 'c' mising", async function() {
+        it("FactoryA - config key 'c' mising", async function() {
             
-    //         let settingsWithFactoryA = _.cloneDeep(settings) as any;
-    //         settingsWithFactoryA.p.Mockfactory = factoryA;
-    //         settingsWithFactoryA.a = undefined;
+            let settingsWithFactoryA = _.cloneDeep(settings) as any;
+            settingsWithFactoryA.p.Mockfactory = factoryA;
+            settingsWithFactoryA.c = undefined;
 
-    //         const instances = await LoadConfig(settingsWithFactoryA, schema, true, true);
+            const instances = await LoadConfig(settingsWithFactoryA, schema, true, true);
         
-    //         chai.expect(() => instances.config.c).to.throw(LoadConfigErrors.configurationMissing);
-    //     });
+            chai.expect(() => instances.config.c).to.throw(LoadConfigErrors.configurationMissing);
+        });
 
-    //     it("Factory config missing", async function() {
+        it("Factory config missing", async function() {
             
-    //         let settingsWithFactoryA = _.cloneDeep(settings);
-    //         settingsWithFactoryA.p.Mockfactory = null;
+            let settingsWithFactoryA = _.cloneDeep(settings);
+            settingsWithFactoryA.p.Mockfactory = null;
 
-    //         const instances = await LoadConfig(settingsWithFactoryA, schema, true, true);
+            const instances = await LoadConfig(settingsWithFactoryA, schema, true, true);
 
-    //         chai.expect(() => instances.config.a).to.throw(LoadConfigErrors.configurationMissing);
-    //     });
-    // });
+            chai.expect(() => instances.config.p.Mockfactory).to.throw(LoadConfigErrors.configurationMissing);
+        });
+    });
 });
 
