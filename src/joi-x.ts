@@ -70,7 +70,7 @@ export type AlternativesSchemaHidden = Joi.AlternativesSchema & {_inner : {
 }};
 
 export type XAnySchema = XPrimitive<any> & Joi.AnySchema;
-export type XBooleanSchema<T extends boolean = boolean> = XPrimitive<boolean> & Joi.BooleanSchema;
+export type XBooleanSchema = XPrimitive<boolean> & Joi.BooleanSchema;
 export type XNumberSchema<T extends number = number> = XPrimitive<T> & Joi.NumberSchema;
 export type XStringSchema<T extends string = string> = XPrimitive<T> & Joi.StringSchema;
 export type XDateSchema = XPrimitive<number | Date | string> & Joi.DateSchema;
@@ -102,7 +102,6 @@ export const alternatives = () => Joi.alternatives() as XAlternativesSchema;
 export const kind = <T extends string>(value : T) => Joi.string().allow(value) as XStringSchema<T> & {__isRequired: 'T'}
 export const LiteralString = <T extends string>(value : T[]) => Joi.string().allow(value) as XStringSchema<T>
 export const LiteralNumber = <T extends number>(value : T[]) => Joi.number().allow(value) as XNumberSchema<T>
-export const LiteralBoolean = <T extends boolean>(value : T[]) => Joi.boolean().allow(value) as XBooleanSchema<T>
 export const enumString = <T extends string>(values : T []) => Joi.string().allow(values) as XStringSchema<T>
 
 export const findFactory = (x : any) : FactoryMeta | undefined=>

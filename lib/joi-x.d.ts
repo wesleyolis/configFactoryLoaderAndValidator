@@ -72,7 +72,7 @@ export declare type AlternativesSchemaHidden = Joi.AlternativesSchema & {
     };
 };
 export declare type XAnySchema = XPrimitive<any> & Joi.AnySchema;
-export declare type XBooleanSchema<T extends boolean = boolean> = XPrimitive<boolean> & Joi.BooleanSchema;
+export declare type XBooleanSchema = XPrimitive<boolean> & Joi.BooleanSchema;
 export declare type XNumberSchema<T extends number = number> = XPrimitive<T> & Joi.NumberSchema;
 export declare type XStringSchema<T extends string = string> = XPrimitive<T> & Joi.StringSchema;
 export declare type XDateSchema = XPrimitive<number | Date | string> & Joi.DateSchema;
@@ -88,8 +88,8 @@ export declare type XObjectBundleSchema = XObject & Joi.ObjectSchema & {
     __bundleName: 'T';
 };
 export declare const any: () => JoiX.XAnySchema;
-export declare const bool: () => JoiX.XBooleanSchema<T>;
-export declare const boolean: () => JoiX.XBooleanSchema<T>;
+export declare const bool: () => JoiX.XBooleanSchema;
+export declare const boolean: () => JoiX.XBooleanSchema;
 export declare const number: () => JoiX.XNumberSchema<number>;
 export declare const string: () => JoiX.XStringSchema<string>;
 export declare const date: () => JoiX.XDateSchema;
@@ -103,7 +103,6 @@ export declare const kind: <T extends string>(value: T) => JoiX.XPrimitive<T> & 
 };
 export declare const LiteralString: <T extends string>(value: T[]) => JoiX.XStringSchema<T>;
 export declare const LiteralNumber: <T extends number>(value: T[]) => JoiX.XNumberSchema<T>;
-export declare const LiteralBoolean: <T extends boolean>(value: T[]) => JoiX.XBooleanSchema<T>;
 export declare const enumString: <T extends string>(values: T[]) => JoiX.XStringSchema<T>;
 export declare const findFactory: (x: any) => JoiX.FactoryMeta | undefined;
 export declare enum FactoryType {
