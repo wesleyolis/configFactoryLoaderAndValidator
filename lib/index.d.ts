@@ -25,9 +25,9 @@ export interface IConfigFactoriesInstancesResolver extends IConfigFactoriesInsta
     stopAsync(): Promise<void[]>;
 }
 export declare class FactoriesInstancesResolver<L extends JoiX.XObjectSchema, LF = JoiX.ExtractWithFactoriesFromSchema<L>> implements IConfigFactoriesInstances {
-    config: LF;
+    settings: LF;
     private factoryInstances;
-    constructor(config: LF, factoryInstances: (() => Promise<IConfigFactory>)[]);
+    constructor(settings: LF, factoryInstances: (() => Promise<IConfigFactory>)[]);
     startAsync(): Promise<void[]>;
     stopAsync(): Promise<void[]>;
 }
@@ -56,4 +56,5 @@ export interface Accumulator extends Joi.AnySchema, AccBase<undefined> {
     kind: 'accumulator';
     accumulator: Joi.AnySchema | null;
 }
+export declare type LoadedConfig<L extends JoiX.XObjectSchema, LF = JoiX.ExtractWithFactoriesFromSchema<L>> = FactoriesInstancesResolver<L, LF>;
 export declare function LoadConfig<L extends JoiX.XObjectSchema, LF = JoiX.ExtractWithFactoriesFromSchema<L>>(configSettings: any, configSchema: L, lazyLoad?: boolean, configOptional?: boolean): Promise<FactoriesInstancesResolver<L, LF>>;

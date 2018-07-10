@@ -1,51 +1,18 @@
-import { Factories, CFT, JoiX, JoiV, Joi } from '../index';
-import * as hyphenBanking from './hyphen-banking'
+import {ConfigSchema, configSchema} from './global'
+import {LoadConfig, LoadedConfig } from '../index'
 
-export type GlobalConfigSchema = JoiX.ExtractFromObject<typeof globalConfigSchema>
+let configInstancesLoaded : LoadedConfig<typeof configSchema> | undefined = undefined; 
 
-// As far as we know.
-export const globalConfigSchema = {
-    mongodb: Factories.MongoDB.configSchema.required().tags('mongoConnectionString'),
-    mongoConnectionString : JoiX.string().required().description("Mongo connection string, for legacy support, typically gets inject from a factory instance."),
-    agenda : JoiX.object().keys({
-        mongoConnectionString: JoiV.mongoConnectionString().required()    
-    }).required(),
-    mongoRemoteConnectionString : JoiV.mongoConnectionString().required(),
-    mongoRemoteAuditConnectionString : JoiV.mongoConnectionString().required(),
-    mongoAuditConnectionString : JoiV.mongoConnectionString().required(),
-    mongoLocalIpAddress : JoiV.mongoConnectionString().required(),
-    postgresReadonlyConnectionString : JoiV.mongoConnectionString().required(),
-    mongo : JoiX.object().keys({
-        mms_group_id : JoiX.string().required(),
-        mss_api_key: JoiX.string().required()
-    }).required(),
-    oplog : JoiX.object().keys({
-        db : JoiX.string().required(),
-        host : JoiX.string().required()
-    }).required(),
-};
+async function configAsync () : Promise<LoadedConfig<typeof configSchema>>
+{
+    if (configInstancesLoaded == undefined)
+    {
+        let config = require('config'); 
+        // this should be replace with direct memory load of configuration, that is passed in via the enviroment.
+        // their should be no file loading at all.
 
-export type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>
-
-export const configSchema = JoiX.object().keys({
-    banking : hyphenBanking.configSchema
-}).keys(globalConfigSchema);
-
-
-
-
-/*
-other config that I don't know were it belongs.
-banking : JoiX.object().keys({
-        bankingSystem : JoiX.LiteralString(["redblade-hyphen-banking"]).required()
-    }).required(),
-    documents : JoiX.object().keys({
-        s3 : JoiX.object().keys({
-            expires : JoiX.number().required()
-        }).required()
-    }).required(),
-    pubSubUrl : hyphenBanking.configSchema.required(),
-    serviceBus: JoiX.object().keys({
-        service : JoiX.LiteralString(["redblade-servicebus-aws"]).required()
-    }).required(),
-*/
+        configInstancesLoaded = await LoadConfig(config, configSchema, true);
+    }
+    
+    return Promise.resolve(configInstancesLoaded);
+}

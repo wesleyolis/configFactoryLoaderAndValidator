@@ -64,7 +64,7 @@ LF = JoiX.ExtractWithFactoriesFromSchema<L>
 > 
 implements IConfigFactoriesInstances
 {
-    constructor (public config : LF, private factoryInstances : (() => Promise<IConfigFactory>)[])
+    constructor (public settings : LF, private factoryInstances : (() => Promise<IConfigFactory>)[])
     {
     }
 
@@ -122,6 +122,8 @@ export interface Accumulator extends Joi.AnySchema, AccBase<undefined>
 type JoiXSchemaAcc = Accumulator | ChildObjectAcc | ChildArrayAcc | ChildAlterAcc;
 
 
+export type LoadedConfig<L extends JoiX.XObjectSchema, LF = JoiX.ExtractWithFactoriesFromSchema<L>> = FactoriesInstancesResolver<L, LF>;
+
 export async function LoadConfig<L extends JoiX.XObjectSchema, 
 LF = JoiX.ExtractWithFactoriesFromSchema<L>>
 (configSettings : any, configSchema : L, lazyLoad : boolean = false, configOptional : boolean = false) : Promise<FactoriesInstancesResolver<L, LF>>
@@ -162,7 +164,7 @@ LF = JoiX.ExtractWithFactoriesFromSchema<L>>
                 }
                 break;
                 case 'accumulator': {
-                    acc.accumulator = newSchema;
+                    acc.accumulator = newSchema;    // Could actually jsut give the accumulator a single joi value here, it shouldn't actually matter.
                 
                 break;
                 }
@@ -347,5 +349,3 @@ LF = JoiX.ExtractWithFactoriesFromSchema<L>>
 
     return Promise.resolve(new FactoriesInstancesResolver(loadedConfig, factoryConfig));
 }
-
-

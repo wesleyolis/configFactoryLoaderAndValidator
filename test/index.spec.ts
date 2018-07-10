@@ -285,26 +285,26 @@ describe("Configurations loader and validator routines", () => {
 
     function validateAll(instances : any)
     {
-        chai.expect(instances.config).to.have.property('a').eq('abc');
-        chai.expect(instances.config).to.have.property('b').equal(555);
-        chai.expect(instances.config).to.have.property('c');
-        chai.expect(instances.config.c).to.have.property('g').equal('def');
-        chai.expect(instances.config.c).to.have.property('h').equal('hij');
-        chai.expect(instances.config).to.have.property('p');
-        chai.expect(instances.config.p).to.have.property('Mockfactory');
+        chai.expect(instances.settings).to.have.property('a').eq('abc');
+        chai.expect(instances.settings).to.have.property('b').equal(555);
+        chai.expect(instances.settings).to.have.property('c');
+        chai.expect(instances.settings.c).to.have.property('g').equal('def');
+        chai.expect(instances.settings.c).to.have.property('h').equal('hij');
+        chai.expect(instances.settings).to.have.property('p');
+        chai.expect(instances.settings.p).to.have.property('Mockfactory');
     }
 
     async function validateFactoryAAsync(instances : any)
     {
-        chai.expect(await instances.config.p.Mockfactory).to.have.property('valueA').to.equal('FactoryValueA');
-        chai.expect(await instances.config.p.Mockfactory).to.have.property('valueB').to.equal(234);
+        chai.expect(await instances.settings.p.Mockfactory).to.have.property('valueA').to.equal('FactoryValueA');
+        chai.expect(await instances.settings.p.Mockfactory).to.have.property('valueB').to.equal(234);
     }
 
     async function validateFactoryBAsync(instances : any)
     {
 
-        chai.expect(await instances.config.p.Mockfactory).to.have.property('valueA').to.equal('FactoryValueB');
-        chai.expect(await instances.config.p.Mockfactory).to.have.property('valueB').to.equal(768);
+        chai.expect(await instances.settings.p.Mockfactory).to.have.property('valueA').to.equal('FactoryValueB');
+        chai.expect(await instances.settings.p.Mockfactory).to.have.property('valueB').to.equal(768);
     }
 
     it("FactoryA - upfront", async function() {
@@ -386,7 +386,7 @@ describe("Configurations loader and validator routines", () => {
 
             const instances = await LoadConfig(settingsWithFactoryA, schema, true, true);
 
-            chai.expect(() => instances.config.a).to.throw(LoadConfigErrors.configurationMissing);
+            chai.expect(() => instances.settings.a).to.throw(LoadConfigErrors.configurationMissing);
         });
 
         it("FactoryA - config key 'c' mising", async function() {
@@ -397,7 +397,7 @@ describe("Configurations loader and validator routines", () => {
 
             const instances = await LoadConfig(settingsWithFactoryA, schema, true, true);
         
-            chai.expect(() => instances.config.c).to.throw(LoadConfigErrors.configurationMissing);
+            chai.expect(() => instances.settings.c).to.throw(LoadConfigErrors.configurationMissing);
         });
 
         it("Factory config missing", async function() {
@@ -407,7 +407,7 @@ describe("Configurations loader and validator routines", () => {
 
             const instances = await LoadConfig(settingsWithFactoryA, schema, true, true);
 
-            chai.expect(() => instances.config.p.Mockfactory).to.throw(LoadConfigErrors.configurationMissing);
+            chai.expect(() => instances.settings.p.Mockfactory).to.throw(LoadConfigErrors.configurationMissing);
         });
     });
 });
