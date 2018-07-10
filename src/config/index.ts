@@ -3,7 +3,7 @@ import {LoadConfig, LoadedConfig } from '../index'
 
 let configInstancesLoaded : LoadedConfig<typeof configSchema> | undefined = undefined; 
 
-async function configAsync () : Promise<LoadedConfig<typeof configSchema>>
+export async function configAsync () : Promise<LoadedConfig<typeof configSchema>>
 {
     if (configInstancesLoaded == undefined)
     {

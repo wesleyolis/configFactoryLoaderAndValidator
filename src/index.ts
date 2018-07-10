@@ -25,6 +25,8 @@ export {describe as describeConfigSchema, validateAsync as validatConfigSchemaAs
 import * as _ from 'lodash';
 import { isXArrayHasChildren } from './joi-x';
 
+export {configAsync} from './config/index';
+
 export abstract class IConfigBundle
 {
     static async newBundleAndResolveConfigAsync (settings: JoiX.XJSchemaMap | undefined = undefined, configSchema : JoiX.XObjectSchema, requireConfig : (file:string) => any = require('config')) : Promise<any>
@@ -80,6 +82,8 @@ implements IConfigFactoriesInstances
 }
 
 export class LoadConfigErrors {
+    // This is an error message is used to resolve all existing test that require special configuration
+    // to run. this will allow us to simple see a test failing, were the config is just missing.
     static readonly configurationMissing : string = "ConfigurationMissing:" + Math.round(Math.random() * 1000);
     static readonly failedToNewFactory : string = "FailedToLoadFactory";
 }

@@ -12,6 +12,7 @@ import * as JoiV from './joi-x-validators';
 import { IConfigFactory } from './config-factory';
 export { JoiV as JoiV };
 export { describe as describeConfigSchema, validateAsync as validatConfigSchemaAsync } from './config-factory/config';
+export { configAsync } from './config/index';
 export declare abstract class IConfigBundle {
     static newBundleAndResolveConfigAsync(settings: JoiX.XJSchemaMap | undefined, configSchema: JoiX.XObjectSchema, requireConfig?: (file: string) => any): Promise<any>;
     abstract newBundleAndResolveConfigAsync(settings: JoiX.XJSchemaMap | undefined): Promise<IConfigFactoriesInstances>;
