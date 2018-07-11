@@ -38,8 +38,6 @@ export const configSchema = JoiX.object().keys({
     options : JoiX.object().pattern(/\w?/, JoiX.string().required()),
   }).required();
 
-
-
   const settings = {
     class : CFT.ConfigFactoryClass.netService,
     type : CFT.ConfigFactoryTypes.production,
