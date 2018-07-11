@@ -47,7 +47,7 @@ export declare const configSchema: JoiX.XObject & Joi.ObjectSchema & {
         hyphenSftpHost: JoiX.XPrimitive<string> & Joi.StringSchema & {
             __isRequired: "T";
         };
-        hyphenSftpPort: JoiX.XPrimitive<string> & Joi.StringSchema & {
+        hyphenSftpPort: JoiX.XPrimitive<number> & Joi.NumberSchema & {
             __isRequired: "T";
         };
         hyphenSftpUser: JoiX.XPrimitive<string> & Joi.StringSchema & {

@@ -29,7 +29,7 @@ export const configSchema = JoiX.objectBundle(bundleName).keys({
         hyphenLoadReportPrefix : JoiX.LiteralString(['LD']).required(),
         hyphenSftpOutPath : JoiX.string().required(),
         hyphenSftpHost : JoiX.string().required(),
-        hyphenSftpPort : JoiX.string().required(),
+        hyphenSftpPort : JoiX.number().required(),
         hyphenSftpUser : JoiX.string().required(),
         hyphenSftpPrivateKey : JoiX.string().required(),
         hyphenSftpInPath : JoiX.string().required(),
