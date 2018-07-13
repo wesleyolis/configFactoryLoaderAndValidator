@@ -44,6 +44,7 @@
     "ssh2": "^0.5.2",
     "tsc-simple": "git+https://github.com/fictitious/tsc-simple.git",
     "tslint": "^5.10.0",
-    "verror": "^1.10.0"
+    "verror": "^1.10.0",
+    "typescript": "^2.8.4"
   }
 }
