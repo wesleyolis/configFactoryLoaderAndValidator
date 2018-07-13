@@ -1,5 +1,5 @@
-import * as BluebirdPromisify from './util/bluebird-promisify';
-export { BluebirdPromisify as BluebirdPromisify };
+import { Promisify } from './util/bluebird-promisify';
+export { Promisify as BluebirdPromisify };
 import * as CFT from './config-factory/config-factory-types';
 export { CFT as CFT };
 import * as factories from './factories';
