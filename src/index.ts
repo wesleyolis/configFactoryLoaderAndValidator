@@ -1,3 +1,6 @@
+import * as BluebirdPromisify from './util/bluebird-promisify';
+export {BluebirdPromisify as BluebirdPromisify};
+
 const cache: Record<string, string> = {};
 
 interface IKmsEncryptionResult {
