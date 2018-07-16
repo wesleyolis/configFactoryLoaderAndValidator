@@ -18,10 +18,6 @@ export type ParamH<T> = T extends (A: any, B: any, C: any, D: any, E: any, F: an
 export type ParamI<T> = T extends (A: any, B: any, C: any, D: any, E: any, F: any, G: any, H: any, I: infer P , ... args: any []) => void ? P : never;
 export type Paramlast = (A: any, B: any, C: any, D: any, E: any, F: any, G: any, H: any, I: any , ... args: any []) => void;
 
-
-const promisify = Promisify(function(paramA : boolean, callback : (err : number, result : CallBackType) => void) {})
-
-
 export function Promisify<M>(propA: M)
  : ParamI<M> extends CallBackType ? (A: ParamA<M>, B: ParamB<M>, C: ParamC<M>, D: ParamD<M>, E: ParamE<M>, F: ParamF<M>, G: ParamG<M>, H: ParamH<M>) => Bluebird<RCallBack<ParamI<M>>>
 : ParamH<M> extends CallBackType ? (A: ParamA<M>, B: ParamB<M>, C: ParamC<M>, D: ParamD<M>, E: ParamE<M>, F: ParamF<M>, G: ParamG<M>) => Bluebird<RCallBack<ParamH<M>>>

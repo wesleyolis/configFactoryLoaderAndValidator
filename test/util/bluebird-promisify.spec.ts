@@ -18,20 +18,21 @@ function newControlState() : ControlState {
     }
 }
 
-function wait(control : ControlState, callback : CallBack)
+function wait(control : ControlState, prefix: string, callback : CallBack)
 {
     if (control.succes !== undefined)
-        return callback(undefined, control.succes);
+        return callback(undefined, prefix + ":" + control.succes);
     else if (control.error !== undefined)
         return callback(control.error, undefined);
     else
-        setTimeout(() => wait(control, callback), 10);
+        setTimeout(() => wait(control, prefix, callback), 10);
 }
 
 
 class TestObject
 {
     public control : ControlState;
+    private param : string = "";
 
     constructor(public prefix : string)
     {
@@ -45,11 +46,14 @@ class TestObject
 
     funParamA(paramA : 'A', callback : (err: any, result: string) => void) : void
     {
+        this.param = paramA;
         this.waitObject(this.control, callback);
     }
     
     funParamH(paramA : 'A', paramB : 'B', paramC : 'C', paramD : 'D', paramE : 'E', paramF : 'F', paramG : 'G', paramH : 'H', callback : (err: any, result: number) => void) : void
     {
+
+        this.param = paramH;
         this.waitObject(this.control, callback);
     }
 
@@ -57,9 +61,9 @@ class TestObject
     waitObject(control : ControlState, callback : CallBack)
     {
         if (control.succes !== undefined)
-            return callback(undefined, this.prefix + ":" + control.succes);
+            return callback(undefined, this.prefix + ":" + this.param + ":" + control.succes);
         else if (control.error !== undefined)
-            return callback(this.prefix + ":" + control.error, undefined);
+            return callback(this.prefix + ":" + this.param + ":" + control.error, undefined);
         else
             setTimeout(() => this.waitObject(control, callback), 10);
     }
@@ -74,7 +78,7 @@ describe("Generic Promisification", function() {
         {
             return function(callback : C)
             {
-                wait(control, callback);
+                wait(control, '', callback);
             }
         }
 
@@ -82,7 +86,7 @@ describe("Generic Promisification", function() {
         {
             return function(paramA : 'A', callback : C)
             {
-                wait(control, callback);
+                wait(control, 'A', callback);
             }
         }
 
@@ -90,7 +94,7 @@ describe("Generic Promisification", function() {
         {
             return function(paramA : 'A', paramB : 'B', paramC : 'C', paramD : 'D', paramE : 'E', paramF : 'F', paramG : 'G', paramH : 'H', callback : C)
             {
-                wait(control, callback);
+                wait(control, 'H', callback);
             }
         }
 
@@ -105,7 +109,7 @@ describe("Generic Promisification", function() {
     
                 control.succes = 'sucess_1';
     
-                chai.expect(await promisifyFun).to.eql('sucess_1');
+                chai.expect(await promisifyFun).to.eql(':sucess_1');
             });
     
     
@@ -121,7 +125,7 @@ describe("Generic Promisification", function() {
     
                 control.succes = 'sucess_A';
     
-                chai.expect(await resultPromsie).to.eql('sucess_A');
+                chai.expect(await resultPromsie).to.eql('A:sucess_A');
             });
     
     
@@ -138,7 +142,7 @@ describe("Generic Promisification", function() {
     
                 control.succes = 'sucess_H';
     
-                chai.expect(await resultPromsie).to.eql('sucess_H');
+                chai.expect(await resultPromsie).to.eql('H:sucess_H');
             });
         });
 
@@ -204,7 +208,7 @@ describe("Generic Promisification", function() {
             objectFunToBePromisified.prefix = "InstanceNoParams";
             objectFunToBePromisified.control.succes = 'sucess';
 
-            chai.expect(await promisify).to.eql(objectFunToBePromisified.prefix + ":" + objectFunToBePromisified.control.succes);
+            chai.expect(await promisify).to.eql(objectFunToBePromisified.prefix + "::" + objectFunToBePromisified.control.succes);
         });
 
 
@@ -219,7 +223,7 @@ describe("Generic Promisification", function() {
             objectFunToBePromisified.prefix = "InstanceParamsA";
             objectFunToBePromisified.control.succes = 'sucessA';
 
-            chai.expect(await promise).to.eql(objectFunToBePromisified.prefix + ":" + objectFunToBePromisified.control.succes);
+            chai.expect(await promise).to.eql(objectFunToBePromisified.prefix + ":A:" + objectFunToBePromisified.control.succes);
         });
 
 
@@ -235,7 +239,7 @@ describe("Generic Promisification", function() {
             objectFunToBePromisified.prefix = "InstanceParamsH";
             objectFunToBePromisified.control.succes = 'sucessH';
 
-            chai.expect(await promise).to.eql(objectFunToBePromisified.prefix + ":" + objectFunToBePromisified.control.succes);
+            chai.expect(await promise).to.eql(objectFunToBePromisified.prefix + ":H:" + objectFunToBePromisified.control.succes);
         });
     });
 });
