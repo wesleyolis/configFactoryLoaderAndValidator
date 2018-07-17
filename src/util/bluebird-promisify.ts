@@ -147,32 +147,50 @@ export function PromisifyReturn(propA : any, propB : any = undefined) : (...args
 {
     function generatePromise (func : Function, object : any) : (...args : any[]) => Bluebird<any> 
     {
-        return (execute : {[index:string] : any} | undefined) : Bluebird<any> => { 
+        let self : any | undefined = object;
+        let orignalArgsWithCallBackLength = func.length;
+
+        return function (execute : {[index:string] : any} | undefined) : Bluebird<any> { 
        
-            let self : any | undefined = object;
+            let executeResult : any = undefined;
+
+            let lastArg = arguments.length - 1;
+
+            if (orignalArgsWithCallBackLength == arguments.length && lastArg > -1)
+            {
+                executeResult = arguments[lastArg];
+                lastArg--;
+            }
             
-            const lastArg = arguments.length - 1;
-            const lastArgUndefined = lastArg >= 0 && arguments[lastArg] === undefined;
-
             let args : any [] = [];
-            let i = arguments.length - 1;
-            while(i--)
+            for (let i = 0; i <= lastArg; i++)
                 args.push(arguments[i]);
-
-            //args.push(resolve);
+            
+            // let i = lastArg;
+            // while(i >= 0)
+            // {
+            //     args.push(arguments[i]);
+            //     i--;
+            // }
 
             return new Bluebird(function(resolve, reject) {
                 
                 try {
+                    
                     let result = undefined;
 
-                    if (self)
-                        result = func.call(self, ...args, resolve);
-                    else
-                        result = func(...args, resolve);
+                    args.push(function (err : any, result: any) 
+                    {
+                        if(err)
+                            reject(Error(err))
+                        else
+                            resolve(result);
+                    });
 
-                    if(arguments[lastArg])
-                        arguments[lastArg]['executeResult'] = result;
+                    result = func.call(self, ... args);
+
+                    if(executeResult)
+                        executeResult['executeResult'] = result;
     
                 } catch(e) {
                     reject(e);
@@ -187,7 +205,7 @@ export function PromisifyReturn(propA : any, propB : any = undefined) : (...args
     }
     else if (propA[propB])
     {
-        return generatePromise(propB, propA[propB]);
+        return generatePromise(propA[propB], propA);
     }
     else
         throw Error(`Error key [${propB}] not found on object`);
