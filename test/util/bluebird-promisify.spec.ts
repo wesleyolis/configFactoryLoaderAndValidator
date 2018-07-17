@@ -681,8 +681,6 @@ describe("Promisification with return", function() {
                     
                     const promisifyFun = PromisifyReturn(objectFunToBePromisified, 'funParamH');
     
-                    const promisify = promisifyFun('A','B','C','D','E','F','G','H');    
-    
                     const resultPromsie = promisifyFun('A','B','C','D','E','F','G','H');
         
                     objectFunToBePromisified.control.error = 'error_1';

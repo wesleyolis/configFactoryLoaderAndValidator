@@ -142,8 +142,32 @@ export function PromisifyAll<O extends {[index : string] : any}>(object : O) : P
 }
 */
 
+export function PromisifyReturn<M>(propA: M)
+: ParamI<M> extends CallBackType ? <Z extends {}>(A: ParamA<M>, B: ParamB<M>, C: ParamC<M>, D: ParamD<M>, E: ParamE<M>, F: ParamF<M>, G: ParamG<M>, H: ParamH<M>, init?: Z) => Bluebird<RCallBack<ParamI<M>>>
+: ParamH<M> extends CallBackType ? <Z extends {}>(A: ParamA<M>, B: ParamB<M>, C: ParamC<M>, D: ParamD<M>, E: ParamE<M>, F: ParamF<M>, G: ParamG<M>, init?: Z) => Bluebird<RCallBack<ParamH<M>>>
+: ParamG<M> extends CallBackType ? <Z extends {}>(A: ParamA<M>, B: ParamB<M>, C: ParamC<M>, D: ParamD<M>, E: ParamE<M>, F: ParamF<M>, init?: Z) => Bluebird<RCallBack<ParamG<M>>>
+: ParamF<M> extends CallBackType ? <Z extends {}>(A: ParamA<M>, B: ParamB<M>, C: ParamC<M>, D: ParamD<M>, E: ParamE<M>, init?: Z) => Bluebird<RCallBack<ParamF<M>>>
+: ParamE<M> extends CallBackType ? <Z extends {}>(A: ParamA<M>, B: ParamB<M>, C: ParamC<M>, D: ParamD<M>, init?: Z) => Bluebird<RCallBack<ParamE<M>>>
+: ParamD<M> extends CallBackType ? <Z extends {}>(A: ParamA<M>, B: ParamB<M>, C: ParamC<M>, init?: Z) => Bluebird<RCallBack<ParamD<M>>>
+: ParamC<M> extends CallBackType ? <Z extends {}>(A: ParamA<M>, B: ParamB<M>, init?: Z) => Bluebird<RCallBack<ParamC<M>>>
+: ParamB<M> extends CallBackType ? <Z extends {}>(A: ParamA<M>, init?: Z) => Bluebird<RCallBack<ParamB<M>>>
+: ParamA<M> extends CallBackType ? <Z extends {}>(init?: Z) => Bluebird<void>
+: M extends Paramlast ? 'Expanded the parameter templates' : '** Invalid Method (key) not found in object**';
 
-export function PromisifyReturn(propA : any, propB : any = undefined) : (...args : any[]) => Bluebird<any>
+
+export function PromisifyReturn<O extends {}, M extends keyof O>(propA: O , propB: M)
+: ParamI<O[M]> extends CallBackType ? <Z extends {}>(A: ParamA<O[M]>, B: ParamB<O[M]>, C: ParamC<O[M]>, D: ParamD<O[M]>, E: ParamE<O[M]>, F: ParamF<O[M]>, G: ParamG<O[M]>, H: ParamH<O[M]>, init?: Z) => Bluebird<RCallBack<ParamI<O[M]>>>
+: ParamH<O[M]> extends CallBackType ? <Z extends {}>(A: ParamA<O[M]>, B: ParamB<O[M]>, C: ParamC<O[M]>, D: ParamD<O[M]>, E: ParamE<O[M]>, F: ParamF<O[M]>, G: ParamG<O[M]>, init?: Z) => Bluebird<RCallBack<ParamH<O[M]>>>
+: ParamG<O[M]> extends CallBackType ? <Z extends {}>(A: ParamA<O[M]>, B: ParamB<O[M]>, C: ParamC<O[M]>, D: ParamD<O[M]>, E: ParamE<O[M]>, F: ParamF<O[M]>, init?: Z) => Bluebird<RCallBack<ParamG<O[M]>>>
+: ParamF<O[M]> extends CallBackType ? <Z extends {}>(A: ParamA<O[M]>, B: ParamB<O[M]>, C: ParamC<O[M]>, D: ParamD<O[M]>, E: ParamE<O[M]>, init?: Z) => Bluebird<RCallBack<ParamF<O[M]>>>
+: ParamE<O[M]> extends CallBackType ? <Z extends {}>(A: ParamA<O[M]>, B: ParamB<O[M]>, C: ParamC<O[M]>, D: ParamD<O[M]>, init?: Z) => Bluebird<RCallBack<ParamE<O[M]>>>
+: ParamD<O[M]> extends CallBackType ? <Z extends {}>(A: ParamA<O[M]>, B: ParamB<O[M]>, C: ParamC<O[M]>, init?: Z) => Bluebird<RCallBack<ParamD<O[M]>>>
+: ParamC<O[M]> extends CallBackType ? <Z extends {}>(A: ParamA<O[M]>, B: ParamB<O[M]>, init?: Z) => Bluebird<RCallBack<ParamC<O[M]>>>
+: ParamB<O[M]> extends CallBackType ? <Z extends {}>(A: ParamA<O[M]>, init?: Z) => Bluebird<RCallBack<ParamB<O[M]>>>
+: ParamA<O[M]> extends CallBackType ? <Z extends {}>(init?: Z) => Bluebird<RCallBack<ParamA<O[M]>>>
+: O[M] extends Paramlast ? 'Expanded the parameter templates' : '** Invalid Method (key) not found in object**';
+
+export function PromisifyReturn(propA : any, propB : any = undefined) : any //(...args : any[]) => Bluebird<any>
 {
     function generatePromise (func : Function, object : any) : (...args : any[]) => Bluebird<any> 
     {
@@ -165,13 +189,6 @@ export function PromisifyReturn(propA : any, propB : any = undefined) : (...args
             let args : any [] = [];
             for (let i = 0; i <= lastArg; i++)
                 args.push(arguments[i]);
-            
-            // let i = lastArg;
-            // while(i >= 0)
-            // {
-            //     args.push(arguments[i]);
-            //     i--;
-            // }
 
             return new Bluebird(function(resolve, reject) {
                 
