@@ -1,5 +1,6 @@
 import * as chai from 'chai'
 import {Promisify} from '../../src/util/bluebird-promisify';
+//import {PromisifyAll} from '../../src/util/bluebird-promisify';
 import { onPossiblyUnhandledRejection } from 'bluebird';
 const sut = require('redblade-testing');
 
@@ -41,31 +42,31 @@ class TestObject
 
     fun(callback : (err: any, result: boolean) => void) : void
     {
-        this.waitObject(this.control, callback);
+        this.waitObject(callback);
     }
 
     funParamA(paramA : 'A', callback : (err: any, result: string) => void) : void
     {
         this.param = paramA;
-        this.waitObject(this.control, callback);
+        this.waitObject(callback);
     }
     
     funParamH(paramA : 'A', paramB : 'B', paramC : 'C', paramD : 'D', paramE : 'E', paramF : 'F', paramG : 'G', paramH : 'H', callback : (err: any, result: number) => void) : void
     {
 
         this.param = paramH;
-        this.waitObject(this.control, callback);
+        this.waitObject(callback);
     }
 
 
-    waitObject(control : ControlState, callback : CallBack)
+    waitObject(callback : CallBack)
     {
-        if (control.succes !== undefined)
-            return callback(undefined, this.prefix + ":" + this.param + ":" + control.succes);
-        else if (control.error !== undefined)
-            return callback(this.prefix + ":" + this.param + ":" + control.error, undefined);
+        if (this.control.succes !== undefined)
+            return callback(undefined, this.prefix + ":" + this.param + ":" + this.control.succes);
+        else if (this.control.error !== undefined)
+            return callback(this.prefix + ":" + this.param + ":" + this.control.error, undefined);
         else
-            setTimeout(() => this.waitObject(control, callback), 10);
+            setTimeout(() => this.waitObject(callback), 10);
     }
 }
 
@@ -243,6 +244,52 @@ describe("Generic Promisification", function() {
         });
     });
 });
+
+/*
+Basiclally not working because of the this associate, see what pier thinks.
+// bade thing here is that promisify all, should n't kick everything off  by default.
+describe("Promisify All", function ()
+{
+    // basically just run the check on each object.
+    const objectFunToBePromisified = new TestObject('InitPrefix');
+    const promisifiedObject = PromisifyAll(objectFunToBePromisified);
+
+    it("No Paramss", async function() {
+
+        const promise = promisifiedObject.fun();
+
+        promisifiedObject.prefix = "InstanceNoParams";
+        promisifiedObject.control.succes = 'sucess';
+
+        chai.expect(await promise).to.eql(promisifiedObject.prefix + "::" + promisifiedObject.control.succes);
+    });
+
+
+    it("WithPrams", async function() {
+        
+        const promise = promisifiedObject.funParamA('A');
+
+        promisifiedObject.prefix = "InstanceParamsA";
+        promisifiedObject.control.succes = 'sucessA';
+
+        const result = await promise;
+
+        chai.expect(result).to.eql(promisifiedObject.prefix + ":A:" + promisifiedObject.control.succes);
+    });
+
+
+
+    it("WithPramsH", async function() {
+
+        const promise = promisifiedObject.funParamH('A','B','C','D','E','F','G','H');
+
+        promisifiedObject.prefix = "InstanceParamsH";
+        promisifiedObject.control.succes = 'sucessH';
+
+        chai.expect(await promise).to.eql(promisifiedObject.prefix + ":H:" + promisifiedObject.control.succes);
+    });
+});
+*/
 
 /*
 

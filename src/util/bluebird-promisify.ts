@@ -16,6 +16,7 @@ export type ParamF<T> = T extends (A: any, B: any, C: any, D: any, E: any, F: in
 export type ParamG<T> = T extends (A: any, B: any, C: any, D: any, E: any, F: any, G: infer P, ... args: any []) => void ? P : never;
 export type ParamH<T> = T extends (A: any, B: any, C: any, D: any, E: any, F: any, G: any, H: infer P, ... args: any []) => void ? P : never;
 export type ParamI<T> = T extends (A: any, B: any, C: any, D: any, E: any, F: any, G: any, H: any, I: infer P , ... args: any []) => void ? P : never;
+export type ParamJ<T> = T extends (A: any, B: any, C: any, D: any, E: any, F: any, G: any, H: any, I: any, J: infer P) => void ? P : never;
 export type Paramlast = (A: any, B: any, C: any, D: any, E: any, F: any, G: any, H: any, I: any , ... args: any []) => void;
 
 export function Promisify<M>(propA: M)
@@ -93,26 +94,74 @@ export function Promisify(propA: any, propB: any = undefined): any {
     }
 }
 
+
+export type PromisifiyReturnType<M> = ParamA<M> extends CallBackType ? () => Bluebird<void>
+ : ParamB<M> extends CallBackType ? (A: ParamA<M>) => Bluebird<RCallBack<ParamB<M>>>
+ : ParamC<M> extends CallBackType ? (A: ParamA<M>, B: ParamB<M>) => Bluebird<RCallBack<ParamC<M>>>
+ : ParamD<M> extends CallBackType ? (A: ParamA<M>, B: ParamB<M>, C: ParamC<M>) => Bluebird<RCallBack<ParamD<M>>>
+ : ParamE<M> extends CallBackType ? (A: ParamA<M>, B: ParamB<M>, C: ParamC<M>, D: ParamD<M>) => Bluebird<RCallBack<ParamE<M>>>
+ : ParamF<M> extends CallBackType ? (A: ParamA<M>, B: ParamB<M>, C: ParamC<M>, D: ParamD<M>, E: ParamE<M>) => Bluebird<RCallBack<ParamF<M>>>
+ : ParamG<M> extends CallBackType ? (A: ParamA<M>, B: ParamB<M>, C: ParamC<M>, D: ParamD<M>, E: ParamE<M>, F: ParamF<M>) => Bluebird<RCallBack<ParamG<M>>>
+ : ParamH<M> extends CallBackType ? (A: ParamA<M>, B: ParamB<M>, C: ParamC<M>, D: ParamD<M>, E: ParamE<M>, F: ParamF<M>, G: ParamG<M>) => Bluebird<RCallBack<ParamH<M>>>
+ : ParamI<M> extends CallBackType ? (A: ParamA<M>, B: ParamB<M>, C: ParamC<M>, D: ParamD<M>, E: ParamE<M>, F: ParamF<M>, G: ParamG<M>, H: ParamH<M>) => Bluebird<RCallBack<ParamI<M>>>
+ : M extends Paramlast ? 'Expanded the parameter templates' : '** Invalid Method (key) not found in object**';
+
+export type PromisifyObject<O extends {}> =
+{ 
+    [K in keyof O] : O[K] extends Function ? PromisifiyReturnType<O[K]> : O[K]
+}
 /*
+export function PromisifyAll<O extends {[index : string] : any}>(object : O) : PromisifyObject<O>
+{   
+    const keys = Object.keys(object);
+
+    let proto =  Object.getPrototypeOf(object);
+
+    while (proto && proto.__proto__)
+    {
+        const names = Object.getOwnPropertyNames(proto);
+        names.forEach(name => {
+            if (name !== 'constructor')
+                keys.push(name);
+        });
+
+        proto = Object.getPrototypeOf(proto);
+    }
+
+    let promisifyedObject : {[index : string] : any} = {};
+
+    keys.forEach(function(key) {
+
+        if (typeof object[key] === 'function')
+            promisifyedObject[key] = Bluebird.promisify(object[key], {context: object});
+        else
+            promisifyedObject[key] = object[key];
+    });
+
+    return promisifyedObject as any as PromisifyObject<O>;
+}
+*/
+
+
 export function PromisifyReturn(propA : any, propB : any = undefined) : (...args : any[]) => Bluebird<any>
 {
     function generatePromise (func : Function, object : any) : (...args : any[]) => Bluebird<any> 
     {
         return (execute : {[index:string] : any} | undefined) : Bluebird<any> => { 
        
+            let self : any | undefined = object;
+            
+            const lastArg = arguments.length - 1;
+            const lastArgUndefined = lastArg >= 0 && arguments[lastArg] === undefined;
+
+            let args : any [] = [];
+            let i = arguments.length - 1;
+            while(i--)
+                args.push(arguments[i]);
+
+            //args.push(resolve);
+
             return new Bluebird(function(resolve, reject) {
-    
-                let self : any | undefined = object;
-                
-                const lastArg = arguments.length - 1;
-                const lastArgUndefined = lastArg >= 0 && arguments[lastArg] === undefined;
-    
-                let args : any [] = [];
-                let i = arguments.length - 1;
-                while(i--)
-                    args.push(arguments[i]);
-                
-                //args.push(resolve);
                 
                 try {
                     let result = undefined;
@@ -143,4 +192,3 @@ export function PromisifyReturn(propA : any, propB : any = undefined) : (...args
     else
         throw Error(`Error key [${propB}] not found on object`);
 }
-*/
