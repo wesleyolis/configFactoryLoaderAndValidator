@@ -1,9 +1,7 @@
-import { Joi, JoiX } from '../index';
+import { Joi, JoiX, Factories } from '../index';
 export declare const bundleName: string;
 export declare type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>;
 export declare const configSchema: JoiX.XObject & Joi.ObjectSchema & {
-    __bundleName: "T";
-} & {
     __tsTypeO: {
         pendingNc: JoiX.XPrimitive<boolean> & Joi.BooleanSchema & {
             __isRequired: "T";
@@ -69,6 +67,15 @@ export declare const configSchema: JoiX.XObject & Joi.ObjectSchema & {
             __isRequired: "T";
         };
         hyphenKey: JoiX.XPrimitive<number> & Joi.NumberSchema & {
+            __isRequired: "T";
+        };
+        sftp: JoiX.XAlternatives & Joi.AlternativesSchema & {
+            __factoryType: Factories.SFTP.ISftpSettings;
+        } & {
+            __tsTypeAl: JoiX.XObject & Joi.ObjectSchema & any & {
+                __isRequired: "T";
+            } & any;
+        } & {
             __isRequired: "T";
         };
     };

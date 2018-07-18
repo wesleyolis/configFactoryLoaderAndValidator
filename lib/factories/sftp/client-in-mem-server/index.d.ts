@@ -4,6 +4,7 @@ import { ConfigFactoryClass, ConfigFactoryTypes } from '../../../config-factory/
 import { SftpClient } from '../client/index';
 import * as Ssh2 from 'ssh2';
 export { Ssh2 };
+export { CS };
 export declare class SftpInMemoryClientWrapper<T extends CS.ConfigSchema> extends SftpClient<T> {
     factoryName: string;
     factoryClass: ConfigFactoryClass;

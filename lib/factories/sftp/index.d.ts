@@ -76,3 +76,31 @@ export declare const configSchema: JoiX.XAlternatives & Joi.AlternativesSchema &
     __isRequired: "T";
 };
 export declare function NewFactory(settings: ConfigFactories): ISftpSettings;
+export declare const configSchemaInjectLegacy: JoiX.XAlternatives & Joi.AlternativesSchema & {
+    __factoryType: ISftpSettings;
+} & {
+    __tsTypeAl: JoiX.XObject & Joi.ObjectSchema & {
+        __tsTypeO: {
+            host: JoiX.XPrimitive<string> & Joi.StringSchema & {
+                __isRequired: "T";
+            };
+            port: JoiX.XPrimitive<number> & Joi.NumberSchema & {
+                __isRequired: "T";
+            };
+            credentials: JoiX.XObject & Joi.ObjectSchema & any & {
+                __isRequired: "T";
+            };
+        };
+    } & {
+        __isRequired: "T";
+    } & {
+        __tsTypeO: {
+            factory: JoiX.XPrimitive<string> & Joi.StringSchema & {
+                __isRequired: "T";
+            };
+        };
+    };
+} & {
+    __isRequired: "T";
+};
+export declare function NewFactoryWithLegacy(settings: ConfigFactories): ISftpSettings;

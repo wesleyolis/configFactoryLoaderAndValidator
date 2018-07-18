@@ -18,6 +18,8 @@ import { VError } from 'verror';
 import * as Crypto from 'crypto';
 
 export { Ssh2 }
+export { CS }
+
 
 type FSNode = {[index:string] : FSNodeItem}
 

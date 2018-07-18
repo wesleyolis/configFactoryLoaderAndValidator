@@ -7,6 +7,8 @@ import { ConfigFactoryClass, ConfigFactoryTypes } from '../../../config-factory/
 import {ISftpSettings, ILegacyConfig} from '../isftp-config-factory'
 import { JoiV } from '../../..';
 
+export {CS as CS};
+
 export class SftpClient<T extends CS.ConfigSchema> extends ABaseConfigFactory implements ISftpSettings 
 {
     factoryName: string = CS.factoryName;

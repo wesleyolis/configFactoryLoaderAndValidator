@@ -3,6 +3,7 @@ import * as CS from './config-schema';
 import { ABaseConfigFactory } from '.././../../../src/config-factory/abase-config-factory';
 import { ConfigFactoryClass, ConfigFactoryTypes } from '../../../config-factory/config-factory-types';
 import { ISftpSettings, ILegacyConfig } from '../isftp-config-factory';
+export { CS as CS };
 export declare class SftpClient<T extends CS.ConfigSchema> extends ABaseConfigFactory implements ISftpSettings {
     configSettings: T;
     factoryName: string;

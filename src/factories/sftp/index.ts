@@ -2,9 +2,11 @@ import {Factory, _NewFactory} from '../../config-factory/config-factories';
 
 import * as sftpClient from './client';
 import * as sftpClientCS from './client/config-schema';
+import * as sftpClientLegacy from './client/with-legacy-config'
 
 import * as sftpInMem from './client-in-mem-server'
 import * as sftpInMemCS from './client-in-mem-server/config-schema'
+import * as sftpInMemLegacy from './client-in-mem-server/with-legacy-config'
 
 import * as Joi from 'joi';
 import * as JoiX from '../../joi-x';
@@ -49,4 +51,22 @@ export function NewFactory(settings : ConfigFactories) : ISftpSettings {
     return _NewFactory(factories, settings);
 }
 
+
+
+export const configSchemaInjectLegacy = JoiX.Factory<ISftpSettings>(JoiX.FactoryType.issolated, NewFactoryWithLegacy).try([sftpClientSchema, sftpInMemSchema]).required();
+
+const factoriesInjectLegacy : Factory<ISftpSettings> [] = [
+    {
+        configFactoryName : sftpClientCS.factoryName,
+        configFactoryNew: sftpClientLegacy.NewInstance as any as () => ISftpSettings
+    },
+    {
+        configFactoryName: sftpClientCS.factoryName,
+        configFactoryNew: sftpInMemLegacy.NewInstance as any as () => ISftpSettings
+    }
+];
+
+export function NewFactoryWithLegacy(settings : ConfigFactories) : ISftpSettings {
+    return _NewFactory(factoriesInjectLegacy, settings);
+}
 

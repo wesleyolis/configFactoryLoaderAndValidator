@@ -296,6 +296,9 @@ LF = JoiX.ExtractWithFactoriesFromSchema<L>>
                         
                         await factoryInstance.createFactoryAsync(configValue);
 
+                        if ((factoryInstance as any) ['injectConfig'] != undefined)
+                            (factoryInstance as any).injectConfig(configSettings)
+
                         if (lazyLoad)
                             await factoryInstance.startAsync();
                     }
