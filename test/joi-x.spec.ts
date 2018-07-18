@@ -1,5 +1,6 @@
 import * as chai from 'chai';
 import * as JoiX from '../src/joi-x'
+import { Joi } from '../src';
 
 describe("JoiX binds with Joi", () =>
 {
@@ -60,4 +61,91 @@ describe("JoiX binds with Joi", () =>
         chai.expect(extractedKeysB).to.have.property('f').to.equal(JoiX.number());
         chai.expect(extractedKeysB).to.have.property('h').to.equal(JoiX.string());
     });
+});
+
+describe("Joi Behaviours", function()
+{
+    it("ObjectKeyObject - impossible", async function()
+    {
+        chai.expect(function() {
+            const objectKeyObjectSchema = JoiX.object().keys(JoiX.object().keys({
+                a : JoiX.string().required()
+            })).required();
+        }).to.throw();
+
+        
+    });
+
+
+    it("ObjectArrayObject - required, optional contraints.", async function()
+    {
+        const arrayItemsSchema = JoiX.array().items(JoiX.object().keys({
+            a : JoiX.string().required()
+        })).required();
+
+        const json = [{
+            a : "propA",
+        }]
+
+        try
+        {
+            const validateSchema = await JoiX.validate(json, arrayItemsSchema);
+
+            chai.expect(validateSchema).to.have.property('length').eq(1);
+            chai.expect(validateSchema[0]).to.have.property('a').eq('propA');
+        }
+        catch(e)
+        {
+            console.log(JSON.stringify(e));
+            chai.expect(e).eq(undefined);
+        }
+    });
+
+    it("ObjectArrayJSON - required, optional contraints.", async function()
+    {
+            
+        const arrayItemsSchema = JoiX.array().items({
+            a : JoiX.string().required()
+        }).required();   
+        
+        const json = [{
+            a : "propA",
+        }]
+
+        try
+        {
+            const validateSchema = await JoiX.validate(json, arrayItemsSchema);
+
+            chai.expect(validateSchema).to.have.property('length').eq(1);
+            chai.expect(validateSchema[0]).to.have.property('a').eq('propA');
+        }
+        catch(e)
+        {
+            console.log(JSON.stringify(e));
+            chai.expect(e).eq(undefined);
+        }
+    });
+
+    it("ObjectArrayMutiple - required, optional contraints.", async function()
+    {
+        const arrayItemsSchema = JoiX.array().items(JoiX.string().required(), JoiX.number().required()).required();   
+        
+        const json = ['A', 1,'B']
+
+        try
+        {
+            const validateSchema = await JoiX.validate(json, arrayItemsSchema);
+
+            chai.expect(validateSchema).to.have.property('length').eq(3);
+            chai.expect(validateSchema[0]).to.eq('A');
+            chai.expect(validateSchema[1]).to.eq(1);
+            chai.expect(validateSchema[2]).to.eq('B');
+        }
+        catch(e)
+        {
+            console.log(JSON.stringify(e));
+            chai.expect(e).eq(undefined);
+        }
+    });
+
 });
