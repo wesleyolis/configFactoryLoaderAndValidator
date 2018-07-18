@@ -1,5 +1,6 @@
 import { ABaseConfigFactory } from '../../config-factory/abase-config-factory';
 import * as Ssh2 from 'ssh2';
+import { IConfigFactory } from '../../config-factory';
 
 export {Ssh2}
 
@@ -13,7 +14,7 @@ export interface ILegacyConfig
     privateKey: string | null
 }
 
-export interface ISftpSettings extends ABaseConfigFactory
+export interface ISftpSettings extends IConfigFactory 
 {
     getLegacyConfig : () => ILegacyConfig;
 }

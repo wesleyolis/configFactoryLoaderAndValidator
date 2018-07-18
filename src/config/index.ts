@@ -4,6 +4,9 @@ import { some } from 'bluebird';
 
 let configInstancesLoaded : LoadedConfig<typeof configSchema> | undefined = undefined; 
 
+// Will potentially need the ability register callback, so that they can customize the configuration.
+// That manually just recall configAsync, to be reload, with spesific set of configuration, wiht like a force reload.
+
 export async function configAsync () : Promise<LoadedConfig<typeof configSchema>>
 {
     if (configInstancesLoaded == undefined)
