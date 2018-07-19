@@ -7,7 +7,7 @@ export {CFT as CFT}
 
 import * as factories from './factories'
 export {factories as Factories}
-export {IMongoSettings} from './factories'
+export {IMongoSettings, ISftpSettings} from './factories'
 
 import * as Joi from 'Joi'
 export {Joi as Joi}

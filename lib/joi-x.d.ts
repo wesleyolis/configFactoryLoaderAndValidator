@@ -2,7 +2,6 @@
 import { IConfigFactory } from './config-factory';
 export { IConfigFactory as IConfigFactory };
 export * from './joi-x-validators';
-export { Joi as Joi };
 import { ValidationErrorItem, validate, describe, AlternativesSchema } from 'joi';
 export { ValidationErrorItem as ValidationErrorItem, validate as validate, describe as describe };
 import * as Joi from 'joi';
@@ -125,12 +124,12 @@ export declare const date: () => XDateSchema;
 export declare const binary: () => XBinarySchema;
 export declare const func: () => XFunctionSchema;
 export declare const alternatives: () => XAlternativesSchema;
-export declare const object: () => XObjectSchema;
 export declare const array: () => XArraySchema;
 export declare const kind: <T extends string>(value: T) => XPrimitive<T, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
 export declare const LiteralString: <T extends string>(value: T[]) => XStringSchema<T>;
 export declare const LiteralNumber: <T extends number>(value: T[]) => XNumberSchema<T>;
 export declare const enumString: <T extends string>(values: T[]) => XStringSchema<T>;
+export declare function object(): XObjectSchema;
 export declare const findFactory: (x: any) => FactoryMeta | undefined;
 export declare enum FactoryType {
     issolated = 1,

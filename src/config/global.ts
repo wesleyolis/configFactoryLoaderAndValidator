@@ -1,4 +1,4 @@
-import { IMongoSettings, Factories, CFT, JoiX, JoiV, Joi} from '../index';
+import { IMongoSettings, ISftpSettings, Factories, CFT, JoiX, JoiV, Joi} from '../index';
 import * as hyphenBanking from './hyphen-banking'
 
 export type GlobalConfigSchema = JoiX.ExtractFromObject<typeof globalConfigSchema>
@@ -28,5 +28,5 @@ export const globalConfigSchema = {
 export type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>
 
 export const configSchema = JoiX.object().keys({
-   // banking : hyphenBanking.configSchema
+    banking : hyphenBanking.configSchema
 }).keys(globalConfigSchema);

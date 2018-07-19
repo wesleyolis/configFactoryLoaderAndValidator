@@ -2,7 +2,7 @@ import { IConfigFactory } from './config-factory';
 export { IConfigFactory as IConfigFactory }
 export * from './joi-x-validators' 
 
-export {Joi as Joi}
+//export {Joi as Joi}
 import {ValidationErrorItem, validate, describe, AlternativesSchema} from 'joi'
 export {ValidationErrorItem as ValidationErrorItem, validate as validate, describe as describe}
 
@@ -178,12 +178,17 @@ export const func = () => Joi.func() as XFunctionSchema;
 export const alternatives = () => Joi.alternatives() as XAlternativesSchema;  
 // alt:(types : SchemaLike) => Joi.alternatives(types) as AlternativesSchema,
 //alt:(...types : SchemaLike[]) => Joi.alternatives(types) as AlternativesSchema,
-export const object = () => Joi.object() as XObjectSchema;
+//export const object = () => Joi.object() as XObjectSchema;
 export const array = () => Joi.array() as XArraySchema;
 export const kind = <T extends string>(value : T) => (Joi.string().allow(value).required() as XKindSchema<T>).required();
 export const LiteralString = <T extends string>(value : T[]) => Joi.string().allow(value) as XStringSchema<T>;
 export const LiteralNumber = <T extends number>(value : T[]) => Joi.number().allow(value) as XNumberSchema<T>;
 export const enumString = <T extends string>(values : T []) => Joi.string().allow(values) as XStringSchema<T>;
+
+export function object()
+{
+  return Joi.object() as XObjectSchema
+}
 
 export const findFactory = (x : any) : FactoryMeta | undefined=>
 {
