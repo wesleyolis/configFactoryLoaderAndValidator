@@ -1,6 +1,6 @@
 import {Joi, JoiX, JoiV, Factories, CFT} from '../index'
 import * as Parent from './index'
-import {ISftpSettings, configSchema as sftpConfigSchema} from '../factories/sftp'
+import {ISftpSettings, configSchema as sftpConfigSchema, configSchemaInjectLegacy as sftpConfigSchemaInjectLegacy} from '../factories/sftp'
 
 export const bundleName : string = "hyphen-banking";
 
@@ -31,12 +31,13 @@ export const configSchema = JoiX.object().keys({
     hyphenSftpHost : JoiX.string().required(),
     hyphenSftpPort : JoiX.number().required(),
     hyphenSftpUser : JoiX.string().required(),
+    hyphenSftpPassword : JoiX.string().required(),  // Not support by the current system just yet, only implmented for that that require it for testing.
     hyphenSftpPrivateKey : JoiX.string().required(),
     hyphenSftpInPath : JoiX.string().required(),
     port : JoiV.port().required(),
     hyphenAccountValidationUrl : JoiX.string().required(),
     hyphenAccountVerificationUserProfile : JoiX.string().required(),
     hyphenKey : JoiV.port().required(),
-    sftp : sftpConfigSchema
+    sftp : sftpConfigSchemaInjectLegacy
 }).required();
 
