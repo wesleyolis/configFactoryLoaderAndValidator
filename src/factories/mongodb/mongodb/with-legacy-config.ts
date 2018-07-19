@@ -4,6 +4,7 @@ import { injectConfig } from '../../../config-legacy-gen/inject-legacy-config';
 import * as CFT from '../../../config-factory/config-factory-types'
 import * as JoiX from '../../../joi-x'
 import * as Joi from 'joi'
+import * as JoiV from '../../../joi-x-validators'
 
 
 export function NewInstance(injectKey : string)

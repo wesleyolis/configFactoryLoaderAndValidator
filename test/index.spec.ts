@@ -1,5 +1,5 @@
 import {ConfigSchema, configSchema, IMongoSettings} from "../src/factories/mongodb";
-import { CFT, JoiV, JoiX, IConfigBundle, Factories, IConfigFactoriesInstances, LoadConfig, LoadConfigErrors } from "../src/index";
+import { CFT, Joi, JoiV, JoiX, IConfigBundle, Factories, IConfigFactoriesInstances, LoadConfig, LoadConfigErrors } from "../src/index";
 import { IConfigFactory } from "../src/joi-x";
 import { ABaseConfigFactory } from "../src/config-factory/abase-config-factory";
 import { Factory, _NewFactory } from "../src/config-factory/config-factories";
@@ -247,13 +247,13 @@ describe("Configurations loader and validator routines", () => {
     const schema = JoiX.object().keys({
         a : JoiX.string().required(),
         b : JoiX.number().required(),
-        c : {
+        c : JoiX.object().keys({
             g : JoiX.string().required(),
             h : JoiX.string().required()
-        },
-        p : {
+        }).required(),
+        p : JoiX.object().keys({
             Mockfactory : factoryABConfigSchema
-        }
+        }).required()
     });
 
     const settings = {

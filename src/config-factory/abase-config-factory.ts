@@ -2,7 +2,6 @@ import { ConfigFactoryClass, ConfigFactoryTypes } from './config-factory-types';
 import { IConfigFactory } from './iconfig-factory';
 import * as JoiX from '../joi-x';
 import * as VError from 'verror';
-import { SchemaLike, ValidationError } from '../joi-x';
 import { Config } from './config';
 import { baseConfigSchema } from './abase-config-factory-schema'
 
@@ -16,7 +15,7 @@ export abstract class ABaseConfigFactory extends Config implements IConfigFactor
     abstract factoryName : string;
     abstract factoryClass : ConfigFactoryClass;
     abstract type : ConfigFactoryTypes;
-    abstract readonly configSchema : JoiX.XObjectSchema;
+    abstract readonly configSchema : JoiX.XAnyObjectSchema;
 
     abstract configSettings? : JoiX.XTSchema
 

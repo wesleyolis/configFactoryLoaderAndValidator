@@ -5,7 +5,7 @@ import { ConfigFactoryClass, ConfigFactoryTypes } from '../../../config-factory/
 
 
 import {ISftpSettings, ILegacyConfig} from '../isftp-config-factory'
-import { JoiV } from '../../..';
+import { Joi, JoiV } from '../../../index';
 
 export {CS as CS};
 

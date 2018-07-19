@@ -9,7 +9,7 @@ export declare abstract class ABaseConfigFactory extends Config implements IConf
     abstract factoryName: string;
     abstract factoryClass: ConfigFactoryClass;
     abstract type: ConfigFactoryTypes;
-    readonly abstract configSchema: JoiX.XObjectSchema;
+    readonly abstract configSchema: JoiX.XAnyObjectSchema;
     abstract configSettings?: JoiX.XTSchema;
     protected _created: boolean;
     createFactoryAsync<T extends ({

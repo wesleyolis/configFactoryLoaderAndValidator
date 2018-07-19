@@ -1,127 +1,74 @@
-import * as InMemory from '../mongodb/mongodb-in-memory';
+import * as Joi from 'joi';
 import * as JoiX from '../../joi-x';
+import * as JoiV from '../../joi-x-validators';
 import * as CFT from '../../config-factory/config-factory-types';
 import { IMongoSettings } from './amongodb-config-factory';
-export { IMongoSettings };
+export { IMongoSettings as IMongoSettings };
 export declare type MongoDBSchema = JoiX.ExtractFromSchema<typeof mongoDBSchema>;
-export declare const mongoDBSchema: InMemory.CS.XObject & InMemory.CS.ObjectSchema & {
-    __tsTypeO: {
-        class: InMemory.CS.XPrimitive<CFT.ConfigFactoryClass.netService> & InMemory.CS.StringSchema & {
-            __isRequired: "T";
-        };
-        type: InMemory.CS.XPrimitive<CFT.ConfigFactoryTypes.production> & InMemory.CS.StringSchema & {
-            __isRequired: "T";
-        };
-        provider: InMemory.CS.XPrimitive<"mongodb"> & InMemory.CS.StringSchema & {
-            __isRequired: "T";
-        };
-        hosts: InMemory.CS.XArray & InMemory.CS.ArraySchema & {
-            __tsTypeAr: InMemory.CS.XObject & InMemory.CS.ObjectSchema & any & {
-                __isRequired: "T";
-            };
-        } & {
-            __isRequired: "T";
-        };
-        credentials: InMemory.CS.XObject & InMemory.CS.ObjectSchema & any;
-        database: InMemory.CS.XStringSchema<string>;
-        options: InMemory.CS.XObject & InMemory.CS.ObjectSchema & {
-            __tsTypeOP: InMemory.CS.XPrimitive<string> & InMemory.CS.StringSchema & {
-                __isRequired: "T";
-            };
-        };
-    };
+export declare const mongoDBSchema: JoiX.XObject<{
+    class: JoiX.XPrimitive<CFT.ConfigFactoryClass.netService, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    type: JoiX.XPrimitive<CFT.ConfigFactoryTypes.production, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    provider: JoiX.XPrimitive<"mongodb", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    hosts: JoiX.XArray<{
+        'w': JoiX.XObject<{
+            hostname: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+            port: JoiX.XPrimitive<number, Joi.NumberSchema, "Required", "NotNullable", "T", "P"> & Joi.NumberSchema;
+        }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
+    }, "Required", "NotNullable", "A", "W"> & Joi.ArraySchema;
+    credentials: JoiX.XObject<{
+        username: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+        password: JoiX.XObject<{
+            phrase: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+            type: JoiX.XStringSchema<JoiV.PassType>;
+        }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
+    }, "NotRequired", "NotNullable", "K", "P"> & Joi.ObjectSchema;
+    database: JoiX.XStringSchema<string>;
+    options: JoiX.XObject<{
+        'w': JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    }, "NotRequired", "NotNullable", "P", "W"> & Joi.ObjectSchema;
 } & {
-    __isRequired: "T";
-} & {
-    __tsTypeO: {
-        factory: InMemory.CS.XPrimitive<"Network"> & InMemory.CS.StringSchema & {
-            __isRequired: "T";
-        };
-    };
-};
+    factory: JoiX.XPrimitive<"Network", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+}, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
 export declare type InMemorySchema = JoiX.ExtractFromSchema<typeof inMemorySchema>;
-export declare const inMemorySchema: InMemory.CS.XObject & InMemory.CS.ObjectSchema & {
-    __tsTypeO: {
-        class: InMemory.CS.XPrimitive<CFT.ConfigFactoryClass.service> & InMemory.CS.StringSchema & {
-            __isRequired: "T";
-        };
-        type: InMemory.CS.XPrimitive<CFT.ConfigFactoryTypes.mock> & InMemory.CS.StringSchema & {
-            __isRequired: "T";
-        };
-        port: InMemory.CS.XPrimitive<number> & InMemory.CS.NumberSchema & {
-            __isRequired: "T";
-        };
-    };
+export declare const inMemorySchema: JoiX.XObject<{
+    class: JoiX.XPrimitive<CFT.ConfigFactoryClass.service, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    type: JoiX.XPrimitive<CFT.ConfigFactoryTypes.mock, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    port: JoiX.XPrimitive<number, Joi.NumberSchema, "Required", "NotNullable", "T", "P"> & Joi.NumberSchema;
 } & {
-    __isRequired: "T";
-} & {
-    __tsTypeO: {
-        factory: InMemory.CS.XPrimitive<"InMemory"> & InMemory.CS.StringSchema & {
-            __isRequired: "T";
-        };
-    };
-};
+    factory: JoiX.XPrimitive<"InMemory", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+}, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
 export declare type ConfigFactories = MongoDBSchema | InMemorySchema;
 export declare type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>;
-export declare const configSchema: InMemory.CS.XAlternatives & InMemory.CS.AlternativesSchema & {
-    __factoryType: IMongoSettings;
-} & {
-    __tsTypeAl: (InMemory.CS.XObject & InMemory.CS.ObjectSchema & {
-        __tsTypeO: {
-            class: InMemory.CS.XPrimitive<CFT.ConfigFactoryClass.netService> & InMemory.CS.StringSchema & {
-                __isRequired: "T";
-            };
-            type: InMemory.CS.XPrimitive<CFT.ConfigFactoryTypes.production> & InMemory.CS.StringSchema & {
-                __isRequired: "T";
-            };
-            provider: InMemory.CS.XPrimitive<"mongodb"> & InMemory.CS.StringSchema & {
-                __isRequired: "T";
-            };
-            hosts: InMemory.CS.XArray & InMemory.CS.ArraySchema & {
-                __tsTypeAr: InMemory.CS.XObject & InMemory.CS.ObjectSchema & any & {
-                    __isRequired: "T";
-                };
-            } & {
-                __isRequired: "T";
-            };
-            credentials: InMemory.CS.XObject & InMemory.CS.ObjectSchema & any;
-            database: InMemory.CS.XStringSchema<string>;
-            options: InMemory.CS.XObject & InMemory.CS.ObjectSchema & {
-                __tsTypeOP: InMemory.CS.XPrimitive<string> & InMemory.CS.StringSchema & {
-                    __isRequired: "T";
-                };
-            };
-        };
+export declare const configSchema: JoiX.XFactAlternatives<IMongoSettings, {
+    w: (JoiX.XObject<{
+        class: JoiX.XPrimitive<CFT.ConfigFactoryClass.netService, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+        type: JoiX.XPrimitive<CFT.ConfigFactoryTypes.production, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+        provider: JoiX.XPrimitive<"mongodb", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+        hosts: JoiX.XArray<{
+            'w': JoiX.XObject<{
+                hostname: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                port: JoiX.XPrimitive<number, Joi.NumberSchema, "Required", "NotNullable", "T", "P"> & Joi.NumberSchema;
+            }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
+        }, "Required", "NotNullable", "A", "W"> & Joi.ArraySchema;
+        credentials: JoiX.XObject<{
+            username: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+            password: JoiX.XObject<{
+                phrase: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                type: JoiX.XStringSchema<JoiV.PassType>;
+            }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
+        }, "NotRequired", "NotNullable", "K", "P"> & Joi.ObjectSchema;
+        database: JoiX.XStringSchema<string>;
+        options: JoiX.XObject<{
+            'w': JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+        }, "NotRequired", "NotNullable", "P", "W"> & Joi.ObjectSchema;
     } & {
-        __isRequired: "T";
+        factory: JoiX.XPrimitive<"Network", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema) | (JoiX.XObject<{
+        class: JoiX.XPrimitive<CFT.ConfigFactoryClass.service, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+        type: JoiX.XPrimitive<CFT.ConfigFactoryTypes.mock, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+        port: JoiX.XPrimitive<number, Joi.NumberSchema, "Required", "NotNullable", "T", "P"> & Joi.NumberSchema;
     } & {
-        __tsTypeO: {
-            factory: InMemory.CS.XPrimitive<"Network"> & InMemory.CS.StringSchema & {
-                __isRequired: "T";
-            };
-        };
-    }) | (InMemory.CS.XObject & InMemory.CS.ObjectSchema & {
-        __tsTypeO: {
-            class: InMemory.CS.XPrimitive<CFT.ConfigFactoryClass.service> & InMemory.CS.StringSchema & {
-                __isRequired: "T";
-            };
-            type: InMemory.CS.XPrimitive<CFT.ConfigFactoryTypes.mock> & InMemory.CS.StringSchema & {
-                __isRequired: "T";
-            };
-            port: InMemory.CS.XPrimitive<number> & InMemory.CS.NumberSchema & {
-                __isRequired: "T";
-            };
-        };
-    } & {
-        __isRequired: "T";
-    } & {
-        __tsTypeO: {
-            factory: InMemory.CS.XPrimitive<"InMemory"> & InMemory.CS.StringSchema & {
-                __isRequired: "T";
-            };
-        };
-    });
-} & {
-    __isRequired: "T";
-};
+        factory: JoiX.XPrimitive<"InMemory", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema);
+}, "Required", "NotNullable", "F", "W"> & JoiX.XFactory<IMongoSettings> & Joi.AlternativesSchema;
 export declare function NewFactory(settings: ConfigFactories): IMongoSettings;

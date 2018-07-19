@@ -6,7 +6,7 @@ import { promisify } from 'bluebird'
 
 import * as CS from './config-schema'
 import { ConfigFactoryClass, ConfigFactoryTypes } from '../../../config-factory/config-factory-types'
-import { JoiV } from '../../..';
+import { Joi, JoiV } from '../../../index';
 
 import { SftpClient } from '../client/index'
 import * as Ssh2 from 'ssh2';

@@ -1,9 +1,8 @@
-import { Promisify, PromisifyReturn } from './util/bluebird-promisify';
-export { Promisify as BluebirdPromisify, PromisifyReturn };
 import * as CFT from './config-factory/config-factory-types';
 export { CFT as CFT };
 import * as factories from './factories';
 export { factories as Factories };
+export { IMongoSettings } from './factories';
 import * as Joi from 'Joi';
 export { Joi as Joi };
 import * as JoiX from './joi-x';
@@ -14,7 +13,7 @@ export { JoiV as JoiV };
 export { describe as describeConfigSchema, validateAsync as validatConfigSchemaAsync } from './config-factory/config';
 export { configAsync, ConfigSchema } from './config/index';
 export declare abstract class IConfigBundle {
-    static newBundleAndResolveConfigAsync(settings: JoiX.XJSchemaMap | undefined, configSchema: JoiX.XObjectSchema, requireConfig?: (file: string) => any): Promise<any>;
+    static newBundleAndResolveConfigAsync(settings: number | JoiX.XJSchemaMap | undefined, configSchema: JoiX.XAnyObjectSchema, requireConfig?: (file: string) => any): Promise<any>;
     abstract newBundleAndResolveConfigAsync(settings: JoiX.XJSchemaMap | undefined): Promise<IConfigFactoriesInstances>;
 }
 export interface IConfigFactoriesInstances {
@@ -57,5 +56,5 @@ export interface Accumulator extends Joi.AnySchema, AccBase<undefined> {
     kind: 'accumulator';
     accumulator: Joi.AnySchema | null;
 }
-export declare type LoadedConfig<L extends JoiX.XObjectSchema, LF = JoiX.ExtractWithFactoriesFromSchema<L>> = FactoriesInstancesResolver<L, LF>;
-export declare function LoadConfig<L extends JoiX.XObjectSchema, LF = JoiX.ExtractWithFactoriesFromSchema<L>>(configSettings: any, configSchema: L, lazyLoad?: boolean, configOptional?: boolean): Promise<FactoriesInstancesResolver<L, LF>>;
+export declare type LoadedConfig<L extends JoiX.XAnyObjectSchema, LF = JoiX.ExtractWithFactoriesFromSchema<L>> = FactoriesInstancesResolver<L, LF>;
+export declare function LoadConfig<L extends JoiX.XAnyObjectSchema, LF = JoiX.ExtractWithFactoriesFromSchema<L>>(configSettings: any, configSchema: L, lazyLoad?: boolean, configOptional?: boolean): Promise<FactoriesInstancesResolver<L, LF>>;

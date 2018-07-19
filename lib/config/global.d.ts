@@ -1,417 +1,105 @@
-import { Factories, CFT, JoiX, Joi, JoiV } from '../index';
-import { ISftpSettings } from '../factories/sftp';
+import { IMongoSettings, CFT, JoiX, JoiV, Joi } from '../index';
 export declare type GlobalConfigSchema = JoiX.ExtractFromObject<typeof globalConfigSchema>;
 export declare const globalConfigSchema: {
-    mongodb: JoiX.XAlternatives & JoiX.AlternativesSchema & {
-        __factoryType: Factories.MongoDB.IMongoSettings;
-    } & {
-        __tsTypeAl: (JoiX.XObject & JoiX.ObjectSchema & {
-                __tsTypeO: {
-                    class: JoiX.XPrimitive<CFT.ConfigFactoryClass.netService> & JoiX.StringSchema & {
-                        __isRequired: "T";
-                    };
-                    type: JoiX.XPrimitive<CFT.ConfigFactoryTypes.production> & JoiX.StringSchema & {
-                        __isRequired: "T";
-                    };
-                    provider: JoiX.XPrimitive<"mongodb"> & JoiX.StringSchema & {
-                        __isRequired: "T";
-                    };
-                    hosts: JoiX.XArray & JoiX.ArraySchema & {
-                        __tsTypeAr: JoiX.XObject & JoiX.ObjectSchema & {
-                            __tsTypeO: {
-                                hostname: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-                                    __isRequired: "T";
-                                };
-                                port: JoiX.XPrimitive<number> & JoiX.NumberSchema & {
-                                    __isRequired: "T";
-                                };
-                            };
-                        } & {
-                            __isRequired: "T";
-                        };
-                    } & {
-                        __isRequired: "T";
-                    };
-                    credentials: JoiX.XObject & JoiX.ObjectSchema & {
-                        __tsTypeO: {
-                            username: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-                                __isRequired: "T";
-                            };
-                            password: JoiX.XObject & JoiX.ObjectSchema & {
-                                __tsTypeO: {
-                                    phrase: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-                                        __isRequired: "T";
-                                    };
-                                    type: JoiX.XStringSchema<JoiV.PassType>;
-                                };
-                            } & {
-                                __isRequired: "T";
-                            };
-                        };
-                    };
-                    database: JoiX.XStringSchema<string>;
-                    options: JoiX.XObject & JoiX.ObjectSchema & {
-                        __tsTypeOP: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-                            __isRequired: "T";
-                        };
-                    };
-                };
-            
+    mongodb: JoiX.XFactAlternatives<IMongoSettings, {
+        w: (JoiX.XObject<{
+            class: JoiX.XPrimitive<CFT.ConfigFactoryClass.netService, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+            type: JoiX.XPrimitive<CFT.ConfigFactoryTypes.production, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+            provider: JoiX.XPrimitive<"mongodb", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+            hosts: JoiX.XArray<{
+                'w': JoiX.XObject<{
+                    hostname: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                    port: JoiX.XPrimitive<number, Joi.NumberSchema, "Required", "NotNullable", "T", "P"> & Joi.NumberSchema;
+                }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
+            }, "Required", "NotNullable", "A", "W"> & Joi.ArraySchema;
+            credentials: JoiX.XObject<{
+                username: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                password: JoiX.XObject<{
+                    phrase: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                    type: JoiX.XStringSchema<JoiV.PassType>;
+                }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
+            }, "NotRequired", "NotNullable", "K", "P"> & Joi.ObjectSchema;
+            database: JoiX.XStringSchema<string>;
+            options: JoiX.XObject<{
+                'w': JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+            }, "NotRequired", "NotNullable", "P", "W"> & Joi.ObjectSchema;
         } & {
-            __isRequired: "T";
+            factory: JoiX.XPrimitive<"Network", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+        }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema) | (JoiX.XObject<{
+            class: JoiX.XPrimitive<CFT.ConfigFactoryClass.service, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+            type: JoiX.XPrimitive<CFT.ConfigFactoryTypes.mock, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+            port: JoiX.XPrimitive<number, Joi.NumberSchema, "Required", "NotNullable", "T", "P"> & Joi.NumberSchema;
         } & {
-            __tsTypeO: {
-                factory: JoiX.XPrimitive<"Network"> & JoiX.StringSchema & {
-                    __isRequired: "T";
-                };
-            };
-        }) | (JoiX.XObject & JoiX.ObjectSchema & {
-            __tsTypeO: {
-                class: JoiX.XPrimitive<CFT.ConfigFactoryClass.service> & JoiX.StringSchema & {
-                    __isRequired: "T";
-                };
-                type: JoiX.XPrimitive<CFT.ConfigFactoryTypes.mock> & JoiX.StringSchema & {
-                    __isRequired: "T";
-                };
-                port: JoiX.XPrimitive<number> & JoiX.NumberSchema & {
-                    __isRequired: "T";
-                };
-            };
-        } & {
-            __isRequired: "T";
-        } & {
-            __tsTypeO: {
-                factory: JoiX.XPrimitive<"InMemory"> & JoiX.StringSchema & {
-                    __isRequired: "T";
-                };
-            };
-        });
-    } & {
-        __isRequired: "T";
-    };
-    mongoConnectionString: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-        __isRequired: "T";
-    };
-    agenda: JoiX.XObject & JoiX.ObjectSchema & {
-        __tsTypeO: {
-            mongoConnectionString: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-                __isRequired: "T";
-            };
-        };
-    } & {
-        __isRequired: "T";
-    };
-    mongoRemoteConnectionString: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-        __isRequired: "T";
-    };
-    mongoRemoteAuditConnectionString: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-        __isRequired: "T";
-    };
-    mongoAuditConnectionString: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-        __isRequired: "T";
-    };
-    mongoLocalIpAddress: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-        __isRequired: "T";
-    };
-    postgresReadonlyConnectionString: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-        __isRequired: "T";
-    };
-    mongo: JoiX.XObject & JoiX.ObjectSchema & {
-        __tsTypeO: {
-            mms_group_id: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-                __isRequired: "T";
-            };
-            mss_api_key: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-                __isRequired: "T";
-            };
-        };
-    } & {
-        __isRequired: "T";
-    };
-    oplog: JoiX.XObject & JoiX.ObjectSchema & {
-        __tsTypeO: {
-            db: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-                __isRequired: "T";
-            };
-            host: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-                __isRequired: "T";
-            };
-        };
-    } & {
-        __isRequired: "T";
-    };
+            factory: JoiX.XPrimitive<"InMemory", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+        }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema);
+    }, "Required", "NotNullable", "F", "W"> & JoiX.XFactory<IMongoSettings> & Joi.AlternativesSchema;
+    mongoConnectionString: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    agenda: JoiX.XObject<{
+        mongoConnectionString: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
+    mongoRemoteConnectionString: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    mongoRemoteAuditConnectionString: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    mongoAuditConnectionString: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    mongoLocalIpAddress: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    postgresReadonlyConnectionString: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    mongo: JoiX.XObject<{
+        mms_group_id: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+        mss_api_key: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
+    oplog: JoiX.XObject<{
+        db: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+        host: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
 };
 export declare type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>;
-export declare const configSchema: JoiX.XObject & JoiX.ObjectSchema & {
-    __tsTypeO: {
-        banking: JoiX.XObject & Joi.ObjectSchema & {
-            __bundleName: "T";
+export declare const configSchema: JoiX.XObject<{
+    mongodb: JoiX.XFactAlternatives<IMongoSettings, {
+        w: (JoiX.XObject<{
+            class: JoiX.XPrimitive<CFT.ConfigFactoryClass.netService, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+            type: JoiX.XPrimitive<CFT.ConfigFactoryTypes.production, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+            provider: JoiX.XPrimitive<"mongodb", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+            hosts: JoiX.XArray<{
+                'w': JoiX.XObject<{
+                    hostname: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                    port: JoiX.XPrimitive<number, Joi.NumberSchema, "Required", "NotNullable", "T", "P"> & Joi.NumberSchema;
+                }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
+            }, "Required", "NotNullable", "A", "W"> & Joi.ArraySchema;
+            credentials: JoiX.XObject<{
+                username: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                password: JoiX.XObject<{
+                    phrase: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                    type: JoiX.XStringSchema<JoiV.PassType>;
+                }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
+            }, "NotRequired", "NotNullable", "K", "P"> & Joi.ObjectSchema;
+            database: JoiX.XStringSchema<string>;
+            options: JoiX.XObject<{
+                'w': JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+            }, "NotRequired", "NotNullable", "P", "W"> & Joi.ObjectSchema;
         } & {
-            __tsTypeO: {
-                pendingNc: JoiX.XPrimitive<boolean> & Joi.BooleanSchema & {
-                    __isRequired: "T";
-                };
-                hyphenPaymentDocumentType: JoiX.XPrimitive<"PT" | "RC"> & Joi.StringSchema & {
-                    __isRequired: "T";
-                };
-                bankingSystem: JoiX.XPrimitive<"redblade-hyphen-banking"> & Joi.StringSchema & {
-                    __isRequired: "T";
-                };
-                hyphenFacsUrl: JoiX.XPrimitive<string> & Joi.StringSchema & {
-                    __isRequired: "T";
-                };
-                hyphenPaymentUserProfile: JoiX.XPrimitive<"FACRedbladeTest" | "FACDirectAxis" | "FACDirectAxisTest"> & Joi.StringSchema & {
-                    __isRequired: "T";
-                };
-                hyphenPaymentKey: JoiX.XPrimitive<string> & Joi.StringSchema & {
-                    __isRequired: "T";
-                };
-                paymentRetries: JoiX.XPrimitive<string> & Joi.StringSchema & {
-                    __isRequired: "T";
-                };
-                hyphenDebitOrderOutputFileName: JoiX.XPrimitive<string> & Joi.StringSchema & {
-                    __isRequired: "T";
-                };
-                hyphenTrackingDays: JoiX.XPrimitive<string> & Joi.StringSchema & {
-                    __isRequired: "T";
-                };
-                useRuleBasedTrackingDays: JoiX.XPrimitive<boolean> & Joi.BooleanSchema & {
-                    __isRequired: "T";
-                };
-                ptpTrackingDays: JoiX.XPrimitive<number> & Joi.NumberSchema & {
-                    __isRequired: "T";
-                };
-                hyphenLoadReportPrefix: JoiX.XPrimitive<"LD"> & Joi.StringSchema & {
-                    __isRequired: "T";
-                };
-                hyphenSftpOutPath: JoiX.XPrimitive<string> & Joi.StringSchema & {
-                    __isRequired: "T";
-                };
-                hyphenSftpHost: JoiX.XPrimitive<string> & Joi.StringSchema & {
-                    __isRequired: "T";
-                };
-                hyphenSftpPort: JoiX.XPrimitive<number> & Joi.StringSchema & {
-                    __isRequired: "T";
-                };
-                hyphenSftpUser: JoiX.XPrimitive<string> & Joi.StringSchema & {
-                    __isRequired: "T";
-                };
-                hyphenSftpPrivateKey: JoiX.XPrimitive<string> & Joi.StringSchema & {
-                    __isRequired: "T";
-                };
-                hyphenSftpInPath: JoiX.XPrimitive<string> & Joi.StringSchema & {
-                    __isRequired: "T";
-                };
-                port: JoiX.XPrimitive<number> & Joi.NumberSchema & {
-                    __isRequired: "T";
-                };
-                hyphenAccountValidationUrl: JoiX.XPrimitive<string> & Joi.StringSchema & {
-                    __isRequired: "T";
-                };
-                hyphenAccountVerificationUserProfile: JoiX.XPrimitive<string> & Joi.StringSchema & {
-                    __isRequired: "T";
-                };
-                hyphenKey: JoiX.XPrimitive<number> & Joi.NumberSchema & {
-                    __isRequired: "T";
-                };
-                sftp: JoiX.XAlternatives & Joi.AlternativesSchema & {
-                    __factoryType: ISftpSettings;
-                } & {
-                    __tsTypeAl: JoiX.XObject & Joi.ObjectSchema & {
-                        __tsTypeO: {
-                            host: JoiX.XPrimitive<string> & Joi.StringSchema & {
-                                __isRequired: "T";
-                            };
-                            port: JoiX.XPrimitive<number> & Joi.NumberSchema & {
-                                __isRequired: "T";
-                            };
-                            credentials: JoiX.XObject & JoiX.ObjectSchema & {
-                                __tsTypeO: {
-                                    username: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-                                        __isRequired: "T";
-                                    };
-                                    auth: JoiX.XAlternatives & JoiX.AlternativesSchema & {
-                                        __tsTypeAl: (JoiX.XObject & JoiX.ObjectSchema & {
-                                            __tsTypeO: {
-                                                type: JoiX.XPrimitive<JoiV.AuthType.password> & JoiX.StringSchema & {
-                                                    __isRequired: "T";
-                                                };
-                                                password: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-                                                    __isRequired: "T";
-                                                };
-                                            };
-                                        } & {
-                                            __isRequired: "T";
-                                        }) | (JoiX.XObject & JoiX.ObjectSchema & {
-                                            __tsTypeO: {
-                                                type: JoiX.XPrimitive<JoiV.AuthType.publicKey> & JoiX.StringSchema & {
-                                                    __isRequired: "T";
-                                                };
-                                                phrase: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-                                                    __isRequired: "T";
-                                                };
-                                                passKey: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-                                                    __isRequired: "T";
-                                                };
-                                            };
-                                        } & {
-                                            __isRequired: "T";
-                                        }) | (JoiX.XObject & JoiX.ObjectSchema & {
-                                            __tsTypeO: {
-                                                type: JoiX.XPrimitive<JoiV.AuthType.any> & JoiX.StringSchema & {
-                                                    __isRequired: "T";
-                                                };
-                                                password: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-                                                    __isRequired: "T";
-                                                };
-                                                phrase: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-                                                    __isRequired: "T";
-                                                };
-                                                passKey: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-                                                    __isRequired: "T";
-                                                };
-                                            };
-                                        } & {
-                                            __isRequired: "T";
-                                        });
-                                    } & {
-                                        __isRequired: "T";
-                                    };
-                                };
-                            };
-                        };
-                    } & {
-                        __isRequired: "T";
-                    } & {
-                        __tsTypeO: {
-                            factory: JoiX.XPrimitive<string> & Joi.StringSchema & {
-                                __isRequired: "T";
-                            };
-                        };
-                    };
-                } & {
-                    __isRequired: "T";
-                };
-            };
+            factory: JoiX.XPrimitive<"Network", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+        }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema) | (JoiX.XObject<{
+            class: JoiX.XPrimitive<CFT.ConfigFactoryClass.service, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+            type: JoiX.XPrimitive<CFT.ConfigFactoryTypes.mock, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+            port: JoiX.XPrimitive<number, Joi.NumberSchema, "Required", "NotNullable", "T", "P"> & Joi.NumberSchema;
         } & {
-            __isRequired: "T";
-        };        
-    };
-} & {
-    __tsTypeO: {
-        mongodb: JoiX.XAlternatives & JoiX.AlternativesSchema & {
-            __factoryType: Factories.MongoDB.IMongoSettings;
-        } & {
-            __tsTypeAl: (JoiX.XObject & JoiX.ObjectSchema & {
-                    __tsTypeO: {
-                        class: JoiX.XPrimitive<CFT.ConfigFactoryClass.netService> & JoiX.StringSchema & {
-                            __isRequired: "T";
-                        };
-                        type: JoiX.XPrimitive<CFT.ConfigFactoryTypes.production> & JoiX.StringSchema & {
-                            __isRequired: "T";
-                        };
-                        provider: JoiX.XPrimitive<"mongodb"> & JoiX.StringSchema & {
-                            __isRequired: "T";
-                        };
-                        hosts: JoiX.XArray & JoiX.ArraySchema & {
-                            __tsTypeAr: JoiX.XObject & JoiX.ObjectSchema & {
-                                __tsTypeO: {
-                                    hostname: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-                                        __isRequired: "T";
-                                    };
-                                    port: JoiX.XPrimitive<number> & JoiX.NumberSchema & {
-                                        __isRequired: "T";
-                                    };
-                                };
-                            } & {
-                                __isRequired: "T";
-                            };
-                        } & {
-                            __isRequired: "T";
-                        };
-                        credentials: JoiX.XObject & JoiX.ObjectSchema & {
-                            __tsTypeO: {
-                                username: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-                                    __isRequired: "T";
-                                };
-                                password: JoiX.XObject & JoiX.ObjectSchema & {
-                                    __tsTypeO: {
-                                        phrase: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-                                            __isRequired: "T";
-                                        };
-                                        type: JoiX.XStringSchema<JoiV.PassType>;
-                                    };
-                                } & {
-                                    __isRequired: "T";
-                                };
-                            };
-                        };
-                        database: JoiX.XStringSchema<string>;
-                        options: JoiX.XObject & JoiX.ObjectSchema & {
-                            __tsTypeOP: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-                                __isRequired: "T";
-                            };
-                        };
-                    };
-                
-            } & {
-                __isRequired: "T";
-            } & {
-                __tsTypeO: {
-                    factory: JoiX.XPrimitive<"Network"> & JoiX.StringSchema & {
-                        __isRequired: "T";
-                    };
-                };
-            }) | (JoiX.XObject & JoiX.ObjectSchema & {
-                __tsTypeO: {
-                    class: JoiX.XPrimitive<CFT.ConfigFactoryClass.service> & JoiX.StringSchema & {
-                        __isRequired: "T";
-                    };
-                    type: JoiX.XPrimitive<CFT.ConfigFactoryTypes.mock> & JoiX.StringSchema & {
-                        __isRequired: "T";
-                    };
-                    port: JoiX.XPrimitive<number> & JoiX.NumberSchema & {
-                        __isRequired: "T";
-                    };
-                };
-            } & {
-                __isRequired: "T";
-            } & {
-                __tsTypeO: {
-                    factory: JoiX.XPrimitive<"InMemory"> & JoiX.StringSchema & {
-                        __isRequired: "T";
-                    };
-                };
-            });
-        } & {
-            __isRequired: "T";
-        };
-        mongoConnectionString: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-            __isRequired: "T";
-        };
-        agenda: JoiX.XObject & JoiX.ObjectSchema & any & {
-            __isRequired: "T";
-        };
-        mongoRemoteConnectionString: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-            __isRequired: "T";
-        };
-        mongoRemoteAuditConnectionString: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-            __isRequired: "T";
-        };
-        mongoAuditConnectionString: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-            __isRequired: "T";
-        };
-        mongoLocalIpAddress: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-            __isRequired: "T";
-        };
-        postgresReadonlyConnectionString: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-            __isRequired: "T";
-        };
-        mongo: JoiX.XObject & JoiX.ObjectSchema & any & {
-            __isRequired: "T";
-        };
-        oplog: JoiX.XObject & JoiX.ObjectSchema & any & {
-            __isRequired: "T";
-        };
-    };
-};
+            factory: JoiX.XPrimitive<"InMemory", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+        }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema);
+    }, "Required", "NotNullable", "F", "W"> & JoiX.XFactory<IMongoSettings> & Joi.AlternativesSchema;
+    mongoConnectionString: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    agenda: JoiX.XObject<{
+        mongoConnectionString: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
+    mongoRemoteConnectionString: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    mongoRemoteAuditConnectionString: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    mongoAuditConnectionString: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    mongoLocalIpAddress: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    postgresReadonlyConnectionString: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    mongo: JoiX.XObject<{
+        mms_group_id: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+        mss_api_key: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
+    oplog: JoiX.XObject<{
+        db: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+        host: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
+}, "NotRequired", "NotNullable", "K", "P"> & Joi.ObjectSchema;

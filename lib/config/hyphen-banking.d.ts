@@ -1,157 +1,55 @@
-import { Joi, JoiX, Factories, JoiV } from '../index';
+import { Joi, JoiX, JoiV } from '../index';
 import { ISftpSettings } from '../factories/sftp';
 export declare const bundleName: string;
 export declare type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>;
-export declare const configSchema: JoiX.XObject & Joi.ObjectSchema & {
-    __tsTypeO: {
-        pendingNc: JoiX.XPrimitive<boolean> & Joi.BooleanSchema & {
-            __isRequired: "T";
-        };
-        hyphenPaymentDocumentType: JoiX.XPrimitive<"PT" | "RC"> & Joi.StringSchema & {
-            __isRequired: "T";
-        };
-        bankingSystem: JoiX.XPrimitive<"redblade-hyphen-banking"> & Joi.StringSchema & {
-            __isRequired: "T";
-        };
-        hyphenFacsUrl: JoiX.XPrimitive<string> & Joi.StringSchema & {
-            __isRequired: "T";
-        };
-        hyphenPaymentUserProfile: JoiX.XPrimitive<"FACRedbladeTest" | "FACDirectAxis" | "FACDirectAxisTest"> & Joi.StringSchema & {
-            __isRequired: "T";
-        };
-        hyphenPaymentKey: JoiX.XPrimitive<string> & Joi.StringSchema & {
-            __isRequired: "T";
-        };
-        paymentRetries: JoiX.XPrimitive<string> & Joi.StringSchema & {
-            __isRequired: "T";
-        };
-        hyphenDebitOrderOutputFileName: JoiX.XPrimitive<string> & Joi.StringSchema & {
-            __isRequired: "T";
-        };
-        hyphenTrackingDays: JoiX.XPrimitive<string> & Joi.StringSchema & {
-            __isRequired: "T";
-        };
-        useRuleBasedTrackingDays: JoiX.XPrimitive<boolean> & Joi.BooleanSchema & {
-            __isRequired: "T";
-        };
-        ptpTrackingDays: JoiX.XPrimitive<number> & Joi.NumberSchema & {
-            __isRequired: "T";
-        };
-        hyphenLoadReportPrefix: JoiX.XPrimitive<"LD"> & Joi.StringSchema & {
-            __isRequired: "T";
-        };
-        hyphenSftpOutPath: JoiX.XPrimitive<string> & Joi.StringSchema & {
-            __isRequired: "T";
-        };
-        hyphenSftpHost: JoiX.XPrimitive<string> & Joi.StringSchema & {
-            __isRequired: "T";
-        };
-        hyphenSftpPort: JoiX.XPrimitive<number> & Joi.NumberSchema & {
-            __isRequired: "T";
-        };
-        hyphenSftpUser: JoiX.XPrimitive<string> & Joi.StringSchema & {
-            __isRequired: "T";
-        };
-        hyphenSftpPassword: JoiX.XPrimitive<string> & Joi.StringSchema & {
-            __isRequired: "T";
-        };
-        hyphenSftpPrivateKey: JoiX.XPrimitive<string> & Joi.StringSchema & {
-            __isRequired: "T";
-        };
-        hyphenSftpInPath: JoiX.XPrimitive<string> & Joi.StringSchema & {
-            __isRequired: "T";
-        };
-        port: JoiX.XPrimitive<number> & Joi.NumberSchema & {
-            __isRequired: "T";
-        };
-        hyphenAccountValidationUrl: JoiX.XPrimitive<string> & Joi.StringSchema & {
-            __isRequired: "T";
-        };
-        hyphenAccountVerificationUserProfile: JoiX.XPrimitive<string> & Joi.StringSchema & {
-            __isRequired: "T";
-        };
-        hyphenKey: JoiX.XPrimitive<number> & Joi.NumberSchema & {
-            __isRequired: "T";
-        };
-        sftp: JoiX.XAlternatives & Joi.AlternativesSchema & {
-            __factoryType: ISftpSettings;
+export declare const configSchema: JoiX.XObject<{
+    pendingNc: JoiX.XPrimitive<boolean, Joi.BooleanSchema, "Required", "NotNullable", "T", "P"> & Joi.BooleanSchema;
+    hyphenPaymentDocumentType: JoiX.XPrimitive<"PT" | "RC", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    bankingSystem: JoiX.XPrimitive<"redblade-hyphen-banking", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    hyphenFacsUrl: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    hyphenPaymentUserProfile: JoiX.XPrimitive<"FACRedbladeTest" | "FACDirectAxis" | "FACDirectAxisTest", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    hyphenPaymentKey: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    paymentRetries: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    hyphenDebitOrderOutputFileName: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    hyphenTrackingDays: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    useRuleBasedTrackingDays: JoiX.XPrimitive<boolean, Joi.BooleanSchema, "Required", "NotNullable", "T", "P"> & Joi.BooleanSchema;
+    ptpTrackingDays: JoiX.XPrimitive<number, Joi.NumberSchema, "Required", "NotNullable", "T", "P"> & Joi.NumberSchema;
+    hyphenLoadReportPrefix: JoiX.XPrimitive<"LD", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    hyphenSftpOutPath: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    hyphenSftpHost: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    hyphenSftpPort: JoiX.XPrimitive<number, Joi.NumberSchema, "Required", "NotNullable", "T", "P"> & Joi.NumberSchema;
+    hyphenSftpUser: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    hyphenSftpPassword: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    hyphenSftpPrivateKey: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    hyphenSftpInPath: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    port: JoiX.XPrimitive<number, Joi.NumberSchema, "Required", "NotNullable", "T", "P"> & Joi.NumberSchema;
+    hyphenAccountValidationUrl: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    hyphenAccountVerificationUserProfile: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    hyphenKey: JoiX.XPrimitive<number, Joi.NumberSchema, "Required", "NotNullable", "T", "P"> & Joi.NumberSchema;
+    sftp: JoiX.XFactAlternatives<ISftpSettings, {
+        w: JoiX.XObject<{
+            host: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+            port: JoiX.XPrimitive<number, Joi.NumberSchema, "Required", "NotNullable", "T", "P"> & Joi.NumberSchema;
+            credentials: JoiX.XObject<{
+                username: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                auth: JoiX.XAlternatives<{
+                    w: (JoiX.XObject<{
+                        type: JoiX.XPrimitive<JoiV.AuthType.password, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                        password: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                    }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema) | (JoiX.XObject<{
+                        type: JoiX.XPrimitive<JoiV.AuthType.publicKey, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                        phrase: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                        passKey: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                    }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema) | (JoiX.XObject<{
+                        type: JoiX.XPrimitive<JoiV.AuthType.any, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                        password: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                        phrase: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                        passKey: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                    }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema);
+                }, "Required", "NotNullable", "L", "W"> & Joi.AlternativesSchema;
+            }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
         } & {
-            __tsTypeAl: JoiX.XObject & Joi.ObjectSchema & {
-                __tsTypeO: {
-                    host: JoiX.XPrimitive<string> & Joi.StringSchema & {
-                        __isRequired: "T";
-                    };
-                    port: JoiX.XPrimitive<number> & Joi.NumberSchema & {
-                        __isRequired: "T";
-                    };
-                    credentials: JoiX.XObject & JoiX.ObjectSchema & {
-                        __tsTypeO: {
-                            username: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-                                __isRequired: "T";
-                            };
-                            auth: JoiX.XAlternatives & JoiX.AlternativesSchema & {
-                                __tsTypeAl: (JoiX.XObject & JoiX.ObjectSchema & {
-                                    __tsTypeO: {
-                                        type: JoiX.XPrimitive<JoiV.AuthType.password> & JoiX.StringSchema & {
-                                            __isRequired: "T";
-                                        };
-                                        password: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-                                            __isRequired: "T";
-                                        };
-                                    };
-                                } & {
-                                    __isRequired: "T";
-                                }) | (JoiX.XObject & JoiX.ObjectSchema & {
-                                    __tsTypeO: {
-                                        type: JoiX.XPrimitive<JoiV.AuthType.publicKey> & JoiX.StringSchema & {
-                                            __isRequired: "T";
-                                        };
-                                        phrase: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-                                            __isRequired: "T";
-                                        };
-                                        passKey: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-                                            __isRequired: "T";
-                                        };
-                                    };
-                                } & {
-                                    __isRequired: "T";
-                                }) | (JoiX.XObject & JoiX.ObjectSchema & {
-                                    __tsTypeO: {
-                                        type: JoiX.XPrimitive<JoiV.AuthType.any> & JoiX.StringSchema & {
-                                            __isRequired: "T";
-                                        };
-                                        password: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-                                            __isRequired: "T";
-                                        };
-                                        phrase: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-                                            __isRequired: "T";
-                                        };
-                                        passKey: JoiX.XPrimitive<string> & JoiX.StringSchema & {
-                                            __isRequired: "T";
-                                        };
-                                    };
-                                } & {
-                                    __isRequired: "T";
-                                });
-                            } & {
-                                __isRequired: "T";
-                            };
-                        };
-                    };
-                };
-            } & {
-                __isRequired: "T";
-            } & {
-                __tsTypeO: {
-                    factory: JoiX.XPrimitive<string> & Joi.StringSchema & {
-                        __isRequired: "T";
-                    };
-                };
-            };
-        } & {
-            __isRequired: "T";
-        };
-    };
-} & {
-    __isRequired: "T";
-};
+            factory: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+        }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
+    }, "Required", "NotNullable", "F", "W"> & JoiX.XFactory<ISftpSettings> & Joi.AlternativesSchema;
+}, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;

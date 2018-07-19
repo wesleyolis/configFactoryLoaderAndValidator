@@ -15,7 +15,7 @@ import { IConfigFactory } from '../../config-factory/iconfig-factory';
 import * as CFT from '../../config-factory/config-factory-types'
 import { ConfigFactories } from '../../config-factory/index';
 import {ISftpSettings} from './isftp-config-factory'
-export {ISftpSettings}
+export {ISftpSettings as ISftpSettings}
 
 export type SftpClientSchema = JoiX.ExtractFromSchema<typeof sftpClientSchema>
 
