@@ -148,4 +148,29 @@ describe("Joi Behaviours", function()
         }
     });
 
+    it("ObjectAlternative ", async function()
+    {
+        const objectAlternative = JoiX.object().keys({
+            a : JoiX.alternatives().try([{b : JoiX.string().required()}, {c : JoiX.number().required()}])
+        }).required();
+
+        const json = {
+            a : {
+                b : 'string'
+            }
+        };
+
+        try
+        {
+            const validateSchema = await JoiX.validate(json, objectAlternative);
+
+            chai.expect(validateSchema.a).to.have.property('b').to.eq('string');
+        }
+        catch(e)
+        {
+            console.log(JSON.stringify(e));
+            chai.expect(e).eq(undefined);
+        }
+    });
+
 });

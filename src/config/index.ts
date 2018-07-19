@@ -1,6 +1,7 @@
 import {ConfigSchema, configSchema} from './global'
 import {LoadConfig, LoadedConfig } from '../index'
 import { some } from 'bluebird';
+export {ConfigSchema};
 
 let configInstancesLoaded : LoadedConfig<typeof configSchema> | undefined = undefined; 
 
