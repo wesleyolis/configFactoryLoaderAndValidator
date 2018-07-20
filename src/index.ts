@@ -33,7 +33,7 @@ export {configAsync, ConfigSchema} from './config/index';
 
 export abstract class IConfigBundle
 {
-    static async newBundleAndResolveConfigAsync (settings: JoiX.XJSchemaMap | undefined | number = 42, configSchema : JoiX.XAnyObjectSchema, requireConfig : (file:string) => any = () => require('config')) : Promise<any>
+    static async newBundleAndResolveConfigAsync (settings: JoiX.XJSchemaMap | undefined | number = undefined, configSchema : JoiX.XAnyObjectSchema, requireConfig : (file:string) => any = require('config')) : Promise<any>
     {
         if (settings == undefined)
         {
