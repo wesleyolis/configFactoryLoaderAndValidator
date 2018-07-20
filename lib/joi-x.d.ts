@@ -10,12 +10,13 @@ export declare type ID = 'T' | 'A' | 'P' | 'K' | 'L' | 'F';
 export declare type InputForm = 'P' | 'W';
 export declare type IsRequired = 'Required' | 'NotRequired';
 export declare type IsNullable = 'Nullable' | 'NotNullable';
-export interface X<T, R extends IsRequired, N extends IsNullable, I extends ID, F extends InputForm> {
+export interface X<T, R extends IsRequired, N extends IsNullable, I extends ID, F extends InputForm, A = any> {
     __tsType: T;
     __isRequired: R;
     __isNullable: N;
     __ID: I;
     __InputForm: F;
+    __factoryType: A;
 }
 export declare type Merge<O1, O2> = O1 & O2;
 export interface XPrimitive<T, J extends Joi.Schema, R extends IsRequired = 'NotRequired', N extends IsNullable = 'NotNullable', I extends ID = 'T', F extends InputForm = 'P'> extends X<T, R, N, I, F> {
@@ -53,11 +54,11 @@ export interface XAlternatives<T = undefined, R extends IsRequired = 'NotRequire
     try(...args: any[]): X<'Invalid type passed to JoiX.array().items(). Do not use Joi types - use JoiX instead.', R, N, I, F> & Joi.AlternativesSchema;
 }
 export interface XFactAlternatives<A = undefined, T = undefined, R extends IsRequired = 'NotRequired', N extends IsNullable = 'NotNullable', I extends ID = 'F', F extends InputForm = 'P'> extends X<T, R, N, I, F> {
-    required: () => XFactAlternatives<A, T, 'Required', N, I, F> & XFactory<A> & Joi.AlternativesSchema;
-    allow: (allow: null) => XFactAlternatives<A, T, R, 'Nullable', I, F> & XFactory<A> & Joi.AlternativesSchema;
+    required: () => XFactAlternatives<A, T, 'Required', N, I, F> & Joi.AlternativesSchema;
+    allow: (allow: null) => XFactAlternatives<A, T, R, 'Nullable', I, F> & Joi.AlternativesSchema;
     try<S extends JoiXSchema>(types: S[]): XFactAlternatives<A, {
         w: S;
-    }, R, N, I, 'W'> & XFactory<A> & Joi.AlternativesSchema;
+    }, R, N, I, 'W'> & Joi.AlternativesSchema;
     try(...args: any[]): X<'Invalid type passed to JoiX.array().items(). Do not use Joi types - use JoiX instead.', R, N, I, F> & Joi.AlternativesSchema;
 }
 export declare type ObjectChildren = {
@@ -152,23 +153,25 @@ export declare type XFactoryMeta = {
 export declare const Factory: <FInteface>(type: FactoryType, newFactory: (settings: any) => IConfigFactory) => XFactAlternatives<FInteface, undefined, "NotRequired", "NotNullable", "F", "P"> & AlternativesSchema;
 export declare type XAnyObjectSchema = XObject<any, any, any, any, any> & Joi.ObjectSchema;
 export declare type JoiXSchema<T = any, R extends IsRequired = any, N extends IsNullable = any, I extends ID = any, F extends InputForm = any> = X<T, R, N, I, F>;
-export declare type ExtractRequired<S extends JoiXSchema, T> = If<StringEq<S['__isRequired'], 'Required'>, T, T | undefined>;
-export declare type ExtractNull<S extends JoiXSchema, T> = If<StringEq<S['__isNullable'], 'Nullable'>, T | null, T>;
-export declare type ExtractRequiredAndNull<S extends JoiXSchema, T> = ExtractRequired<S, ExtractNull<S, T>>;
+export declare type ExtractRequired<S extends XAny, T> = If<StringEq<S['__isRequired'], 'Required'>, T, T | undefined>;
+export declare type ExtractNull<S extends XAny, T> = If<StringEq<S['__isNullable'], 'Nullable'>, T | null, T>;
+export declare type ExtractRequiredAndNull<S extends XAny, T> = ExtractRequired<S, ExtractNull<S, T>>;
 export declare type JSON = Record<string, JoiXSchema<any, any, any, any, any>>;
-export declare type ExtractFromSchema<T extends any> = _ExtractFromSchema<T> & XTSchema;
-export declare type ExtractFromObject<T extends any> = _ExtractFromObject<T> & XTSchema;
-export declare type ExtractWithFactoriesFromSchema<T extends any> = _ExtractWithFactoriesFromSchema<T> & XTSchema;
-export declare type ExtractWithFactoriesFromObject<T extends any> = _ExtractWithFactoriesFromObject<T> & XTSchema;
+export declare type ExtractFromSchema<T extends XAny> = _ExtractFromSchema<T> & XTSchema;
+export declare type ExtractFromObject<T extends XRecord> = _ExtractFromObject<T> & XTSchema;
+export declare type ExtractWithFactoriesFromSchema<T extends XAny> = _ExtractWithFactoriesFromSchema<T> & XTSchema;
+export declare type ExtractWithFactoriesFromObject<T extends XRecord> = _ExtractWithFactoriesFromObject<T> & XTSchema;
 export declare type ExtractFormat<C extends any, T extends any> = {
     'P': T;
     'W': T['w'];
 }[C['__InputForm']];
 export declare type ExtractType<T extends any> = T['__tsType'];
-export declare type _ExtractFromSchema<T extends any> = _ExtractFromObject<{
+export declare type XAny = X<any, any, any, any, any>;
+export declare type XRecord = Record<string, XAny>;
+export declare type _ExtractFromSchema<T extends JoiXSchema> = _ExtractFromObject<{
     w: T;
 }>['w'];
-export declare type _ExtractFromObject<T extends any> = {
+export declare type _ExtractFromObject<T extends XRecord> = {
     [P in keyof T]: ({
         'T': ExtractRequiredAndNull<T[P], ExtractType<T[P]>>;
         'K': ExtractRequiredAndNull<T[P], _ExtractFromObject<ExtractType<T[P]>>>;
@@ -178,10 +181,10 @@ export declare type _ExtractFromObject<T extends any> = {
         'F': ExtractRequiredAndNull<T[P], ExtractFormat<T[P], _ExtractFromObject<ExtractType<T[P]>>>>;
     })[T[P]['__ID']];
 };
-export declare type _ExtractWithFactoriesFromSchema<T extends any> = _ExtractWithFactoriesFromObject<{
+export declare type _ExtractWithFactoriesFromSchema<T extends JoiXSchema> = _ExtractWithFactoriesFromObject<{
     w: T;
 }>['w'];
-export declare type _ExtractWithFactoriesFromObject<T extends any> = {
+export declare type _ExtractWithFactoriesFromObject<T extends XRecord> = {
     [P in keyof T]: ({
         'T': ExtractRequiredAndNull<T[P], ExtractType<T[P]>>;
         'K': ExtractRequiredAndNull<T[P], _ExtractWithFactoriesFromObject<ExtractType<T[P]>>>;

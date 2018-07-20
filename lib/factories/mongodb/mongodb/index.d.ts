@@ -4,7 +4,6 @@ import { ConfigFactoryClass, ConfigFactoryTypes } from '../../../config-factory/
 import * as CS from './configSchema';
 import * as JoiX from '../../../joi-x';
 import * as Joi from 'joi';
-import * as JoiV from '../../../joi-x-validators';
 export { CS as CS };
 export declare class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABaseConfigFactory implements IMongoSettings {
     configSettings: T;
@@ -25,7 +24,7 @@ export declare class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABa
             username: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
             password: JoiX.XObject<{
                 phrase: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
-                type: JoiX.XStringSchema<JoiV.PassType>;
+                type: JoiX.XStringSchema<JoiX.PassType>;
             }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
         }, "NotRequired", "NotNullable", "K", "P"> & Joi.ObjectSchema;
         database: JoiX.XStringSchema<string>;
@@ -47,7 +46,7 @@ export declare class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABa
             username: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
             password: JoiX.XObject<{
                 phrase: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
-                type: JoiX.XStringSchema<JoiV.PassType>;
+                type: JoiX.XStringSchema<JoiX.PassType>;
             }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
         }, "NotRequired", "NotNullable", "K", "P"> & Joi.ObjectSchema;
         database: JoiX.XStringSchema<string>;
