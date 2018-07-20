@@ -1,4 +1,4 @@
-import { IMongoSettings, ISftpSettings, CFT, JoiX, Joi } from '../index';
+import { IMongoSettings, ISftpSettings, CFT, JoiX, JoiV, Joi } from '../index';
 export declare type GlobalConfigSchema = JoiX.ExtractFromObject<typeof globalConfigSchema>;
 export declare const globalConfigSchema: {
     mongodb: JoiX.XFactAlternatives<IMongoSettings, {
@@ -16,7 +16,7 @@ export declare const globalConfigSchema: {
                 username: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
                 password: JoiX.XObject<{
                     phrase: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
-                    type: JoiX.XStringSchema<JoiX.PassType>;
+                    type: JoiX.XStringSchema<JoiV.PassType>;
                 }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
             }, "NotRequired", "NotNullable", "K", "P"> & Joi.ObjectSchema;
             database: JoiX.XStringSchema<string>;
@@ -85,14 +85,14 @@ export declare const configSchema: JoiX.XObject<{
                     username: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
                     auth: JoiX.XAlternatives<{
                         w: (JoiX.XObject<{
-                            type: JoiX.XPrimitive<JoiX.AuthType.password, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                            type: JoiX.XPrimitive<JoiV.AuthType.password, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
                             password: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
                         }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema) | (JoiX.XObject<{
-                            type: JoiX.XPrimitive<JoiX.AuthType.publicKey, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                            type: JoiX.XPrimitive<JoiV.AuthType.publicKey, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
                             phrase: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
                             passKey: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
                         }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema) | (JoiX.XObject<{
-                            type: JoiX.XPrimitive<JoiX.AuthType.any, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                            type: JoiX.XPrimitive<JoiV.AuthType.any, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
                             password: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
                             phrase: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
                             passKey: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
@@ -120,7 +120,7 @@ export declare const configSchema: JoiX.XObject<{
                 username: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
                 password: JoiX.XObject<{
                     phrase: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
-                    type: JoiX.XStringSchema<JoiX.PassType>;
+                    type: JoiX.XStringSchema<JoiV.PassType>;
                 }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
             }, "NotRequired", "NotNullable", "K", "P"> & Joi.ObjectSchema;
             database: JoiX.XStringSchema<string>;

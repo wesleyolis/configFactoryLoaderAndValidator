@@ -1,6 +1,6 @@
 import { IConfigFactory } from './config-factory';
 export { IConfigFactory as IConfigFactory }
-export * from './joi-x-validators' 
+//export * from './joi-x-validators' 
 
 //export {Joi as Joi}
 import {ValidationErrorItem, validate, describe, AlternativesSchema} from 'joi'

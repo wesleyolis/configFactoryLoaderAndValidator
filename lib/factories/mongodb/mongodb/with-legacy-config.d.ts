@@ -3,6 +3,7 @@ import { MongoDBConfigFactory, CS } from './index';
 import * as CFT from '../../../config-factory/config-factory-types';
 import * as JoiX from '../../../joi-x';
 import * as Joi from 'joi';
+import * as JoiV from '../../../joi-x-validators';
 export declare function NewInstance(injectKey: string): MongoDBConfigFactoryWithLegacy<JoiX.ExtractFromSchema<JoiX.XObject<{
     class: JoiX.XPrimitive<CFT.ConfigFactoryClass.netService, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
     type: JoiX.XPrimitive<CFT.ConfigFactoryTypes.production, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
@@ -17,7 +18,7 @@ export declare function NewInstance(injectKey: string): MongoDBConfigFactoryWith
         username: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
         password: JoiX.XObject<{
             phrase: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
-            type: JoiX.XStringSchema<JoiX.PassType>;
+            type: JoiX.XStringSchema<JoiV.PassType>;
         }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
     }, "NotRequired", "NotNullable", "K", "P"> & Joi.ObjectSchema;
     database: JoiX.XStringSchema<string>;

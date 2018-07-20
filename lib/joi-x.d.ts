@@ -1,7 +1,6 @@
 /// <reference types="node" />
 import { IConfigFactory } from './config-factory';
 export { IConfigFactory as IConfigFactory };
-export * from './joi-x-validators';
 import { ValidationErrorItem, validate, describe, AlternativesSchema } from 'joi';
 export { ValidationErrorItem as ValidationErrorItem, validate as validate, describe as describe };
 import * as Joi from 'joi';
