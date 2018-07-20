@@ -1,8 +1,8 @@
-import {ConfigSchema, configSchema, IMongoSettings} from "../src/factories/mongodb";
-import { CFT, Joi, JoiV, JoiX, IConfigBundle, Factories, IConfigFactoriesInstances, LoadConfig, LoadConfigErrors } from "../src/index";
-import { IConfigFactory } from "../src/joi-x";
-import { ABaseConfigFactory } from "../src/config-factory/abase-config-factory";
-import { Factory, _NewFactory } from "../src/config-factory/config-factories";
+import {ConfigSchema, configSchema, IMongoSettings} from "../lib/factories/mongodb";
+import { CFT, Joi, JoiV, JoiX, IConfigBundle, Factories, IConfigFactoriesInstances, LoadConfig, LoadConfigErrors } from "../lib/index";
+import { IConfigFactory } from "../lib/joi-x";
+import { ABaseConfigFactory } from "../lib/config-factory/abase-config-factory";
+import { Factory, _NewFactory } from "../lib/config-factory/config-factories";
 import * as chai from 'chai'
 import * as _ from 'lodash'
 

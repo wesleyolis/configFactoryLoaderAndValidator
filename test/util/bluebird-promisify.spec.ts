@@ -1,8 +1,8 @@
 import * as chai from 'chai'
-import {Promisify} from '../../src/util/bluebird-promisify';
-//import {PromisifyAll} from '../../src/util/bluebird-promisify';
+import {Promisify} from '../../lib/util/bluebird-promisify';
+//import {PromisifyAll} from '../../lib/util/bluebird-promisify';
 
-import {PromisifyReturn} from '../../src/util/bluebird-promisify';
+import {PromisifyReturn} from '../../lib/util/bluebird-promisify';
 import { onPossiblyUnhandledRejection } from 'bluebird';
 const sut = require('redblade-testing');
 

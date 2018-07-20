@@ -1,6 +1,6 @@
 import * as chai from 'chai';
-import * as JoiX from '../src/joi-x'
-import { Joi } from '../src';
+import * as JoiX from '../lib/joi-x'
+import { Joi } from '../lib';
 
 describe("JoiX binds with Joi", () =>
 {

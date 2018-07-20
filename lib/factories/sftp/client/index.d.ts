@@ -1,6 +1,6 @@
 import * as JoiX from '../../../joi-x';
 import * as CS from './config-schema';
-import { ABaseConfigFactory } from '.././../../../src/config-factory/abase-config-factory';
+import { ABaseConfigFactory } from '../../../config-factory/abase-config-factory';
 import { ConfigFactoryClass, ConfigFactoryTypes } from '../../../config-factory/config-factory-types';
 import { ISftpSettings, ILegacyConfig } from '../isftp-config-factory';
 import { Joi, JoiV } from '../../../index';

@@ -8,7 +8,8 @@
   "scripts": {
     "tsc": "tsc",
     "tsct": "tsc -v;",
-    "copy-d-ts" : "find ./src -name  '*.d.ts' | cut -d '/' -f3- | xargs -I {} cp './src/{}' './lib/{}'",
+    "tsc-test" : "tsc -p tsconfig-test.json",
+    "copy-d-ts" : "find ./src -name  '*.d.ts' | cut -d '/' -f3- | xargs -I {} cp './lib/{}' './lib/{}'",
     "copy-js": "rm -rf lib && cp -r src/ lib/; find ./lib -name '*.ts' -type f | xargs rm",
     "copy-js-test": "rm -rf lib-test && cp -r test/ lib-test/; find ./lib-test -name '*.ts' -type f | xargs rm",
     "build": "npm run copy-js && tsc",

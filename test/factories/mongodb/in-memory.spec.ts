@@ -1,6 +1,6 @@
 import * as chai from 'chai';
-import * as JoiX from '../../../src/joi-x'
-import {MongoInMemoryConfigFactory, CS} from '../../../src/factories/mongodb/mongodb-in-memory'
+import * as JoiX from '../../../lib/joi-x'
+import {MongoInMemoryConfigFactory, CS} from '../../../lib/factories/mongodb/mongodb-in-memory'
 
 describe("Factory Loading Testing", function () {
 

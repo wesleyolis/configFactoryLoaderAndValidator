@@ -1,9 +1,9 @@
 import * as chai from 'chai';
-import * as JoiX from '../../../src/joi-x';
-import * as JoiV from '../../../src/joi-x-validators'
-import {ConfigSchema, inMemorySchema, InMemorySchema, mongoDBSchema} from '../../../src/factories/mongodb/index'
-import * as CFT from '../../../src/config-factory/config-factory-types'
-import { configSchema } from '../../../src/factories/mongodb';
+import * as JoiX from '../../../lib/joi-x';
+import * as JoiV from '../../../lib/joi-x-validators'
+import {ConfigSchema, inMemorySchema, InMemorySchema, mongoDBSchema} from '../../../lib/factories/mongodb/index'
+import * as CFT from '../../../lib/config-factory/config-factory-types'
+import { configSchema } from '../../../lib/factories/mongodb';
 
 describe("Factories", function()
 {

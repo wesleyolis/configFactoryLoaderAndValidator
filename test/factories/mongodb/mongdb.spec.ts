@@ -1,7 +1,7 @@
 import * as chai from 'chai';
-import {JoiX, JoiV, CFT} from '../../../src/index';
-import {MongoDBConfigFactory, CS} from '../../../src/factories/mongodb/mongodb'
-import {ConfigSchema} from '../../../src/factories/mongodb/mongodb/configSchema'
+import {JoiX, JoiV, CFT} from '../../../lib/index';
+import {MongoDBConfigFactory, CS} from '../../../lib/factories/mongodb/mongodb'
+import {ConfigSchema} from '../../../lib/factories/mongodb/mongodb/configSchema'
 
 async function returnCaughtErrorAsync (resultsPromise : Promise<any>)
 {
