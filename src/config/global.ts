@@ -29,4 +29,4 @@ export type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>
 
 export const configSchema = JoiX.object().keys({
     banking : hyphenBanking.configSchema
-}).keys(globalConfigSchema);
+}).keys(globalConfigSchema).required();

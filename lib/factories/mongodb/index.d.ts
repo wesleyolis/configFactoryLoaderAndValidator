@@ -70,5 +70,5 @@ export declare const configSchema: InMemory.CS.XFactAlternatives<IMongoSettings,
     } & {
         factory: InMemory.CS.XPrimitive<"InMemory", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
     }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema);
-}, "Required", "NotNullable", "F", "W"> & Joi.AlternativesSchema;
+}, "Required", "NotNullable", "F", "W"> & InMemory.CS.XFactory<IMongoSettings> & Joi.AlternativesSchema;
 export declare function NewFactory(settings: ConfigFactories): IMongoSettings;

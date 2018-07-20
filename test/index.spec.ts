@@ -362,7 +362,7 @@ describe("Configurations loader and validator routines", () => {
             settingsWithFactoryA.p.Mockfactory = factoryA;
 
             const instances = await LoadConfig(settingsWithFactoryA, schema, true, true);
-        
+
             validateAll(instances);
             await validateFactoryAAsync(instances);
         });

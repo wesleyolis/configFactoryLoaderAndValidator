@@ -80,7 +80,7 @@ export declare const configSchema: JoiX.XFactAlternatives<ISftpSettings, {
     } & {
         factory: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
     }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
-}, "Required", "NotNullable", "F", "W"> & Joi.AlternativesSchema;
+}, "Required", "NotNullable", "F", "W"> & JoiX.XFactory<ISftpSettings> & Joi.AlternativesSchema;
 export declare function NewFactory(settings: ConfigFactories): ISftpSettings;
 export declare const configSchemaInjectLegacy: JoiX.XFactAlternatives<ISftpSettings, {
     w: JoiX.XObject<{
@@ -107,5 +107,5 @@ export declare const configSchemaInjectLegacy: JoiX.XFactAlternatives<ISftpSetti
     } & {
         factory: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
     }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
-}, "Required", "NotNullable", "F", "W"> & Joi.AlternativesSchema;
+}, "Required", "NotNullable", "F", "W"> & JoiX.XFactory<ISftpSettings> & Joi.AlternativesSchema;
 export declare function NewFactoryWithLegacy(settings: ConfigFactories): ISftpSettings;

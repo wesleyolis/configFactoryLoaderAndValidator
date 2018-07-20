@@ -50,5 +50,5 @@ export declare const configSchema: JoiX.XObject<{
         } & {
             factory: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
         }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
-    }, "Required", "NotNullable", "F", "W"> & Joi.AlternativesSchema;
+    }, "Required", "NotNullable", "F", "W"> & JoiX.XFactory<Factories.SFTP.ISftpSettings> & Joi.AlternativesSchema;
 }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;

@@ -32,7 +32,7 @@ export declare const globalConfigSchema: {
         } & {
             factory: JoiX.XPrimitive<"InMemory", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
         }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema);
-    }, "Required", "NotNullable", "F", "W"> & Joi.AlternativesSchema;
+    }, "Required", "NotNullable", "F", "W"> & JoiX.XFactory<IMongoSettings> & Joi.AlternativesSchema;
     mongoConnectionString: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
     agenda: JoiX.XObject<{
         mongoConnectionString: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
@@ -102,7 +102,7 @@ export declare const configSchema: JoiX.XObject<{
             } & {
                 factory: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
             }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
-        }, "Required", "NotNullable", "F", "W"> & Joi.AlternativesSchema;
+        }, "Required", "NotNullable", "F", "W"> & JoiX.XFactory<ISftpSettings> & Joi.AlternativesSchema;
     }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
 } & {
     mongodb: JoiX.XFactAlternatives<IMongoSettings, {
@@ -136,7 +136,7 @@ export declare const configSchema: JoiX.XObject<{
         } & {
             factory: JoiX.XPrimitive<"InMemory", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
         }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema);
-    }, "Required", "NotNullable", "F", "W"> & Joi.AlternativesSchema;
+    }, "Required", "NotNullable", "F", "W"> & JoiX.XFactory<IMongoSettings> & Joi.AlternativesSchema;
     mongoConnectionString: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
     agenda: JoiX.XObject<{
         mongoConnectionString: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
@@ -154,4 +154,4 @@ export declare const configSchema: JoiX.XObject<{
         db: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
         host: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
     }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
-}, "NotRequired", "NotNullable", "K", "P"> & Joi.ObjectSchema;
+}, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
