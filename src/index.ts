@@ -78,12 +78,18 @@ implements IConfigFactoriesInstances
 
     startAsync() : Promise<void []>
     {
-        return Promise.all(this.factoryInstances.map(f => f().then((self) => self.startAsync())));
+        return Promise.all(this.factoryInstances.map(f => f().then((self) => self.startAsync()))).catch((e) =>
+        {
+            throw e;
+        });
     }
 
     stopAsync() : Promise<void []>
     {
-        return Promise.all(this.factoryInstances.map(f => f().then((self) => self.stopAsync())));
+        return Promise.all(this.factoryInstances.map(f => f().then((self) => self.stopAsync()))).catch((e) =>
+        {
+          throw e;  
+        });
     }
 }
 
