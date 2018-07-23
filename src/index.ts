@@ -54,8 +54,6 @@ export abstract class IConfigBundle
     abstract async newBundleAndResolveConfigAsync (settings: JoiX.XJSchemaMap | undefined) : Promise<IConfigFactoriesInstances>
 }
 
-IConfigBundle.newBundleAndResolveConfigAsync(undefined, null as any as JoiX.XObjectSchema);
-
 export interface IConfigFactoriesInstances
 {
     startAsync() : Promise<void []>;
