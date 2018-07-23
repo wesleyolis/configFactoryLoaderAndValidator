@@ -59,4 +59,4 @@ export interface Accumulator extends Joi.AnySchema, AccBase<undefined> {
     accumulator: Joi.AnySchema | null;
 }
 export declare type LoadedConfig<L extends JoiX.XAnyObjectSchema, LF = JoiX.ExtractWithFactoriesFromSchema<L>> = FactoriesInstancesResolver<L, LF>;
-export declare function LoadConfig<L extends JoiX.XAnyObjectSchema, LF = JoiX.ExtractWithFactoriesFromSchema<L>>(configSettings: any, configSchema: L, lazyLoad?: boolean, configOptional?: boolean): Promise<FactoriesInstancesResolver<L, LF>>;
+export declare function LoadConfig<L extends JoiX.XAnyObjectSchema, LF = JoiX.ExtractWithFactoriesFromSchema<L>>(configSettings: any, configSchema: L, lazyLoad?: boolean, configOptional?: boolean, skipValidation?: boolean): Promise<FactoriesInstancesResolver<L, LF>>;

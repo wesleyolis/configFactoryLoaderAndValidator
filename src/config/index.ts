@@ -25,10 +25,10 @@ export async function configAsync () : Promise<LoadedConfig<typeof configSchema>
     return Promise.resolve(configInstancesLoaded);
 }
 
-export async function loadConfig(lazyLoad : boolean = false, configOptional : boolean = false, configSettings : any = undefined) : Promise<void>
+export async function loadConfig(lazyLoad : boolean = false, configOptional : boolean = false, configSettings : any = undefined, skipValidation : boolean = false) : Promise<void>
 {
     if (configSettings == undefined)
         configSettings = require('config');
     
-    configInstancesLoaded = await genericLoadConfig(configSettings, configSchema, lazyLoad, configOptional);
+    configInstancesLoaded = await genericLoadConfig(configSettings, configSchema, lazyLoad, configOptional, skipValidation);
 }

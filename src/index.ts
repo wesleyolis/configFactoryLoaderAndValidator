@@ -138,11 +138,11 @@ export type LoadedConfig<L extends JoiX.XAnyObjectSchema, LF = JoiX.ExtractWithF
 
 export async function LoadConfig<L extends JoiX.XAnyObjectSchema, 
 LF = JoiX.ExtractWithFactoriesFromSchema<L>>
-(configSettings : any, configSchema : L, lazyLoad : boolean = false, configOptional : boolean = false) : Promise<FactoriesInstancesResolver<L, LF>>
+(configSettings : any, configSchema : L, lazyLoad : boolean = false, configOptional : boolean = false, skipValidation : boolean = false) : Promise<FactoriesInstancesResolver<L, LF>>
 {
     const originalConfigSchema = _.cloneDeep(configSchema);
 
-    if (configOptional)
+    if (configOptional && !skipValidation)
     {
         // I would like to be able to define common genrics in which I then basically type this call back function
         // back in.
@@ -281,7 +281,18 @@ LF = JoiX.ExtractWithFactoriesFromSchema<L>>
 
     const children = JoiX.getXObjectChildrens(originalConfigSchema);
 
-    const validateConfigSettings : any = await JoiX.validate(configSettings, configSchema);
+    let configValidationSettingsResult : any = undefined;
+
+    if (skipValidation)
+    {
+        configValidationSettingsResult = configSettings;
+    }
+    else
+    {
+        configValidationSettingsResult  = await JoiX.validate(configSettings, configSchema);
+    }
+
+    const validateConfigSettings = configValidationSettingsResult;
 
     let loadedConfig : any = {};
     let factoryConfig : (() => Promise<IConfigFactory>) [] = [];
