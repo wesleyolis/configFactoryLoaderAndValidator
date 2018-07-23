@@ -61,7 +61,7 @@ const factoriesInjectLegacy : Factory<ISftpSettings> [] = [
         configFactoryNew: sftpClientLegacy.NewInstance as any as () => ISftpSettings
     },
     {
-        configFactoryName: sftpClientCS.factoryName,
+        configFactoryName: sftpInMemCS.factoryName,
         configFactoryNew: sftpInMemLegacy.NewInstance as any as () => ISftpSettings
     }
 ];
