@@ -6,8 +6,6 @@ import { IMongoSettings } from './amongodb-config-factory';
 export { IMongoSettings as IMongoSettings };
 export declare type MongoDBSchema = JoiX.ExtractFromSchema<typeof mongoDBSchema>;
 export declare const mongoDBSchema: InMemory.CS.XObject<{
-    class: InMemory.CS.XPrimitive<CFT.ConfigFactoryClass.netService, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
-    type: InMemory.CS.XPrimitive<CFT.ConfigFactoryTypes.production, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
     provider: InMemory.CS.XPrimitive<"mongodb", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
     hosts: InMemory.CS.XArray<{
         'w': InMemory.CS.XObject<{
@@ -27,6 +25,9 @@ export declare const mongoDBSchema: InMemory.CS.XObject<{
         'w': InMemory.CS.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
     }, "NotRequired", "NotNullable", "P", "W"> & Joi.ObjectSchema;
 } & {
+    class: InMemory.CS.XPrimitive<CFT.ConfigFactoryClass, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    type: InMemory.CS.XPrimitive<CFT.ConfigFactoryTypes, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+} & {
     factory: InMemory.CS.XPrimitive<"Network", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
 }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
 export declare type InMemorySchema = JoiX.ExtractFromSchema<typeof inMemorySchema>;
@@ -41,8 +42,6 @@ export declare type ConfigFactories = MongoDBSchema | InMemorySchema;
 export declare type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>;
 export declare const configSchema: InMemory.CS.XFactAlternatives<IMongoSettings, {
     w: (InMemory.CS.XObject<{
-        class: InMemory.CS.XPrimitive<CFT.ConfigFactoryClass.netService, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
-        type: InMemory.CS.XPrimitive<CFT.ConfigFactoryTypes.production, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
         provider: InMemory.CS.XPrimitive<"mongodb", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
         hosts: InMemory.CS.XArray<{
             'w': InMemory.CS.XObject<{
@@ -61,6 +60,9 @@ export declare const configSchema: InMemory.CS.XFactAlternatives<IMongoSettings,
         options: InMemory.CS.XObject<{
             'w': InMemory.CS.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
         }, "NotRequired", "NotNullable", "P", "W"> & Joi.ObjectSchema;
+    } & {
+        class: InMemory.CS.XPrimitive<CFT.ConfigFactoryClass, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+        type: InMemory.CS.XPrimitive<CFT.ConfigFactoryTypes, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
     } & {
         factory: InMemory.CS.XPrimitive<"Network", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
     }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema) | (InMemory.CS.XObject<{

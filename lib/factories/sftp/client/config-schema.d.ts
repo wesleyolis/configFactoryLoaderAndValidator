@@ -1,6 +1,8 @@
 import * as Joi from 'joi';
 import * as JoiX from '../../../joi-x';
 import * as JoiV from '../../../joi-x-validators';
+import * as CFT from '../../../config-factory/abase-config-factory-schema';
+export { CFT as CFT };
 export declare const factoryName = "Client";
 export declare type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>;
 export declare const configSchema: JoiX.XObject<{
@@ -24,4 +26,7 @@ export declare const configSchema: JoiX.XObject<{
             }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema);
         }, "Required", "NotNullable", "L", "W"> & Joi.AlternativesSchema;
     }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
+} & {
+    class: JoiX.XPrimitive<CFT.ConfigFactoryClass, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    type: JoiX.XPrimitive<CFT.ConfigFactoryTypes, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
 }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;

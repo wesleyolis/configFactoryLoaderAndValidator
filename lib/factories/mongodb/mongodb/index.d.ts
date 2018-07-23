@@ -12,8 +12,6 @@ export declare class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABa
     readonly factoryClass: ConfigFactoryClass;
     readonly type: ConfigFactoryTypes;
     readonly configSchema: JoiX.XObject<{
-        class: JoiX.XPrimitive<ConfigFactoryClass.netService, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
-        type: JoiX.XPrimitive<ConfigFactoryTypes.production, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
         provider: JoiX.XPrimitive<"mongodb", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
         hosts: JoiX.XArray<{
             'w': JoiX.XObject<{
@@ -32,10 +30,11 @@ export declare class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABa
         options: JoiX.XObject<{
             'w': JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
         }, "NotRequired", "NotNullable", "P", "W"> & Joi.ObjectSchema;
+    } & {
+        class: JoiX.XPrimitive<ConfigFactoryClass, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+        type: JoiX.XPrimitive<ConfigFactoryTypes, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
     }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
     static NewInstance(): MongoDBConfigFactory<JoiX.ExtractFromSchema<JoiX.XObject<{
-        class: JoiX.XPrimitive<ConfigFactoryClass.netService, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
-        type: JoiX.XPrimitive<ConfigFactoryTypes.production, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
         provider: JoiX.XPrimitive<"mongodb", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
         hosts: JoiX.XArray<{
             'w': JoiX.XObject<{
@@ -54,6 +53,9 @@ export declare class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABa
         options: JoiX.XObject<{
             'w': JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
         }, "NotRequired", "NotNullable", "P", "W"> & Joi.ObjectSchema;
+    } & {
+        class: JoiX.XPrimitive<ConfigFactoryClass, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+        type: JoiX.XPrimitive<ConfigFactoryTypes, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
     }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema>>;
     constructor(configSettings: T);
     createAsync(conf: CS.ConfigSchema): Promise<void>;

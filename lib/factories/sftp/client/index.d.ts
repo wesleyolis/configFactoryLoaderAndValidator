@@ -31,6 +31,9 @@ export declare class SftpClient<T extends CS.ConfigSchema> extends ABaseConfigFa
                 }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema);
             }, "Required", "NotNullable", "L", "W"> & Joi.AlternativesSchema;
         }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
+    } & {
+        class: JoiX.XPrimitive<CS.CFT.ConfigFactoryClass, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+        type: JoiX.XPrimitive<CS.CFT.ConfigFactoryTypes, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
     }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
     static NewInstance(): SftpClient<JoiX.ExtractFromSchema<JoiX.XObject<{
         host: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
@@ -53,6 +56,9 @@ export declare class SftpClient<T extends CS.ConfigSchema> extends ABaseConfigFa
                 }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema);
             }, "Required", "NotNullable", "L", "W"> & Joi.AlternativesSchema;
         }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
+    } & {
+        class: JoiX.XPrimitive<CS.CFT.ConfigFactoryClass, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+        type: JoiX.XPrimitive<CS.CFT.ConfigFactoryTypes, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
     }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema>>;
     constructor(configSettings: T);
     createAsync(config: JoiX.XJSchemaMap): Promise<void>;

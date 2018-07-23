@@ -1,3 +1,4 @@
+import * as sftpClient from './client';
 import * as Joi from 'joi';
 import * as JoiX from '../../joi-x';
 import * as JoiV from '../../joi-x-validators';
@@ -26,6 +27,9 @@ export declare const sftpClientSchema: JoiX.XObject<{
         }, "Required", "NotNullable", "L", "W"> & Joi.AlternativesSchema;
     }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
 } & {
+    class: JoiX.XPrimitive<sftpClient.CS.CFT.ConfigFactoryClass, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    type: JoiX.XPrimitive<sftpClient.CS.CFT.ConfigFactoryTypes, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+} & {
     factory: JoiX.XPrimitive<"Client", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
 }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
 export declare type SftpInMemSchema = JoiX.ExtractFromSchema<typeof sftpInMemSchema>;
@@ -50,6 +54,9 @@ export declare const sftpInMemSchema: JoiX.XObject<{
             }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema);
         }, "Required", "NotNullable", "L", "W"> & Joi.AlternativesSchema;
     }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
+} & {
+    class: JoiX.XPrimitive<sftpClient.CS.CFT.ConfigFactoryClass, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    type: JoiX.XPrimitive<sftpClient.CS.CFT.ConfigFactoryTypes, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
 } & {
     factory: JoiX.XPrimitive<"InMemoryClientWrapper", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
 }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
@@ -78,6 +85,9 @@ export declare const configSchema: JoiX.XFactAlternatives<ISftpSettings, {
             }, "Required", "NotNullable", "L", "W"> & Joi.AlternativesSchema;
         }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
     } & {
+        class: JoiX.XPrimitive<sftpClient.CS.CFT.ConfigFactoryClass, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+        type: JoiX.XPrimitive<sftpClient.CS.CFT.ConfigFactoryTypes, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    } & {
         factory: JoiX.XPrimitive<"Client", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
     }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema) | (JoiX.XObject<{
         host: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
@@ -100,6 +110,9 @@ export declare const configSchema: JoiX.XFactAlternatives<ISftpSettings, {
                 }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema);
             }, "Required", "NotNullable", "L", "W"> & Joi.AlternativesSchema;
         }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
+    } & {
+        class: JoiX.XPrimitive<sftpClient.CS.CFT.ConfigFactoryClass, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+        type: JoiX.XPrimitive<sftpClient.CS.CFT.ConfigFactoryTypes, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
     } & {
         factory: JoiX.XPrimitive<"InMemoryClientWrapper", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
     }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema);
@@ -128,6 +141,9 @@ export declare const configSchemaInjectLegacy: JoiX.XFactAlternatives<ISftpSetti
             }, "Required", "NotNullable", "L", "W"> & Joi.AlternativesSchema;
         }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
     } & {
+        class: JoiX.XPrimitive<sftpClient.CS.CFT.ConfigFactoryClass, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+        type: JoiX.XPrimitive<sftpClient.CS.CFT.ConfigFactoryTypes, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    } & {
         factory: JoiX.XPrimitive<"Client", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
     }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema) | (JoiX.XObject<{
         host: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
@@ -150,6 +166,9 @@ export declare const configSchemaInjectLegacy: JoiX.XFactAlternatives<ISftpSetti
                 }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema);
             }, "Required", "NotNullable", "L", "W"> & Joi.AlternativesSchema;
         }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
+    } & {
+        class: JoiX.XPrimitive<sftpClient.CS.CFT.ConfigFactoryClass, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+        type: JoiX.XPrimitive<sftpClient.CS.CFT.ConfigFactoryTypes, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
     } & {
         factory: JoiX.XPrimitive<"InMemoryClientWrapper", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
     }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema);

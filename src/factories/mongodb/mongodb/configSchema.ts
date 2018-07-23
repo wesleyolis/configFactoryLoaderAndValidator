@@ -29,14 +29,14 @@ export const hosts = JoiX.array().items(JoiX.object().keys({
 ).required().min(1);
 
 export const configSchema = JoiX.object().keys({
-    class : JoiX.LiteralString([CFT.ConfigFactoryClass.netService]).required(),
-    type : JoiX.LiteralString([CFT.ConfigFactoryTypes.production]).required(),
+   // class : JoiX.LiteralString([CFT.ConfigFactoryClass.netService]).required(),
+   // type : JoiX.LiteralString([CFT.ConfigFactoryTypes.production]).required(),
     provider : JoiX.LiteralString(['mongodb']).label('Database Provider').description('MongoDB, MSQL, Mysql, Postgress').required(),
     hosts : hosts,
     credentials : credentials,
     database : JoiX.string(),
     options : JoiX.object().pattern(/\w?/, JoiX.string().required()),
-  }).required();
+  }).keys(baseConfigSchema).required();
 
   const settings = {
     class : CFT.ConfigFactoryClass.netService,

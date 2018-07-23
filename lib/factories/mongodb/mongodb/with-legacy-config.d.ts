@@ -5,8 +5,6 @@ import * as JoiX from '../../../joi-x';
 import * as Joi from 'joi';
 import * as JoiV from '../../../joi-x-validators';
 export declare function NewInstance(injectKey: string): MongoDBConfigFactoryWithLegacy<JoiX.ExtractFromSchema<JoiX.XObject<{
-    class: JoiX.XPrimitive<CFT.ConfigFactoryClass.netService, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
-    type: JoiX.XPrimitive<CFT.ConfigFactoryTypes.production, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
     provider: JoiX.XPrimitive<"mongodb", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
     hosts: JoiX.XArray<{
         'w': JoiX.XObject<{
@@ -25,6 +23,9 @@ export declare function NewInstance(injectKey: string): MongoDBConfigFactoryWith
     options: JoiX.XObject<{
         'w': JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
     }, "NotRequired", "NotNullable", "P", "W"> & Joi.ObjectSchema;
+} & {
+    class: JoiX.XPrimitive<CFT.ConfigFactoryClass, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    type: JoiX.XPrimitive<CFT.ConfigFactoryTypes, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
 }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema>>;
 export declare class MongoDBConfigFactoryWithLegacy<T extends CS.ConfigSchema> extends MongoDBConfigFactory<CS.ConfigSchema> implements ILegacyConfig {
     readonly injectConfig: InjectConfig;

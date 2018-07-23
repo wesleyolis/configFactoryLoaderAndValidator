@@ -3,8 +3,6 @@ export declare type GlobalConfigSchema = JoiX.ExtractFromObject<typeof globalCon
 export declare const globalConfigSchema: {
     mongodb: JoiX.XFactAlternatives<IMongoSettings, {
         w: (JoiX.XObject<{
-            class: JoiX.XPrimitive<CFT.ConfigFactoryClass.netService, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
-            type: JoiX.XPrimitive<CFT.ConfigFactoryTypes.production, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
             provider: JoiX.XPrimitive<"mongodb", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
             hosts: JoiX.XArray<{
                 'w': JoiX.XObject<{
@@ -23,6 +21,9 @@ export declare const globalConfigSchema: {
             options: JoiX.XObject<{
                 'w': JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
             }, "NotRequired", "NotNullable", "P", "W"> & Joi.ObjectSchema;
+        } & {
+            class: JoiX.XPrimitive<CFT.ConfigFactoryClass, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+            type: JoiX.XPrimitive<CFT.ConfigFactoryTypes, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
         } & {
             factory: JoiX.XPrimitive<"Network", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
         }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema) | (JoiX.XObject<{
@@ -100,6 +101,9 @@ export declare const configSchema: JoiX.XObject<{
                     }, "Required", "NotNullable", "L", "W"> & Joi.AlternativesSchema;
                 }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
             } & {
+                class: JoiX.XPrimitive<CFT.ConfigFactoryClass, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                type: JoiX.XPrimitive<CFT.ConfigFactoryTypes, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+            } & {
                 factory: JoiX.XPrimitive<"Client", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
             }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema) | (JoiX.XObject<{
                 host: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
@@ -123,6 +127,9 @@ export declare const configSchema: JoiX.XObject<{
                     }, "Required", "NotNullable", "L", "W"> & Joi.AlternativesSchema;
                 }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
             } & {
+                class: JoiX.XPrimitive<CFT.ConfigFactoryClass, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                type: JoiX.XPrimitive<CFT.ConfigFactoryTypes, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+            } & {
                 factory: JoiX.XPrimitive<"InMemoryClientWrapper", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
             }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema);
         }, "Required", "NotNullable", "F", "W"> & JoiX.XFactory<ISftpSettings> & Joi.AlternativesSchema;
@@ -130,8 +137,6 @@ export declare const configSchema: JoiX.XObject<{
 } & {
     mongodb: JoiX.XFactAlternatives<IMongoSettings, {
         w: (JoiX.XObject<{
-            class: JoiX.XPrimitive<CFT.ConfigFactoryClass.netService, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
-            type: JoiX.XPrimitive<CFT.ConfigFactoryTypes.production, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
             provider: JoiX.XPrimitive<"mongodb", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
             hosts: JoiX.XArray<{
                 'w': JoiX.XObject<{
@@ -150,6 +155,9 @@ export declare const configSchema: JoiX.XObject<{
             options: JoiX.XObject<{
                 'w': JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
             }, "NotRequired", "NotNullable", "P", "W"> & Joi.ObjectSchema;
+        } & {
+            class: JoiX.XPrimitive<CFT.ConfigFactoryClass, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+            type: JoiX.XPrimitive<CFT.ConfigFactoryTypes, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
         } & {
             factory: JoiX.XPrimitive<"Network", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
         }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema) | (JoiX.XObject<{

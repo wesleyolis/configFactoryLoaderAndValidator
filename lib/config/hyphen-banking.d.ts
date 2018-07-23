@@ -1,4 +1,4 @@
-import { Joi, JoiX, JoiV, Factories } from '../index';
+import { Joi, JoiX, JoiV, Factories, CFT } from '../index';
 export declare const bundleName: string;
 export declare type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>;
 export declare const configSchema: JoiX.XObject<{
@@ -48,6 +48,9 @@ export declare const configSchema: JoiX.XObject<{
                 }, "Required", "NotNullable", "L", "W"> & Joi.AlternativesSchema;
             }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
         } & {
+            class: JoiX.XPrimitive<CFT.ConfigFactoryClass, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+            type: JoiX.XPrimitive<CFT.ConfigFactoryTypes, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+        } & {
             factory: JoiX.XPrimitive<"Client", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
         }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema) | (JoiX.XObject<{
             host: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
@@ -70,6 +73,9 @@ export declare const configSchema: JoiX.XObject<{
                     }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema);
                 }, "Required", "NotNullable", "L", "W"> & Joi.AlternativesSchema;
             }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
+        } & {
+            class: JoiX.XPrimitive<CFT.ConfigFactoryClass, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+            type: JoiX.XPrimitive<CFT.ConfigFactoryTypes, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
         } & {
             factory: JoiX.XPrimitive<"InMemoryClientWrapper", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
         }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema);
