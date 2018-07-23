@@ -187,7 +187,7 @@ export class SftpInMemoryClientWrapper<T extends CS.ConfigSchema> extends SftpCl
           }
       }, `Listerning on host: [${this.server.address().address}], port : [${this.server.address().port}]`);
 
-      await this.startAsync();
+      await super.startAsync();
     }
 
     public async stopAsync()
