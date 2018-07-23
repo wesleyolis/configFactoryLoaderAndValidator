@@ -136,7 +136,7 @@ type JoiXSchemaAcc = Accumulator | ChildObjectAcc | ChildArrayAcc | ChildAlterAc
 
 export type LoadedConfig<L extends JoiX.XAnyObjectSchema, LF = JoiX.ExtractWithFactoriesFromSchema<L>> = FactoriesInstancesResolver<L, LF>;
 
-export async function LoadConfig<L extends JoiX.XAnyObjectSchema, 
+export async function genericLoadConfig<L extends JoiX.XAnyObjectSchema, 
 LF = JoiX.ExtractWithFactoriesFromSchema<L>>
 (configSettings : any, configSchema : L, lazyLoad : boolean = false, configOptional : boolean = false, skipValidation : boolean = false) : Promise<FactoriesInstancesResolver<L, LF>>
 {

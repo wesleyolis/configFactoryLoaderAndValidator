@@ -1,5 +1,5 @@
 import {ConfigSchema, configSchema} from './global'
-import {LoadConfig as genericLoadConfig, LoadedConfig } from '../index'
+import {genericLoadConfig, LoadedConfig } from '../index'
 import { some } from 'bluebird';
 export {ConfigSchema as ConfigSchema};
 import {} from 'redblade-types'

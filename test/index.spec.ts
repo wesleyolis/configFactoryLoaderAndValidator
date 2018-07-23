@@ -1,5 +1,5 @@
 import {ConfigSchema, configSchema, IMongoSettings} from "../lib/factories/mongodb";
-import { CFT, Joi, JoiV, JoiX, IConfigBundle, Factories, IConfigFactoriesInstances, LoadConfig, LoadConfigErrors } from "../lib/index";
+import { CFT, Joi, JoiV, JoiX, IConfigBundle, Factories, IConfigFactoriesInstances, genericLoadConfig, LoadConfigErrors } from "../lib/index";
 import { IConfigFactory } from "../lib/joi-x";
 import { ABaseConfigFactory } from "../lib/config-factory/abase-config-factory";
 import { Factory, _NewFactory } from "../lib/config-factory/config-factories";
@@ -312,7 +312,7 @@ describe("Configurations loader and validator routines", () => {
         let settingsWithFactoryA = _.cloneDeep(settings);
         settingsWithFactoryA.p.Mockfactory = factoryA;
 
-        const instances = await LoadConfig(settingsWithFactoryA, schema);
+        const instances = await genericLoadConfig(settingsWithFactoryA, schema);
 
         validateAll(instances);
         await validateFactoryAAsync(instances);
@@ -324,7 +324,7 @@ describe("Configurations loader and validator routines", () => {
         let settingsWithFactoryA = _.cloneDeep(settings);
         settingsWithFactoryA.p.Mockfactory = factoryA;
 
-        const instances = await LoadConfig(settingsWithFactoryA, schema, true);
+        const instances = await genericLoadConfig(settingsWithFactoryA, schema, true);
        
         validateAll(instances);
         await validateFactoryAAsync(instances);
@@ -336,7 +336,7 @@ describe("Configurations loader and validator routines", () => {
         let settingsWithFactoryA = _.cloneDeep(settings);
         settingsWithFactoryA.p.Mockfactory = factoryB;
 
-        const instances = await LoadConfig(settingsWithFactoryA, schema)
+        const instances = await genericLoadConfig(settingsWithFactoryA, schema)
         
         validateAll(instances);
         await validateFactoryBAsync(instances);
@@ -347,7 +347,7 @@ describe("Configurations loader and validator routines", () => {
         let settingsWithFactoryA = _.cloneDeep(settings);
         settingsWithFactoryA.p.Mockfactory = factoryB;
 
-        const instances = await LoadConfig(settingsWithFactoryA, schema, true);
+        const instances = await genericLoadConfig(settingsWithFactoryA, schema, true);
         
         validateAll(instances);
         await validateFactoryBAsync(instances);
@@ -361,7 +361,7 @@ describe("Configurations loader and validator routines", () => {
             let settingsWithFactoryA = _.cloneDeep(settings);
             settingsWithFactoryA.p.Mockfactory = factoryA;
 
-            const instances = await LoadConfig(settingsWithFactoryA, schema, true, true);
+            const instances = await genericLoadConfig(settingsWithFactoryA, schema, true, true);
 
             validateAll(instances);
             await validateFactoryAAsync(instances);
@@ -372,7 +372,7 @@ describe("Configurations loader and validator routines", () => {
             let settingsWithFactoryA = _.cloneDeep(settings);
             settingsWithFactoryA.p.Mockfactory = factoryB;
 
-            const instances = await LoadConfig(settingsWithFactoryA, schema, true, true);
+            const instances = await genericLoadConfig(settingsWithFactoryA, schema, true, true);
             
             validateAll(instances);
             await validateFactoryBAsync(instances);
@@ -384,7 +384,7 @@ describe("Configurations loader and validator routines", () => {
             settingsWithFactoryA.p.Mockfactory = factoryA;
             settingsWithFactoryA.a = undefined;
 
-            const instances = await LoadConfig(settingsWithFactoryA, schema, true, true);
+            const instances = await genericLoadConfig(settingsWithFactoryA, schema, true, true);
 
             chai.expect(() => instances.settings.a).to.throw(LoadConfigErrors.configurationMissing);
         });
@@ -395,7 +395,7 @@ describe("Configurations loader and validator routines", () => {
             settingsWithFactoryA.p.Mockfactory = factoryA;
             settingsWithFactoryA.c = undefined;
 
-            const instances = await LoadConfig(settingsWithFactoryA, schema, true, true);
+            const instances = await genericLoadConfig(settingsWithFactoryA, schema, true, true);
         
             chai.expect(() => instances.settings.c).to.throw(LoadConfigErrors.configurationMissing);
         });
@@ -405,7 +405,7 @@ describe("Configurations loader and validator routines", () => {
             let settingsWithFactoryA = _.cloneDeep(settings);
             settingsWithFactoryA.p.Mockfactory = null;
 
-            const instances = await LoadConfig(settingsWithFactoryA, schema, true, true);
+            const instances = await genericLoadConfig(settingsWithFactoryA, schema, true, true);
 
             chai.expect(() => instances.settings.p.Mockfactory).to.throw(LoadConfigErrors.configurationMissing);
         });
