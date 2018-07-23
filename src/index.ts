@@ -26,7 +26,7 @@ export {describe as describeConfigSchema, validateAsync as validatConfigSchemaAs
 import * as _ from 'lodash';
 import { isXArrayHasChildren } from './joi-x';
 
-export {configAsync, ConfigSchema} from './config/index';
+export {configAsync, ConfigSchema, loadConfig} from './config/index';
 
 
 
