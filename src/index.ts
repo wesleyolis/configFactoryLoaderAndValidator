@@ -28,12 +28,15 @@ import { isXArrayHasChildren } from './joi-x';
 
 export {configAsync, ConfigSchema, loadConfig} from './config/index';
 
-
+export function requiredConfig(file:string)
+{
+    return require('config');
+}
 
 
 export abstract class IConfigBundle
 {
-    static async newBundleAndResolveConfigAsync (settings: JoiX.XJSchemaMap | undefined | number = undefined, configSchema : JoiX.XAnyObjectSchema, requireConfig : (file:string) => any = require('config')) : Promise<any>
+    static async newBundleAndResolveConfigAsync (settings: JoiX.XJSchemaMap | undefined | number = undefined, configSchema : JoiX.XAnyObjectSchema, requireConfig : (file:string) => any = requiredConfig) : Promise<any>
     {
         if (settings == undefined)
         {

@@ -14,6 +14,7 @@ import { IConfigFactory } from './config-factory';
 export { JoiV as JoiV };
 export { describe as describeConfigSchema, validateAsync as validatConfigSchemaAsync } from './config-factory/config';
 export { configAsync, ConfigSchema, loadConfig } from './config/index';
+export declare function requiredConfig(file: string): any;
 export declare abstract class IConfigBundle {
     static newBundleAndResolveConfigAsync(settings: number | JoiX.XJSchemaMap | undefined, configSchema: JoiX.XAnyObjectSchema, requireConfig?: (file: string) => any): Promise<any>;
     abstract newBundleAndResolveConfigAsync(settings: JoiX.XJSchemaMap | undefined): Promise<IConfigFactoriesInstances>;
