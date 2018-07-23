@@ -2,7 +2,7 @@ import * as Joi from 'joi';
 import * as JoiX from '../../../joi-x'
 import * as JoiV from '../../../joi-x-validators'
 
-export const factoryName : string = "Client";
+export const factoryName = "Client";
 
 export type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>;
 

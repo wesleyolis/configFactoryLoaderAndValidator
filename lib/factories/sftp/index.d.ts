@@ -26,7 +26,7 @@ export declare const sftpClientSchema: JoiX.XObject<{
         }, "Required", "NotNullable", "L", "W"> & Joi.AlternativesSchema;
     }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
 } & {
-    factory: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    factory: JoiX.XPrimitive<"Client", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
 }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
 export declare type SftpInMemSchema = JoiX.ExtractFromSchema<typeof sftpInMemSchema>;
 export declare const sftpInMemSchema: JoiX.XObject<{
@@ -51,12 +51,12 @@ export declare const sftpInMemSchema: JoiX.XObject<{
         }, "Required", "NotNullable", "L", "W"> & Joi.AlternativesSchema;
     }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
 } & {
-    factory: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    factory: JoiX.XPrimitive<"InMemoryClientWrapper", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
 }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
 export declare type ConfigFactories = SftpClientSchema | SftpInMemSchema;
 export declare type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>;
 export declare const configSchema: JoiX.XFactAlternatives<ISftpSettings, {
-    w: JoiX.XObject<{
+    w: (JoiX.XObject<{
         host: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
         port: JoiX.XPrimitive<number, Joi.NumberSchema, "Required", "NotNullable", "T", "P"> & Joi.NumberSchema;
         credentials: JoiX.XObject<{
@@ -78,12 +78,35 @@ export declare const configSchema: JoiX.XFactAlternatives<ISftpSettings, {
             }, "Required", "NotNullable", "L", "W"> & Joi.AlternativesSchema;
         }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
     } & {
-        factory: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
-    }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
+        factory: JoiX.XPrimitive<"Client", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema) | (JoiX.XObject<{
+        host: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+        port: JoiX.XPrimitive<number, Joi.NumberSchema, "Required", "NotNullable", "T", "P"> & Joi.NumberSchema;
+        credentials: JoiX.XObject<{
+            username: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+            auth: JoiX.XAlternatives<{
+                w: (JoiX.XObject<{
+                    type: JoiX.XPrimitive<JoiV.AuthType.password, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                    password: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema) | (JoiX.XObject<{
+                    type: JoiX.XPrimitive<JoiV.AuthType.publicKey, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                    phrase: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                    passKey: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema) | (JoiX.XObject<{
+                    type: JoiX.XPrimitive<JoiV.AuthType.any, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                    password: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                    phrase: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                    passKey: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema);
+            }, "Required", "NotNullable", "L", "W"> & Joi.AlternativesSchema;
+        }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
+    } & {
+        factory: JoiX.XPrimitive<"InMemoryClientWrapper", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema);
 }, "Required", "NotNullable", "F", "W"> & JoiX.XFactory<ISftpSettings> & Joi.AlternativesSchema;
 export declare function NewFactory(settings: ConfigFactories): ISftpSettings;
 export declare const configSchemaInjectLegacy: JoiX.XFactAlternatives<ISftpSettings, {
-    w: JoiX.XObject<{
+    w: (JoiX.XObject<{
         host: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
         port: JoiX.XPrimitive<number, Joi.NumberSchema, "Required", "NotNullable", "T", "P"> & Joi.NumberSchema;
         credentials: JoiX.XObject<{
@@ -105,7 +128,30 @@ export declare const configSchemaInjectLegacy: JoiX.XFactAlternatives<ISftpSetti
             }, "Required", "NotNullable", "L", "W"> & Joi.AlternativesSchema;
         }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
     } & {
-        factory: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
-    }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
+        factory: JoiX.XPrimitive<"Client", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema) | (JoiX.XObject<{
+        host: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+        port: JoiX.XPrimitive<number, Joi.NumberSchema, "Required", "NotNullable", "T", "P"> & Joi.NumberSchema;
+        credentials: JoiX.XObject<{
+            username: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+            auth: JoiX.XAlternatives<{
+                w: (JoiX.XObject<{
+                    type: JoiX.XPrimitive<JoiV.AuthType.password, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                    password: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema) | (JoiX.XObject<{
+                    type: JoiX.XPrimitive<JoiV.AuthType.publicKey, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                    phrase: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                    passKey: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema) | (JoiX.XObject<{
+                    type: JoiX.XPrimitive<JoiV.AuthType.any, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                    password: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                    phrase: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                    passKey: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+                }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema);
+            }, "Required", "NotNullable", "L", "W"> & Joi.AlternativesSchema;
+        }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema;
+    } & {
+        factory: JoiX.XPrimitive<"InMemoryClientWrapper", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
+    }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema);
 }, "Required", "NotNullable", "F", "W"> & JoiX.XFactory<ISftpSettings> & Joi.AlternativesSchema;
 export declare function NewFactoryWithLegacy(settings: ConfigFactories): ISftpSettings;

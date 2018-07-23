@@ -1,7 +1,7 @@
 import * as Joi from 'joi';
 import * as JoiX from '../../../joi-x';
 import * as JoiV from '../../../joi-x-validators';
-export declare const factoryName: string;
+export declare const factoryName = "Client";
 export declare type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>;
 export declare const configSchema: JoiX.XObject<{
     host: JoiX.XPrimitive<string, Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
