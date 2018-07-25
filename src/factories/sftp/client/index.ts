@@ -50,9 +50,9 @@ export class SftpClient<T extends CS.ConfigSchema> extends ABaseConfigFactory im
         password : this.configSettings.credentials.auth.type == JoiV.AuthType.password 
         || this.configSettings.credentials.auth.type == JoiV.AuthType.any ? this.configSettings.credentials.auth.password : null,
         phrase : this.configSettings.credentials.auth.type == JoiV.AuthType.publicKey
-        || this.configSettings.credentials.auth.type == JoiV.AuthType.any ? this.configSettings.credentials.auth.phrase : "",
+        || this.configSettings.credentials.auth.type == JoiV.AuthType.any ? this.configSettings.credentials.auth.phrase : null,
         privateKey : this.configSettings.credentials.auth.type == JoiV.AuthType.publicKey
-            || this.configSettings.credentials.auth.type == JoiV.AuthType.any ? this.configSettings.credentials.auth.passKey : ""
+            || this.configSettings.credentials.auth.type == JoiV.AuthType.any ? this.configSettings.credentials.auth.passKey : null
         };
     }
 }

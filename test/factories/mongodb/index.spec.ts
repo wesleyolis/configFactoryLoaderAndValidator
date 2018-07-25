@@ -79,7 +79,7 @@ describe("Factories", function()
 
     describe("InMemory", async function() {
         
-        it.only("Connect to InMemory", async function() {
+        it("Connect to InMemory", async function() {
 
             const inMemorySettings : InMemoryCS.ConfigSchema = {
                 class : CFT.ConfigFactoryClass.service,
@@ -108,8 +108,6 @@ describe("Factories", function()
             const mongooseConnection = BlueBird.promisify(mongoose.connect).bind(mongoose);
 
             await mongooseConnection(mongoConnectionStr);
-            
-            console.log("Connected after await");
 
             const testDoc = new mongoose.Schema({
                 propString : String,

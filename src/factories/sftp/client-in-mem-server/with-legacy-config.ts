@@ -32,6 +32,7 @@ export class SftpInMemoryClientWrapperWithLegacy<T extends CS.ConfigSchema> exte
             injectConfig(rawConfig,'banking.hyphenSftpPort', legacyConfig.port);
             injectConfig(rawConfig,'banking.hyphenSftpPrivateKey', legacyConfig.privateKey);
             injectConfig(rawConfig,'banking.hyphenSftpUser', legacyConfig.username);
+            injectConfig(rawConfig,'banking.hyphenSftpPassword', legacyConfig.password);
         }
     }
 }
