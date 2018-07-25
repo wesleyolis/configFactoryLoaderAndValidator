@@ -4,6 +4,9 @@ import * as JoiV from '../../../lib/joi-x-validators'
 import {ConfigSchema, inMemorySchema, InMemorySchema, mongoDBSchema} from '../../../lib/factories/mongodb/index'
 import * as CFT from '../../../lib/config-factory/config-factory-types'
 import { configSchema } from '../../../lib/factories/mongodb';
+import { MongoInMemoryConfigFactory, CS as InMemoryCS } from '../../../lib/factories/mongodb/mongodb-in-memory';
+import * as BlueBird from 'bluebird';
+import * as mongoose from 'mongoose';
 
 describe("Factories", function()
 {
@@ -72,5 +75,65 @@ describe("Factories", function()
                 chai.expect(await JoiX.validate(settings, factorySchema)).to.deep.equal(settings)
             })
         });
+    });
+
+    describe("InMemory", async function() {
+        
+        it.only("Connect to InMemory", async function() {
+
+            const inMemorySettings : InMemoryCS.ConfigSchema = {
+                class : CFT.ConfigFactoryClass.service,
+                type : CFT.ConfigFactoryTypes.mock,
+                port : 34001
+            };
+            
+            const mongoInMemory = MongoInMemoryConfigFactory.NewInstance();
+            
+            await mongoInMemory.createAsync(inMemorySettings);
+
+            await mongoInMemory.startAsync();
+
+            const mongoConnectionStr = await mongoInMemory.getConnectionString();
+
+            mongoose.connection.on('error', (error) =>
+            {
+                console.log('Error:' + JSON.stringify(error));
+            });
+    
+            mongoose.connection.on('connected', () =>
+            {
+                console.log("Connected");
+            });
+
+            const mongooseConnection = BlueBird.promisify(mongoose.connect).bind(mongoose);
+
+            await mongooseConnection(mongoConnectionStr);
+            
+            console.log("Connected after await");
+
+            const testDoc = new mongoose.Schema({
+                propString : String,
+                propNumber : Number,
+                propBoolean : Boolean
+            });
+
+            const testDocModel = mongoose.model('TestDoc', testDoc);
+
+            const doc = new testDocModel({
+                propString : 'propA',
+                propNumber : 1234,
+                propBoolean : true
+            });
+
+            await BlueBird.promisify(doc.save).bind(doc)();
+
+            const results = await testDocModel.find({propString:'propA'}).exec();
+            
+            chai.expect(results.length).eq(1);
+            chai.expect(results[0]).to.have.property('propString').to.eq('propA');
+            chai.expect(results[0]).to.have.property('propNumber').to.eq(1234);
+            chai.expect(results[0]).to.have.property('propBoolean').to.eq(true);
+           
+        }).timeout(999999);
     });
 });

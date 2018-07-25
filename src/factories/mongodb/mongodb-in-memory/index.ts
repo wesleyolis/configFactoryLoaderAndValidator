@@ -57,12 +57,12 @@ export class MongoInMemoryConfigFactory<T extends CS.ConfigSchema> extends ABase
 
         await super.startAsync();
 
-        return await promisify(this.mongoServerInstance.start).bind(this.mongoServerInstance);
+        return promisify(this.mongoServerInstance.start).bind(this.mongoServerInstance)();
     }
 
     public async stopAsync()
     {
-        return await promisify(this.mongoServerInstance.stop).bind(this.mongoServerInstance);
+        return promisify(this.mongoServerInstance.stop).bind(this.mongoServerInstance)();
     }
 
     getConnectionString() : string
