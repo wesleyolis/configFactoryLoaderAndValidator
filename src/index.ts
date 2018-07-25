@@ -340,7 +340,9 @@ LF = JoiX.ExtractWithFactoriesFromSchema<L>>
                 return factoryInstance as IConfigFactory;
             }
 
-            let lazyLoaderPromise: () => Promise<IConfigFactory> = () => {return lazyLoader()};
+            let lazyLoaderPromise: () => Promise<IConfigFactory> = () => {
+                return lazyLoader()
+            };
             
             if (!lazyLoad) {
                 const resolved =  await lazyLoader();

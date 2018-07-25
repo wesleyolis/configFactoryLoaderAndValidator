@@ -174,7 +174,10 @@ export class SftpInMemoryClientWrapper<T extends CS.ConfigSchema> extends SftpCl
         debug : rbLog.info
       };
       
-      this.server = Ssh2.Server.createServer(sftpSettings, this.ServerConnectionListern);
+      this.server = Ssh2.Server.createServer(sftpSettings, () =>
+      {
+        this.ServerConnectionListern.call(this, arguments);
+      });
   
       const listernAsync = promisify(this.server.listen).bind(this.server);
 
