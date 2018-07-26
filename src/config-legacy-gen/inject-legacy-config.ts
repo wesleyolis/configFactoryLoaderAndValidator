@@ -18,8 +18,7 @@ export function injectConfig(rawConfig : any, pathInSchema : string, value : any
 
     const insertKey = keys[keys.length - 1];
 
-    if (parentConfig[insertKey] !== undefined)
-        delete parentConfig[insertKey];
+    delete parentConfig[insertKey];
 
     Object.defineProperty(parentConfig, insertKey, {get : () => value} );
 }
