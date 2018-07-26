@@ -323,7 +323,10 @@ LF = JoiX.ExtractWithFactoriesFromSchema<L>>
                         await factoryInstance.createFactoryAsync(configValue);
 
                         if ((factoryInstance as any) ['injectConfig'] != undefined)
-                            (factoryInstance as any).injectConfig(configSettings)
+                        {
+                            (factoryInstance as any).injectConfig(configSettings);  // Backwards compatability
+                            (factoryInstance as any).injectConfig(loadedConfig);    // Forwards compatability, were required, were schema is still defined.                       
+                        }
 
                         if (lazyLoad)
                             await factoryInstance.startAsync();
