@@ -202,77 +202,81 @@ export class SftpInMemoryClientWrapper<T extends CS.ConfigSchema> extends SftpCl
 
     private ServerConnectionListern(clientConnection: Connection, info: ClientInfo) : void
     {
-      if (this.configSettings.credentials)
-      {
-        clientConnection.on('authentication', (authCtx: Ssh2.AuthContext) => {
+      clientConnection.on('authentication', (authCtx: Ssh2.AuthContext) => {
 
-        if (authCtx.username != this.configSettings.credentials.username)
+        if (this.configSettings.credentials)
         {
-          authCtx.reject(['password', 'publickey'])
-        }
-        
-        else if (authCtx.method === 'publickey')
-        {
-          if (this.configSettings.credentials.auth.type === JoiV.AuthType.publicKey || this.configSettings.credentials.auth.type === JoiV.AuthType.any)
+          if (authCtx.username != this.configSettings.credentials.username)
           {
-            function isParsedKey(x : ParsedKey | Error) : x is ParsedKey
+            authCtx.reject(['password', 'publickey'])
+          }
+          else if (authCtx.method === 'publickey')
+          {
+            if (this.configSettings.credentials.auth.type === JoiV.AuthType.publicKey || this.configSettings.credentials.auth.type === JoiV.AuthType.any)
             {
-              return (<ParsedKey> x).public !== undefined; 
-            }
-
-            const pubKeyOrError = Ssh2.utils.parseKey(this.configSettings.credentials.auth.phrase);
-
-            if (isParsedKey(pubKeyOrError))
-            {
-              if (authCtx.key.algo === pubKeyOrError.fulltype && Buffer.compare(authCtx.key.data, pubKeyOrError.public) === 0)
+              function isParsedKey(x : ParsedKey | Error) : x is ParsedKey
               {
-                if (authCtx.signature)
-                {
-                  const verifier = Crypto.createVerify(authCtx.sigAlgo);
-                  verifier.update(authCtx.blob);
+                return (<ParsedKey> x).public !== undefined; 
+              }
 
-                  if (verifier.verify(pubKeyOrError, authCtx.signature))
-                    authCtx.accept();
+              const pubKeyOrError = Ssh2.utils.parseKey(this.configSettings.credentials.auth.phrase);
+
+              if (isParsedKey(pubKeyOrError))
+              {
+                if (authCtx.key.algo === pubKeyOrError.fulltype && Buffer.compare(authCtx.key.data, pubKeyOrError.public) === 0)
+                {
+                  if (authCtx.signature)
+                  {
+                    const verifier = Crypto.createVerify(authCtx.sigAlgo);
+                    verifier.update(authCtx.blob);
+
+                    if (verifier.verify(pubKeyOrError, authCtx.signature))
+                      authCtx.accept();
+                    else
+                      authCtx.reject();
+                  }
                   else
-                    authCtx.reject();
+                    authCtx.accept();
                 }
                 else
-                  authCtx.accept();
+                {
+                  authCtx.reject();
+                }
               }
               else
               {
                 authCtx.reject();
+                throw new VError(pubKeyOrError, Errors.parseKeyFailedToLoad);
               }
             }
             else
             {
-              authCtx.reject();
-              throw new VError(pubKeyOrError, Errors.parseKeyFailedToLoad);
+              authCtx.reject(this.configSettings.credentials!.username === undefined ? [] : ['password']);
             }
           }
-          else
+          else if (authCtx.method === 'password')
           {
-            authCtx.reject(this.configSettings.credentials!.username === undefined ? [] : ['password']);
-          }
-        }
-        else if (authCtx.method === 'password')
-        {
-          if (this.configSettings.credentials.auth.type == JoiV.AuthType.password || this.configSettings.credentials.auth.type == JoiV.AuthType.any)
-          {
-            if (authCtx.password == this.configSettings.credentials.auth.password)
+            if (this.configSettings.credentials.auth.type == JoiV.AuthType.password || this.configSettings.credentials.auth.type == JoiV.AuthType.any)
             {
-              rbLog.info({}, `Client Authenticated`);
-              authCtx.accept();
+              if (authCtx.password == this.configSettings.credentials.auth.password)
+              {
+                rbLog.info({}, `Client Authenticated`);
+                authCtx.accept();
+              }
+              else
+              {
+                authCtx.reject(this.configSettings.credentials.auth.type == JoiV.AuthType.any ? ['publicKey'] : [], true);
+              }
             }
             else
             {
-              authCtx.reject(this.configSettings.credentials.auth.type == JoiV.AuthType.any ? ['publicKey'] : [], true);
+              authCtx.reject(['publicKey'], true);
             }
           }
-          else
-          {
-            authCtx.reject(['publicKey'], true);
-          }
+        }
+        else
+        {
+          authCtx.accept();
         }
       });
       
@@ -413,6 +417,6 @@ export class SftpInMemoryClientWrapper<T extends CS.ConfigSchema> extends SftpCl
         console.log('Client disconnected');
       });
       
-    }
+    
   }
 }
