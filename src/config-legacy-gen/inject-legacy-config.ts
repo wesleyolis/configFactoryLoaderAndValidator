@@ -3,14 +3,20 @@ export function injectConfig(rawConfig : any, pathInSchema : string, value : any
 {
     const keys = pathInSchema.split('.');
 
-    let insertKey = rawConfig;
+    let parentConfig = rawConfig;
 
-    keys.forEach((key) => {
+    for (let i = 0; i < keys.length - 1; i++)
+    {
+        const key = keys[i];
+        parentConfig = parentConfig[key];
+        if (parentConfig == undefined)
+        {
+            parentConfig[key] = {};
+            parentConfig = parentConfig[key];
+        }
+    }
 
-        insertKey = rawConfig[key];
-        if(insertKey == undefined)
-            insertKey = rawConfig[key] = {};
-    });
+    const insertKey = keys[keys.length - 1];
 
-    insertKey = value;
+    Object.defineProperty(parentConfig, insertKey, {get : () => value} );
 }
