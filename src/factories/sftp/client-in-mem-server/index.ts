@@ -174,9 +174,224 @@ export class SftpInMemoryClientWrapper<T extends CS.ConfigSchema> extends SftpCl
         debug : rbLog.info
       };
       
-      this.server = Ssh2.Server.createServer(sftpSettings, () =>
+      this.server = Ssh2.Server.createServer(sftpSettings, (clientConnection: Connection, info: ClientInfo) : void =>
       {
-        this.ServerConnectionListern.call(this, arguments);
+        clientConnection.on('authentication', (authCtx: Ssh2.AuthContext) => {
+  
+          if (this.configSettings.credentials)
+          {
+            if (authCtx.username != this.configSettings.credentials.username)
+            {
+              authCtx.reject(['password', 'publickey'])
+            }
+            else if (authCtx.method === 'publickey')
+            {
+              if (this.configSettings.credentials.auth.type === JoiV.AuthType.publicKey || this.configSettings.credentials.auth.type === JoiV.AuthType.any)
+              {
+                function isParsedKey(x : ParsedKey | Error) : x is ParsedKey
+                {
+                  return (<ParsedKey> x).public !== undefined; 
+                }
+  
+                const pubKeyOrError = Ssh2.utils.parseKey(this.configSettings.credentials.auth.phrase);
+  
+                if (isParsedKey(pubKeyOrError))
+                {
+                  if (authCtx.key.algo === pubKeyOrError.fulltype && Buffer.compare(authCtx.key.data, pubKeyOrError.public) === 0)
+                  {
+                    if (authCtx.signature)
+                    {
+                      const verifier = Crypto.createVerify(authCtx.sigAlgo);
+                      verifier.update(authCtx.blob);
+  
+                      if (verifier.verify(pubKeyOrError, authCtx.signature))
+                        authCtx.accept();
+                      else
+                        authCtx.reject();
+                    }
+                    else
+                      authCtx.accept();
+                  }
+                  else
+                  {
+                    authCtx.reject();
+                  }
+                }
+                else
+                {
+                  authCtx.reject();
+                  throw new VError(pubKeyOrError, Errors.parseKeyFailedToLoad);
+                }
+              }
+              else
+              {
+                authCtx.reject(this.configSettings.credentials!.username === undefined ? [] : ['password']);
+              }
+            }
+            else if (authCtx.method === 'password')
+            {
+              if (this.configSettings.credentials.auth.type == JoiV.AuthType.password || this.configSettings.credentials.auth.type == JoiV.AuthType.any)
+              {
+                if (authCtx.password == this.configSettings.credentials.auth.password)
+                {
+                  rbLog.info({}, `Client Authenticated`);
+                  authCtx.accept();
+                }
+                else
+                {
+                  authCtx.reject(this.configSettings.credentials.auth.type == JoiV.AuthType.any ? ['publicKey'] : [], true);
+                }
+              }
+              else
+              {
+                authCtx.reject(['publicKey'], true);
+              }
+            }
+          }
+          else
+          {
+            authCtx.accept();
+          }
+        });
+        
+        clientConnection.on('ready', function()
+        {
+          clientConnection.on('session', function(accept, reject) {
+  
+            var session = accept();
+  
+            session.on('sftp', function(accept, reject) {
+              
+              let rootFSNodeItem : FSNodeItem = {items:null, attribs : {
+                mode : constants.S_IRWXU | constants.S_IRWXG | constants.S_IRWXO,  
+                uid : 0,
+                gid : 0,
+                size : 0,
+                mtime : Date.now(),
+                atime : Date.now()
+              }, type:0, data: null};
+  
+              // Open files needs to be a referance to FSNode.
+              var openFiles : {[index:number] : FSNodeReferanceCount} = {};
+              var handleCount = 0;
+              
+              var sftpStream = accept();
+  
+              function openFSNode(reqid : number, pathAndFilename : string, check: (item: FSNodeItem) => boolean)
+              {
+                const fsNode = getFSNode(rootFSNodeItem, pathAndFilename);
+  
+                if (!fsNode || !check(fsNode))
+                  return sftpStream.status(reqid, SFTPStream.STATUS_CODE.FAILURE);
+                else
+                {
+                  const nodeRef = openFiles[handleCount] || {count: 0, node: fsNode};
+                  nodeRef.count++;
+                  openFiles[handleCount] = nodeRef;
+  
+                  const handle = new Buffer(4);
+                  handle.writeUInt32BE(handleCount++, 0, true);
+                  sftpStream.handle(reqid, handle);
+                  
+                  return sftpStream.status(reqid, SFTPStream.STATUS_CODE.OK);
+                }
+              }
+  
+              sftpStream.on('OPENDIR', (reqid, path) =>
+              {
+                openFSNode(reqid, path, isFSNodeDir);
+              });
+  
+              sftpStream.on('OPEN', (reqid, pathAndFilename, flags, attrs) =>
+              {
+                openFSNode(reqid, pathAndFilename, (_) => true);
+              });
+  
+              sftpStream.on('WRITE', (reqid, handle, offset, data) =>
+              {
+                if(handle.length !== 4 || !openFiles[handle.readUInt32BE(0, true)])
+                  return sftpStream.status(reqid, SFTPStream.STATUS_CODE.FAILURE);
+    
+                const nodeRef = openFiles[handleCount];
+  
+                if (!nodeRef)
+                  sftpStream.status(reqid, SFTPStream.STATUS_CODE.FAILURE);
+  
+                if (!nodeRef.node.data)
+                {
+                  const bufferLen = offset + data.length;
+                  nodeRef.node.data = new Buffer(bufferLen);
+                }
+                
+                data.copy(nodeRef.node.data, offset);
+  
+                return sftpStream.status(reqid, SFTPStream.STATUS_CODE.OK);
+              });
+  
+              sftpStream.on('READDIR', function (reqid: number, handle: Buffer)
+              {
+                if (handle.length !== 4)
+                  return sftpStream.status(reqid, SFTPStream.STATUS_CODE.FAILURE);
+  
+                const handleId = handle.readUInt32BE(0, true);
+  
+                const fsNode = openFiles[handleId];
+  
+                if (!fsNode)
+                  return sftpStream.status(reqid, SFTPStream.STATUS_CODE.FAILURE);
+  
+                if (!fsNode.node.items)
+                  return sftpStream.status(reqid, SFTPStream.STATUS_CODE.FAILURE);
+  
+                const items = fsNode.node.items;
+                const keys = Object.keys(items);
+  
+                let files : FileEntry [] = keys.map(key => {
+  
+                  const item = items[key];
+  
+                  return {
+                    filename : key,
+                    longname : "",
+                    attrs : item.attribs
+                  } as FileEntry
+  
+                });
+  
+                sftpStream.name(reqid, files);
+  
+                sftpStream.status(reqid, SFTPStream.STATUS_CODE.EOF);
+              })
+              
+              sftpStream.on('CLOSE', function(reqid, handle) {
+                
+                if (handle.length !== 4)
+                  return sftpStream.status(reqid, SFTPStream.STATUS_CODE.FAILURE);
+  
+                const handleId = handle.readUInt32BE(0, true);
+                const fsNode = openFiles[handleId];
+  
+                if (fsNode)
+                {
+                  fsNode.count--;
+  
+                  if (fsNode.count <= 0)
+                    delete openFiles[handleId];
+  
+                  sftpStream.status(reqid, SFTPStream.STATUS_CODE.OK);
+                }
+                else
+                {
+                  sftpStream.status(reqid, SFTPStream.STATUS_CODE.FAILURE);
+                }
+              });
+            });
+          });
+        }).on('end', function() {
+          console.log('Client disconnected');
+        });
+        
+      
       });
   
       const listernAsync = promisify(this.server.listen).bind(this.server);
@@ -200,223 +415,5 @@ export class SftpInMemoryClientWrapper<T extends CS.ConfigSchema> extends SftpCl
       this.server!.close();
     }
 
-    private ServerConnectionListern(clientConnection: Connection, info: ClientInfo) : void
-    {
-      clientConnection.on('authentication', (authCtx: Ssh2.AuthContext) => {
-
-        if (this.configSettings.credentials)
-        {
-          if (authCtx.username != this.configSettings.credentials.username)
-          {
-            authCtx.reject(['password', 'publickey'])
-          }
-          else if (authCtx.method === 'publickey')
-          {
-            if (this.configSettings.credentials.auth.type === JoiV.AuthType.publicKey || this.configSettings.credentials.auth.type === JoiV.AuthType.any)
-            {
-              function isParsedKey(x : ParsedKey | Error) : x is ParsedKey
-              {
-                return (<ParsedKey> x).public !== undefined; 
-              }
-
-              const pubKeyOrError = Ssh2.utils.parseKey(this.configSettings.credentials.auth.phrase);
-
-              if (isParsedKey(pubKeyOrError))
-              {
-                if (authCtx.key.algo === pubKeyOrError.fulltype && Buffer.compare(authCtx.key.data, pubKeyOrError.public) === 0)
-                {
-                  if (authCtx.signature)
-                  {
-                    const verifier = Crypto.createVerify(authCtx.sigAlgo);
-                    verifier.update(authCtx.blob);
-
-                    if (verifier.verify(pubKeyOrError, authCtx.signature))
-                      authCtx.accept();
-                    else
-                      authCtx.reject();
-                  }
-                  else
-                    authCtx.accept();
-                }
-                else
-                {
-                  authCtx.reject();
-                }
-              }
-              else
-              {
-                authCtx.reject();
-                throw new VError(pubKeyOrError, Errors.parseKeyFailedToLoad);
-              }
-            }
-            else
-            {
-              authCtx.reject(this.configSettings.credentials!.username === undefined ? [] : ['password']);
-            }
-          }
-          else if (authCtx.method === 'password')
-          {
-            if (this.configSettings.credentials.auth.type == JoiV.AuthType.password || this.configSettings.credentials.auth.type == JoiV.AuthType.any)
-            {
-              if (authCtx.password == this.configSettings.credentials.auth.password)
-              {
-                rbLog.info({}, `Client Authenticated`);
-                authCtx.accept();
-              }
-              else
-              {
-                authCtx.reject(this.configSettings.credentials.auth.type == JoiV.AuthType.any ? ['publicKey'] : [], true);
-              }
-            }
-            else
-            {
-              authCtx.reject(['publicKey'], true);
-            }
-          }
-        }
-        else
-        {
-          authCtx.accept();
-        }
-      });
-      
-      clientConnection.on('ready', function()
-      {
-        clientConnection.on('session', function(accept, reject) {
-
-          var session = accept();
-
-          session.on('sftp', function(accept, reject) {
-            
-            let rootFSNodeItem : FSNodeItem = {items:null, attribs : {
-              mode : constants.S_IRWXU | constants.S_IRWXG | constants.S_IRWXO,  
-              uid : 0,
-              gid : 0,
-              size : 0,
-              mtime : Date.now(),
-              atime : Date.now()
-            }, type:0, data: null};
-
-            // Open files needs to be a referance to FSNode.
-            var openFiles : {[index:number] : FSNodeReferanceCount} = {};
-            var handleCount = 0;
-            
-            var sftpStream = accept();
-
-            function openFSNode(reqid : number, pathAndFilename : string, check: (item: FSNodeItem) => boolean)
-            {
-              const fsNode = getFSNode(rootFSNodeItem, pathAndFilename);
-
-              if (!fsNode || !check(fsNode))
-                return sftpStream.status(reqid, SFTPStream.STATUS_CODE.FAILURE);
-              else
-              {
-                const nodeRef = openFiles[handleCount] || {count: 0, node: fsNode};
-                nodeRef.count++;
-                openFiles[handleCount] = nodeRef;
-
-                const handle = new Buffer(4);
-                handle.writeUInt32BE(handleCount++, 0, true);
-                sftpStream.handle(reqid, handle);
-                
-                return sftpStream.status(reqid, SFTPStream.STATUS_CODE.OK);
-              }
-            }
-
-            sftpStream.on('OPENDIR', (reqid, path) =>
-            {
-              openFSNode(reqid, path, isFSNodeDir);
-            });
-
-            sftpStream.on('OPEN', (reqid, pathAndFilename, flags, attrs) =>
-            {
-              openFSNode(reqid, pathAndFilename, (_) => true);
-            });
-
-            sftpStream.on('WRITE', (reqid, handle, offset, data) =>
-            {
-              if(handle.length !== 4 || !openFiles[handle.readUInt32BE(0, true)])
-                return sftpStream.status(reqid, SFTPStream.STATUS_CODE.FAILURE);
-  
-              const nodeRef = openFiles[handleCount];
-
-              if (!nodeRef)
-                sftpStream.status(reqid, SFTPStream.STATUS_CODE.FAILURE);
-
-              if (!nodeRef.node.data)
-              {
-                const bufferLen = offset + data.length;
-                nodeRef.node.data = new Buffer(bufferLen);
-              }
-              
-              data.copy(nodeRef.node.data, offset);
-
-              return sftpStream.status(reqid, SFTPStream.STATUS_CODE.OK);
-            });
-
-            sftpStream.on('READDIR', function (reqid: number, handle: Buffer)
-            {
-              if (handle.length !== 4)
-                return sftpStream.status(reqid, SFTPStream.STATUS_CODE.FAILURE);
-
-              const handleId = handle.readUInt32BE(0, true);
-
-              const fsNode = openFiles[handleId];
-
-              if (!fsNode)
-                return sftpStream.status(reqid, SFTPStream.STATUS_CODE.FAILURE);
-
-              if (!fsNode.node.items)
-                return sftpStream.status(reqid, SFTPStream.STATUS_CODE.FAILURE);
-
-              const items = fsNode.node.items;
-              const keys = Object.keys(items);
-
-              let files : FileEntry [] = keys.map(key => {
-
-                const item = items[key];
-
-                return {
-                  filename : key,
-                  longname : "",
-                  attrs : item.attribs
-                } as FileEntry
-
-              });
-
-              sftpStream.name(reqid, files);
-
-              sftpStream.status(reqid, SFTPStream.STATUS_CODE.EOF);
-            })
-            
-            sftpStream.on('CLOSE', function(reqid, handle) {
-              
-              if (handle.length !== 4)
-                return sftpStream.status(reqid, SFTPStream.STATUS_CODE.FAILURE);
-
-              const handleId = handle.readUInt32BE(0, true);
-              const fsNode = openFiles[handleId];
-
-              if (fsNode)
-              {
-                fsNode.count--;
-
-                if (fsNode.count <= 0)
-                  delete openFiles[handleId];
-
-                sftpStream.status(reqid, SFTPStream.STATUS_CODE.OK);
-              }
-              else
-              {
-                sftpStream.status(reqid, SFTPStream.STATUS_CODE.FAILURE);
-              }
-            });
-          });
-        });
-      }).on('end', function() {
-        console.log('Client disconnected');
-      });
-      
     
-  }
 }

@@ -65,5 +65,4 @@ export declare class SftpInMemoryClientWrapper<T extends CS.ConfigSchema> extend
     createAsync(config: JoiX.XJSchemaMap): Promise<void>;
     startAsync(): Promise<void>;
     stopAsync(): Promise<void>;
-    private ServerConnectionListern(clientConnection, info);
 }
