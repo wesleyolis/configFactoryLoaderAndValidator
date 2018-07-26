@@ -372,7 +372,7 @@ LF = JoiX.ExtractWithFactoriesFromSchema<L>>
                 }
             }
 
-            Object.defineProperty(acc, key, { get : propertyValue });
+            Object.defineProperty(acc, key, { get : propertyValue, configurable : true });
         }
     },
     (key : string, acc : any) => {

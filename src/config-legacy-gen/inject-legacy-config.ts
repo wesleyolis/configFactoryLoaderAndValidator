@@ -20,5 +20,5 @@ export function injectConfig(rawConfig : any, pathInSchema : string, value : any
 
     delete parentConfig[insertKey];
 
-    Object.defineProperty(parentConfig, insertKey, {get : () => value} );
+    Object.defineProperty(parentConfig, insertKey, {get : () => value, configurable : true} );
 }
