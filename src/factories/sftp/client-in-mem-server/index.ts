@@ -169,7 +169,7 @@ export class SftpInMemoryClientWrapper<T extends CS.ConfigSchema> extends SftpCl
     public async startAsync()
     {
       const sftpSettings : ServerConfig = {
-        hostKeys : [],
+        hostKeys : [fs.readFileSync('../resouces/test/ssh/sftp_rsa')],
         ident : CS.factoryName,
         debug : rbLog.info
       };
