@@ -1,4 +1,11 @@
-import { IMongoSettings, ISftpSettings, Factories, CFT, JoiX, JoiV, Joi} from '../index';
+import { IMongoSettings, ISftpSettings } from '../factories/index'
+import * as CFT from '../config-factory/config-factory-types'
+import * as Factories from '../factories'
+import * as Joi from 'joi'
+import * as JoiX from '../joi-x'
+import * as JoiV from '../joi-x-validators'
+
+
 import * as hyphenBanking from './hyphen-banking'
 
 export type GlobalConfigSchema = JoiX.ExtractFromObject<typeof globalConfigSchema>

@@ -132,6 +132,6 @@ describe("Factories", function()
             chai.expect(results[0]).to.have.property('propNumber').to.eq(1234);
             chai.expect(results[0]).to.have.property('propBoolean').to.eq(true);
            
-        }).timeout(999999);
+        })
     });
 });

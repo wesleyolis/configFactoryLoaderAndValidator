@@ -1,4 +1,8 @@
-import { Joi, JoiX, JoiV, Factories, CFT } from '../index';
+import * as CFT from '../config-factory/config-factory-types';
+import * as Factories from '../factories';
+import * as Joi from 'joi';
+import * as JoiX from '../joi-x';
+import * as JoiV from '../joi-x-validators';
 export declare const bundleName: string;
 export declare type ConfigSchema = JoiX.ExtractFromSchema<typeof configSchema>;
 export declare const configSchema: JoiX.XObject<{

@@ -1,7 +1,8 @@
-import * as JoiX from '../../../joi-x';
 import * as CS from './config-schema';
 import { ConfigFactoryClass, ConfigFactoryTypes } from '../../../config-factory/config-factory-types';
-import { Joi, JoiV } from '../../../index';
+import * as Joi from 'joi';
+import * as JoiX from '../../../joi-x';
+import * as JoiV from '../../../joi-x-validators';
 import { SftpClient } from '../client/index';
 import * as Ssh2 from 'ssh2';
 export { Ssh2 };

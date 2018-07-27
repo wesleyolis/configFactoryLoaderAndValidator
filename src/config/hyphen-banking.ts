@@ -1,4 +1,10 @@
-import {Joi, JoiX, JoiV, Factories, CFT} from '../index'
+import * as CFT from '../config-factory/config-factory-types'
+import * as Factories from '../factories'
+import * as Joi from 'joi'
+import * as JoiX from '../joi-x'
+import * as JoiV from '../joi-x-validators'
+
+
 import * as Parent from './index'
 import {ISftpSettings, configSchema as sftpConfigSchema, configSchemaInjectLegacy as sftpConfigSchemaInjectLegacy} from '../factories/sftp'
 
@@ -38,6 +44,6 @@ export const configSchema = JoiX.object().keys({
     hyphenAccountValidationUrl : JoiX.string().required(),
     hyphenAccountVerificationUserProfile : JoiX.string().required(),
     hyphenKey : JoiV.port().required(),
-    sftp : sftpConfigSchemaInjectLegacy
+   sftp : sftpConfigSchemaInjectLegacy
 }).required();
 

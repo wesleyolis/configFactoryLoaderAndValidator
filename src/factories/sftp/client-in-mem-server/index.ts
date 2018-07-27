@@ -1,18 +1,19 @@
 import {} from 'redblade-types'
-const rbLog = global.rbLog;
 
-import * as JoiX from '../../../joi-x'
 import { promisify } from 'bluebird'
 
 import * as CS from './config-schema'
 import { ConfigFactoryClass, ConfigFactoryTypes } from '../../../config-factory/config-factory-types'
-import { Joi, JoiV } from '../../../index';
+import * as Joi from 'joi'
+import * as JoiX from '../../../joi-x'
+import * as JoiV from '../../../joi-x-validators'
 
 import { SftpClient } from '../client/index'
 import * as Ssh2 from 'ssh2';
 import { Connection, ClientInfo, ServerConfig } from 'ssh2';
 import { SFTPStream, FileEntry, ParsedKey } from 'ssh2-streams';
 import * as fs from 'fs';
+import * as path from 'path';
 import {constants} from 'fs'
 import { VError } from 'verror';
 import * as Crypto from 'crypto';
@@ -142,6 +143,8 @@ class Errors
   static readonly parseKeyFailedToLoad : string = "parseKeyFailedToLoad";
 }
 
+const hostKeyPath = path.resolve('resouces/test/ssh/sftp_rsa');
+
 export class SftpInMemoryClientWrapper<T extends CS.ConfigSchema> extends SftpClient<T>
 {
     factoryName: string = CS.factoryName;
@@ -169,20 +172,25 @@ export class SftpInMemoryClientWrapper<T extends CS.ConfigSchema> extends SftpCl
     public async startAsync()
     {
       const sftpSettings : ServerConfig = {
-        hostKeys : [fs.readFileSync('../resouces/test/ssh/sftp_rsa')],
+        hostKeys : [fs.readFileSync(hostKeyPath)],
         ident : CS.factoryName,
-        debug : rbLog.info
+        debug : global.rbLog.info
       };
       
       this.server = Ssh2.Server.createServer(sftpSettings, (clientConnection: Connection, info: ClientInfo) : void =>
       {
         clientConnection.on('authentication', (authCtx: Ssh2.AuthContext) => {
-  
+
           if (this.configSettings.credentials)
           {
-            if (authCtx.username != this.configSettings.credentials.username)
+            if (authCtx.username !== this.configSettings.credentials.username)
             {
-              authCtx.reject(['password', 'publickey'])
+              if (authCtx.method === 'none')
+                authCtx.reject(this.configSettings.credentials.auth.type == JoiV.AuthType.any ? ['publicKey','password'] :
+                this.configSettings.credentials.auth.type == JoiV.AuthType.password ? ['password'] : ['publicKey'], true);
+              else
+                authCtx.reject();
+              // reject better to move this code into each method.. I feel a big refactor is need, but we just leave this as is.
             }
             else if (authCtx.method === 'publickey')
             {
@@ -234,7 +242,7 @@ export class SftpInMemoryClientWrapper<T extends CS.ConfigSchema> extends SftpCl
               {
                 if (authCtx.password == this.configSettings.credentials.auth.password)
                 {
-                  rbLog.info({}, `Client Authenticated`);
+                  global.rbLog.info({}, `Client Authenticated`);
                   authCtx.accept();
                 }
                 else
@@ -247,10 +255,19 @@ export class SftpInMemoryClientWrapper<T extends CS.ConfigSchema> extends SftpCl
                 authCtx.reject(['publicKey'], true);
               }
             }
+            else if (authCtx.method === 'none')
+            {
+              authCtx.reject(this.configSettings.credentials.auth.type == JoiV.AuthType.any ? ['publicKey','password'] :
+              this.configSettings.credentials.auth.type == JoiV.AuthType.password ? ['password'] : ['publicKey'], true);
+            }
+          }
+          else if (authCtx.method == "none")
+          {
+            authCtx.accept();
           }
           else
           {
-            authCtx.accept();
+            authCtx.reject();
           }
         });
         
@@ -398,7 +415,7 @@ export class SftpInMemoryClientWrapper<T extends CS.ConfigSchema> extends SftpCl
 
       await listernAsync(this.configSettings.port, this.configSettings.host);
 
-      rbLog.info({InMemsftp : {
+      global.rbLog.info({InMemsftp : {
           status: 'listerning', 
           address: this.server.address().address,
           port: this.server.address().port

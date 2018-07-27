@@ -1,4 +1,8 @@
-import { IMongoSettings, ISftpSettings, CFT, JoiX, JoiV, Joi } from '../index';
+import { IMongoSettings, ISftpSettings } from '../factories/index';
+import * as CFT from '../config-factory/config-factory-types';
+import * as Joi from 'joi';
+import * as JoiX from '../joi-x';
+import * as JoiV from '../joi-x-validators';
 export declare type GlobalConfigSchema = JoiX.ExtractFromObject<typeof globalConfigSchema>;
 export declare const globalConfigSchema: {
     mongodb: JoiX.XFactAlternatives<IMongoSettings, {

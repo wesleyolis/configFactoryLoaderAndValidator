@@ -3,7 +3,8 @@ import * as CS from './config-schema';
 import { ABaseConfigFactory } from '../../../config-factory/abase-config-factory';
 import { ConfigFactoryClass, ConfigFactoryTypes } from '../../../config-factory/config-factory-types';
 import { ISftpSettings, ILegacyConfig } from '../isftp-config-factory';
-import { Joi, JoiV } from '../../../index';
+import * as Joi from 'joi';
+import * as JoiV from '../../../joi-x-validators';
 export { CS as CS };
 export declare class SftpClient<T extends CS.ConfigSchema> extends ABaseConfigFactory implements ISftpSettings {
     configSettings: T;

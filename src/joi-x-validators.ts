@@ -1,6 +1,7 @@
 import * as JoiX from './joi-x'
 import * as Joi from 'joi'
 import * as _ from 'lodash'
+import { CFT } from '.';
 
 // this can be fixed in version 2.9 if I recall, were generic template parameter can be used to instaniate a base class,
 // in which case we can preserve the settings.
@@ -118,4 +119,17 @@ export const postgress = () =>
 export const Url = () =>
 {
     return JoiX.string()
+}
+
+
+const test = credentials();
+
+type test = JoiX.ExtractFromSchema<typeof test>;
+
+let impl : test = {
+    username : "sdfsdf",
+    auth : {
+        type : AuthType.password,
+        password : "sdf"
+    }
 }

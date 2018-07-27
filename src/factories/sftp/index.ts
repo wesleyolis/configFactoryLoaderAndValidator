@@ -42,7 +42,7 @@ const factories : Factory<ISftpSettings> [] = [
         configFactoryNew: sftpClient.SftpClient.NewInstance
     },
     {
-        configFactoryName: sftpClientCS.factoryName,
+        configFactoryName: sftpInMemCS.factoryName,
         configFactoryNew: sftpInMem.SftpInMemoryClientWrapper.NewInstance
     }
 ];
@@ -50,8 +50,6 @@ const factories : Factory<ISftpSettings> [] = [
 export function NewFactory(settings : ConfigFactories) : ISftpSettings {
     return _NewFactory(factories, settings);
 }
-
-
 
 export const configSchemaInjectLegacy = JoiX.Factory<ISftpSettings>(JoiX.FactoryType.issolated, NewFactoryWithLegacy).try([sftpClientSchema, sftpInMemSchema]).required();
 
