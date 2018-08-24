@@ -12,8 +12,6 @@ import * as JoiV from '../../../joi-x-validators'
 
 export {CS as CS}
 
-var MongoInMemory = require('mongo-in-memory');
-
 class MongoInMemoryErrors
 {
     static FailedToStart = "FailedToStart";
@@ -43,6 +41,8 @@ export class MongoInMemoryConfigFactory<T extends CS.ConfigSchema> extends ABase
     public async createAsync(conf : CS.ConfigSchema)
     {
         await super.createAsync(conf);
+
+        const MongoInMemory = require('mongo-in-memory');
         
         this.mongoServerInstance = new MongoInMemory(this.configSettings.port);
         
