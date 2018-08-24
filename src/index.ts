@@ -19,7 +19,7 @@ import * as JoiV from './joi-x-validators'
 import { ConfigFactories, IConfigFactory } from './config-factory';
 export {JoiV as JoiV}
 import {validateAsync} from './config-factory/config'
-import {MultiError, VError} from 'VError'
+import {MultiError, VError} from 'verror'
 
 export {describe as describeConfigSchema, validateAsync as validatConfigSchemaAsync} from './config-factory/config'
 
