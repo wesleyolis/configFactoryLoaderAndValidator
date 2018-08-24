@@ -1,6 +1,6 @@
 {
   "name": "redblade-platform",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "repository": "https://bitbucket.org/redbladeio/redblade-platform",
   "main": "lib/index.js",
