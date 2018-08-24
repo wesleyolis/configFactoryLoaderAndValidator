@@ -9,7 +9,7 @@ import * as factories from './factories'
 export {factories as Factories}
 export {IMongoSettings, ISftpSettings} from './factories'
 
-import * as Joi from 'Joi'
+import * as Joi from 'joi'
 export {Joi as Joi}
 
 import * as JoiX from './joi-x'
