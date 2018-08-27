@@ -26,7 +26,6 @@
   "license": "ISC",
   "devDependencies": {
     "@types/bluebird": "^3.5.20",
-    "@types/ssh2": "^0.5.35",
     "@types/ssh2-streams": "^0.1.2",
     "mongo-in-memory": "0.0.5",
     "typelevel-ts": "^0.2.3"
@@ -35,6 +34,7 @@
     "@types/bluebird": "^3.5.20",
     "@types/joi": "^13.0.8",
     "@types/verror": "^1.10.3",
+    "@types/ssh2": "^0.5.35",
     "bluebird": "^3.5.1",
     "buffer-equal-constant-time": "^1.0.1",
     "config": "^1.29.4",
