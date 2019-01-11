@@ -38,7 +38,7 @@ export class MongoInMemoryConfigFactory<T extends CS.ConfigSchema> extends ABase
         super();
     }
 
-    public async createAsync(conf : CS.ConfigSchema)
+    public async createAsync(conf : CS.ConfigSchema) : Promise<void>
     {
         await super.createAsync(conf);
 
@@ -50,19 +50,19 @@ export class MongoInMemoryConfigFactory<T extends CS.ConfigSchema> extends ABase
         this.connectionPort = this.mongoServerInstance.port;
     }
 
-    public async startAsync()
+    public async startAsync() : Promise<void>
     {
         if (this.mongoServerInstance === null)
             throw new VError({name:MongoInMemoryErrors.FailedToStart}, 'Mongo failed to start or you have yet to call create.');
 
         await super.startAsync();
 
-        return promisify(this.mongoServerInstance.start).bind(this.mongoServerInstance)();
+        await promisify(this.mongoServerInstance.start).bind(this.mongoServerInstance)();
     }
 
-    public async stopAsync()
+    public async stopAsync() : Promise<void>
     {
-        return promisify(this.mongoServerInstance.stop).bind(this.mongoServerInstance)();
+        await promisify(this.mongoServerInstance.stop).bind(this.mongoServerInstance)();
     }
 
     getConnectionString() : string

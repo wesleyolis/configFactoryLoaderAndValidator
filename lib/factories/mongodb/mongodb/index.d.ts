@@ -8,9 +8,9 @@ import * as JoiV from '../../../joi-x-validators';
 export { CS as CS };
 export declare class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABaseConfigFactory implements IMongoSettings {
     configSettings: T;
-    readonly factoryName: string;
-    readonly factoryClass: ConfigFactoryClass;
-    readonly type: ConfigFactoryTypes;
+    readonly factoryName = "Network";
+    readonly factoryClass = ConfigFactoryClass.service;
+    readonly type = ConfigFactoryTypes.production;
     readonly configSchema: JoiX.XObject<{
         provider: JoiX.XPrimitive<"mongodb", Joi.StringSchema, "Required", "NotNullable", "T", "P"> & Joi.StringSchema;
         hosts: JoiX.XArray<{
@@ -62,5 +62,5 @@ export declare class MongoDBConfigFactory<T extends CS.ConfigSchema> extends ABa
     startAsync(): Promise<void>;
     stopAsync(): Promise<void>;
     getConnectionString(): string;
-    private makeMongoDBConnString(settings);
+    private makeMongoDBConnString;
 }

@@ -1,5 +1,4 @@
 import * as Joi from 'joi';
-import {If, ObjectHasKey, ObjectOverwrite} from 'typelevel-ts';
 import { IConfigFactory } from './config-factory/iconfig-factory';
 export * from 'joi';
 
@@ -139,9 +138,9 @@ export type XPrimativeSchema =
   | XNumberSchema
   | XStringSchema
 
-export type ExtractRequired<S, T> = If<ObjectHasKey<S,'__isRequired'>, T, T | undefined>; 
-export type ExtractNull<S, T> = If<ObjectHasKey<S,'__isNullable'>, T | null, T>; 
-export type ExtractTSType<S, T extends HasKey> = If<ObjectHasKey<S,'__tsType'>, T['__tsType'], T>; 
+export type ExtractRequired<S, T> = S extends {__isRequired: any} ? T : T | undefined; 
+export type ExtractNull<S, T> = S extends {__isNullable:any} ? T | null : T; 
+export type ExtractTSType<S, T extends HasKey> = S extends {__tsType:any} ? T['__tsType'] : T; 
 //export type ExtractFactory<S, T extends HasKey> = If<ObjectHasKey<T,'__factoryType'>, S['__factoryType'], T>;  
 
 /*

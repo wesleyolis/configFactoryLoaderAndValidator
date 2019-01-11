@@ -3,7 +3,6 @@ import * as JoiX from '../../../joi-x';
 import * as Joi from 'joi';
 import {baseConfigSchema} from '../../../config-factory/abase-config-factory-schema'
 import * as CFT from '../../../config-factory/config-factory-types'
-import {ObjectClean} from 'typelevel-ts'
 
 export const factoryName = "Network";
 

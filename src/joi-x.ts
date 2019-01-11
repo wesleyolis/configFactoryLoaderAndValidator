@@ -7,7 +7,6 @@ import {ValidationErrorItem, validate, describe, AlternativesSchema} from 'joi'
 export {ValidationErrorItem as ValidationErrorItem, validate as validate, describe as describe}
 
 import * as Joi from 'joi';
-import {If, ObjectHasKey, ObjectOptional, ObjectOmit, ObjectClean, Bool, StringOmit, StringEq, ObjectOverwrite} from 'typelevel-ts';
 import { JoiV } from './index';
 
 export type ID = 'T' | 'A' | 'P' | 'K' | 'L' | 'F'
@@ -43,7 +42,7 @@ export interface XObject<T = Record<string, any>, R extends IsRequired = 'NotReq
   pattern<S extends JoiXSchema>(regex: RegExp, schema : S) : XObject<{'w': S}, R, N, 'P', 'W'> & Joi.ObjectSchema
 
   // if statment also needs to handle other cases.
-  keys<K extends Record<string, JoiXSchema>>(keys: K): XObject<If<StringEq<this['__ID'],'K'>, this['__tsType'] & K ,K>, R, N, 'K','P'> & Joi.ObjectSchema
+  keys<K extends Record<string, JoiXSchema>>(keys: K): XObject<this['__ID'] extends 'K' ? this['__tsType'] & K : K, R, N, 'K','P'> & Joi.ObjectSchema
 
   // This is actually not supported by joi in the first place, so we shouldn't support it here.
   //keys<K extends JoiXSchema>(keys: K):  XObject<If<StringEq<this['__ID'],'K'>, this['__tsType'] & K , K>, R, N, 'K', 'O'> & Joi.ObjectSchema
@@ -249,8 +248,8 @@ export type XAnyObjectSchema = XObject<any,any, any, any, any> & Joi.ObjectSchem
 export type JoiXSchema<T = any, R extends IsRequired = any, N extends IsNullable = any, I extends ID = any, F extends InputForm = any> = 
 X<T, R, N, I, F> //& Joi.Schema;
 
-export type ExtractRequired<S extends any, T> = If<StringEq<S['__isRequired'], 'Required'>, T, T | undefined>; 
-export type ExtractNull<S extends any, T> = If<StringEq<S['__isNullable'], 'Nullable'>, T | null, T>; 
+export type ExtractRequired<S extends any, T> = S['__isRequired'] extends 'Required' ? T : T | undefined; 
+export type ExtractNull<S extends any, T> = S['__isNullable'] extends 'Nullable' ? T | null : T
 export type ExtractRequiredAndNull<S extends any, T> = ExtractRequired<S,ExtractNull<S, T>> 
 
 export type JSON = Record<string, JoiXSchema<any, any, any, any, any>>

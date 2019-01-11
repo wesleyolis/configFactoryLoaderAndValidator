@@ -407,13 +407,14 @@ export class SftpInMemoryClientWrapper<T extends CS.ConfigSchema> extends SftpCl
         }).on('end', function() {
           console.log('Client disconnected');
         });
-        
-      
       });
   
-      const listernAsync = promisify(this.server.listen).bind(this.server);
+      //Type upgrading issues...
+      const listernAsync = promisify(this.server.listen).bind(this.server)
 
-      await listernAsync(this.configSettings.port, this.configSettings.host);
+      if(this.configSettings.port)
+        throw new Error('Please fix mis matching typing issues in typescript3.2 for htis code to work');
+      //await listernAsync(this.configSettings.port, this.configSettings.host);
 
       global.rbLog.info({InMemsftp : {
           status: 'listerning', 

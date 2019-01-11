@@ -3,13 +3,13 @@ import { IConfigFactory } from './iconfig-factory';
 import * as JoiX from '../joi-x';
 import { Config } from './config';
 export declare enum ErrorFactory {
-    NotCreated = "FactoryNotCreated",
+    NotCreated = "FactoryNotCreated"
 }
 export declare abstract class ABaseConfigFactory extends Config implements IConfigFactory {
     abstract factoryName: string;
     abstract factoryClass: ConfigFactoryClass;
     abstract type: ConfigFactoryTypes;
-    readonly abstract configSchema: JoiX.XAnyObjectSchema;
+    abstract readonly configSchema: JoiX.XAnyObjectSchema;
     abstract configSettings?: JoiX.XTSchema;
     protected _created: boolean;
     createFactoryAsync<T extends ({

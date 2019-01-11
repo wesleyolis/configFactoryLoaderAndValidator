@@ -20,7 +20,7 @@ export declare class MongoInMemoryConfigFactory<T extends CS.ConfigSchema> exten
     }, "Required", "NotNullable", "K", "P"> & Joi.ObjectSchema>>;
     constructor(configSettings: T);
     createAsync(conf: CS.ConfigSchema): Promise<void>;
-    startAsync(): Promise<any>;
-    stopAsync(): Promise<any>;
+    startAsync(): Promise<void>;
+    stopAsync(): Promise<void>;
     getConnectionString(): string;
 }

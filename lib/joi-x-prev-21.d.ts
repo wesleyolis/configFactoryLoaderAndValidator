@@ -1,6 +1,5 @@
 /// <reference types="node" />
 import * as Joi from 'joi';
-import { If, ObjectHasKey } from 'typelevel-ts';
 import { IConfigFactory } from './config-factory/iconfig-factory';
 export * from 'joi';
 export interface XBase {
@@ -82,7 +81,7 @@ export declare const enumString: <T extends string>(values: T[]) => XStringSchem
 export declare enum FactoryType {
     issolated = 0,
     dependent = 1,
-    manual = 2,
+    manual = 2
 }
 export declare const Factory: <I extends IConfigFactory, F extends FactoryType>(type: F) => XAlternatives & Joi.AlternativesSchema & {
     __Factory: I;
@@ -104,9 +103,15 @@ export declare type XSchema = {
 } & _XSchema;
 export declare type _XSchema = (XAnySchema | XArraySchema | XAlternativesSchema | XBinarySchema | XBooleanSchema | XDateSchema | XFunctionSchema | XNumberSchema | XObjectSchema | XStringSchema);
 export declare type XPrimativeSchema = XBooleanSchema | XNumberSchema | XStringSchema;
-export declare type ExtractRequired<S, T> = If<ObjectHasKey<S, '__isRequired'>, T, T | undefined>;
-export declare type ExtractNull<S, T> = If<ObjectHasKey<S, '__isNullable'>, T | null, T>;
-export declare type ExtractTSType<S, T extends HasKey> = If<ObjectHasKey<S, '__tsType'>, T['__tsType'], T>;
+export declare type ExtractRequired<S, T> = S extends {
+    __isRequired: any;
+} ? T : T | undefined;
+export declare type ExtractNull<S, T> = S extends {
+    __isNullable: any;
+} ? T | null : T;
+export declare type ExtractTSType<S, T extends HasKey> = S extends {
+    __tsType: any;
+} ? T['__tsType'] : T;
 export declare type _ExtractFromSchema<T extends XSchema> = ExtractRequired<T, ExtractNull<T, ExtractTSType<T, T>>>;
 export declare type _ExtractFromObject<T extends XSchemaMap> = {
     [P in keyof T]: _ExtractFromSchema<T[P]>;

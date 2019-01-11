@@ -1,4 +1,3 @@
-/// <reference types="bluebird" />
 import * as Bluebird from 'bluebird';
 export declare type CallBackType = (err: any, result: any) => void;
 export declare type RCallBack<T> = T extends (err: any, result: infer R) => void ? R : never;

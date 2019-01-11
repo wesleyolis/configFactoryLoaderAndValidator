@@ -5,17 +5,17 @@ export interface Port extends JoiX.XNumberSchema {
 export declare enum DPorts {
     undefined = -1,
     mongo = 27017,
-    sftp = 22,
+    sftp = 22
 }
 export declare const port: (port?: DPorts) => JoiX.XNumberSchema<number>;
 export declare enum AuthType {
     password = "password",
     publicKey = "publicKey",
-    any = "any",
+    any = "any"
 }
 export declare enum PassType {
     plainText = "plainText",
-    encrypt = "encrypt",
+    encrypt = "encrypt"
 }
 export declare type AuthTypes = AuthPassword | AuthPublicKey | AuthAny;
 export declare type AuthPassword = JoiX.ExtractFromSchema<typeof authPassword>;

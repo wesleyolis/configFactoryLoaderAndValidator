@@ -4,7 +4,6 @@ export { IConfigFactory as IConfigFactory };
 import { ValidationErrorItem, validate, describe, AlternativesSchema } from 'joi';
 export { ValidationErrorItem as ValidationErrorItem, validate as validate, describe as describe };
 import * as Joi from 'joi';
-import { If, StringEq } from 'typelevel-ts';
 export declare type ID = 'T' | 'A' | 'P' | 'K' | 'L' | 'F';
 export declare type InputForm = 'P' | 'W';
 export declare type IsRequired = 'Required' | 'NotRequired';
@@ -27,7 +26,7 @@ export interface XObject<T = Record<string, any>, R extends IsRequired = 'NotReq
     pattern<S extends JoiXSchema>(regex: RegExp, schema: S): XObject<{
         'w': S;
     }, R, N, 'P', 'W'> & Joi.ObjectSchema;
-    keys<K extends Record<string, JoiXSchema>>(keys: K): XObject<If<StringEq<this['__ID'], 'K'>, this['__tsType'] & K, K>, R, N, 'K', 'P'> & Joi.ObjectSchema;
+    keys<K extends Record<string, JoiXSchema>>(keys: K): XObject<this['__ID'] extends 'K' ? this['__tsType'] & K : K, R, N, 'K', 'P'> & Joi.ObjectSchema;
     pattern(...args: any[]): XObject<'Invalid type passed to JoiX.object().keys(). Do not use Joi types - use JoiX instead.', R, N, 'P', 'P'> & Joi.ObjectSchema;
     keys(...args: any[]): XObject<'Invalid type passed to JoiX.object().keys(). Do not use Joi types - use JoiX instead.', R, N, 'K', 'P'>;
 }
@@ -133,7 +132,7 @@ export declare const findFactory: (x: any) => FactoryMeta | undefined;
 export declare enum FactoryType {
     issolated = 1,
     dependent = 2,
-    manual = 3,
+    manual = 3
 }
 export declare type FactoryMeta = {
     __factoryType: FactoryType;
@@ -151,8 +150,8 @@ export declare type XFactoryMeta = {
 export declare const Factory: <FInteface>(type: FactoryType, newFactory: (settings: any) => IConfigFactory) => XFactAlternatives<FInteface, undefined, "NotRequired", "NotNullable", "F", "P"> & AlternativesSchema;
 export declare type XAnyObjectSchema = XObject<any, any, any, any, any> & Joi.ObjectSchema;
 export declare type JoiXSchema<T = any, R extends IsRequired = any, N extends IsNullable = any, I extends ID = any, F extends InputForm = any> = X<T, R, N, I, F>;
-export declare type ExtractRequired<S extends any, T> = If<StringEq<S['__isRequired'], 'Required'>, T, T | undefined>;
-export declare type ExtractNull<S extends any, T> = If<StringEq<S['__isNullable'], 'Nullable'>, T | null, T>;
+export declare type ExtractRequired<S extends any, T> = S['__isRequired'] extends 'Required' ? T : T | undefined;
+export declare type ExtractNull<S extends any, T> = S['__isNullable'] extends 'Nullable' ? T | null : T;
 export declare type ExtractRequiredAndNull<S extends any, T> = ExtractRequired<S, ExtractNull<S, T>>;
 export declare type JSON = Record<string, JoiXSchema<any, any, any, any, any>>;
 export declare type ExtractFromSchema<T extends any> = _ExtractFromSchema<T> & XTSchema;
