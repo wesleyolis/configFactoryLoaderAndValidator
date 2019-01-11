@@ -3,7 +3,7 @@ import { callbackify } from 'util';
 
 /* tslint:disable:max-line-length */
 
-export type CallBackType =  (err: any, result: any) => void;
+export type CallBackType = undefined | ((err: any, result: any) => void);
 
 export type RCallBack<T> = T extends (err: any, result: infer R) => void ? R : never;
 

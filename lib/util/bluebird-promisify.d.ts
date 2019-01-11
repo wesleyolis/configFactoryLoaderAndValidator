@@ -1,5 +1,5 @@
 import * as Bluebird from 'bluebird';
-export declare type CallBackType = (err: any, result: any) => void;
+export declare type CallBackType = undefined | ((err: any, result: any) => void);
 export declare type RCallBack<T> = T extends (err: any, result: infer R) => void ? R : never;
 export declare type ParamA<T> = T extends (A: infer P, ...args: any[]) => void ? P : never;
 export declare type ParamB<T> = T extends (A: any, B: infer P, ...args: any[]) => void ? P : never;
