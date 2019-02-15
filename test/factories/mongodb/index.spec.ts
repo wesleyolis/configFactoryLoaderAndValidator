@@ -6,6 +6,7 @@ import * as CFT from '../../../lib/config-factory/config-factory-types'
 import { configSchema } from '../../../lib/factories/mongodb';
 import { MongoInMemoryConfigFactory, CS as InMemoryCS } from '../../../lib/factories/mongodb/mongodb-in-memory';
 import * as BlueBird from 'bluebird';
+import * as BlueBirdPromisify from '../../../lib/util/bluebird-promisify'
 import * as mongoose from 'mongoose';
 
 describe("Factories", function()
@@ -105,9 +106,9 @@ describe("Factories", function()
                 console.log("Connected");
             });
 
-            const mongooseConnection = BlueBird.promisify(mongoose.connect).bind(mongoose);
+            const mongooseConnection = BlueBirdPromisify.Promisify(mongoose, 'connect');
 
-            await mongooseConnection(mongoConnectionStr);
+            await mongooseConnection(mongoConnectionStr, {});
 
             const testDoc = new mongoose.Schema({
                 propString : String,

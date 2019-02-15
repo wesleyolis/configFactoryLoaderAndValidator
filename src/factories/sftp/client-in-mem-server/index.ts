@@ -1,5 +1,3 @@
-import {} from 'redblade-types'
-
 import { promisify } from 'bluebird'
 
 import * as CS from './config-schema'
@@ -20,7 +18,6 @@ import * as Crypto from 'crypto';
 
 export { Ssh2 }
 export { CS }
-
 
 type FSNode = {[index:string] : FSNodeItem}
 
@@ -174,7 +171,7 @@ export class SftpInMemoryClientWrapper<T extends CS.ConfigSchema> extends SftpCl
       const sftpSettings : ServerConfig = {
         hostKeys : [fs.readFileSync(hostKeyPath)],
         ident : CS.factoryName,
-        debug : global.rbLog.info
+        debug : (global as any).rbLog.info
       };
       
       this.server = Ssh2.Server.createServer(sftpSettings, (clientConnection: Connection, info: ClientInfo) : void =>
@@ -242,7 +239,7 @@ export class SftpInMemoryClientWrapper<T extends CS.ConfigSchema> extends SftpCl
               {
                 if (authCtx.password == this.configSettings.credentials.auth.password)
                 {
-                  global.rbLog.info({}, `Client Authenticated`);
+                  (global as any).rbLog.info({}, `Client Authenticated`);
                   authCtx.accept();
                 }
                 else
@@ -307,7 +304,7 @@ export class SftpInMemoryClientWrapper<T extends CS.ConfigSchema> extends SftpCl
                   openFiles[handleCount] = nodeRef;
   
                   const handle = new Buffer(4);
-                  handle.writeUInt32BE(handleCount++, 0, true);
+                  handle.writeUInt32BE(handleCount++, 0);
                   sftpStream.handle(reqid, handle);
                   
                   return sftpStream.status(reqid, SFTPStream.STATUS_CODE.OK);
@@ -326,7 +323,7 @@ export class SftpInMemoryClientWrapper<T extends CS.ConfigSchema> extends SftpCl
   
               sftpStream.on('WRITE', (reqid, handle, offset, data) =>
               {
-                if(handle.length !== 4 || !openFiles[handle.readUInt32BE(0, true)])
+                if(handle.length !== 4 || !openFiles[handle.readUInt32BE(0)])
                   return sftpStream.status(reqid, SFTPStream.STATUS_CODE.FAILURE);
     
                 const nodeRef = openFiles[handleCount];
@@ -350,7 +347,7 @@ export class SftpInMemoryClientWrapper<T extends CS.ConfigSchema> extends SftpCl
                 if (handle.length !== 4)
                   return sftpStream.status(reqid, SFTPStream.STATUS_CODE.FAILURE);
   
-                const handleId = handle.readUInt32BE(0, true);
+                const handleId = handle.readUInt32BE(0);
   
                 const fsNode = openFiles[handleId];
   
@@ -385,7 +382,7 @@ export class SftpInMemoryClientWrapper<T extends CS.ConfigSchema> extends SftpCl
                 if (handle.length !== 4)
                   return sftpStream.status(reqid, SFTPStream.STATUS_CODE.FAILURE);
   
-                const handleId = handle.readUInt32BE(0, true);
+                const handleId = handle.readUInt32BE(0);
                 const fsNode = openFiles[handleId];
   
                 if (fsNode)
@@ -413,10 +410,10 @@ export class SftpInMemoryClientWrapper<T extends CS.ConfigSchema> extends SftpCl
       const listernAsync = promisify(this.server.listen).bind(this.server)
 
       if(this.configSettings.port)
-        throw new Error('Please fix mis matching typing issues in typescript3.2 for htis code to work');
-      //await listernAsync(this.configSettings.port, this.configSettings.host);
+        //throw new Error('Please fix mis matching typing issues in typescript3.2 for htis code to work');
+      await (listernAsync as any)(this.configSettings.port, this.configSettings.host);
 
-      global.rbLog.info({InMemsftp : {
+      (global as any).rbLog.info({InMemsftp : {
           status: 'listerning', 
           address: this.server.address().address,
           port: this.server.address().port

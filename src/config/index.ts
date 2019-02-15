@@ -2,9 +2,6 @@ import {ConfigSchema, configSchema} from './global'
 import {genericLoadConfig, LoadedConfig } from '../index'
 import { some } from 'bluebird';
 export {ConfigSchema as ConfigSchema};
-import {} from 'redblade-types'
-
-const rbLog = global.rbLog;
 
 let configInstancesLoaded : LoadedConfig<typeof configSchema> | undefined = undefined; 
 

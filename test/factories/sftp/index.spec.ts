@@ -4,7 +4,32 @@ import * as JoiV from '../../../lib/joi-x-validators'
 import {ConfigSchema, configSchema, NewFactoryWithLegacy} from '../../../lib/factories/sftp/index'
 import * as CFT from '../../../lib/config-factory/config-factory-types'
 import * as Ssh2 from 'ssh2';
-import * as redbladeTypes from 'redblade-types'
+
+
+export interface BunyanLogEnhancedFunctionsTypes {
+  () : boolean,
+  (msg : string) : void,
+  (util_format: string, ... p1_args_p2_objects: any []) : void,
+  (err: Error, msg : string) : void,
+  (err: Error, util_format : string, ...args: any []) : void,
+  (objectAsElementValue : Object, util_format : string, ...args: any []) : void
+ }
+
+export type EnsurePickEnhance<T, K extends keyof T, Enhance> = {
+ [P in K]: Enhance;
+}
+
+declare global {
+    namespace NodeJS {
+        interface  Global {
+            rbLog: EnsurePickEnhance<{debug:undefined, error:undefined, fatal:undefined, info:undefined, trace:undefined, warn:undefined}, 'debug' | 'error' | 'fatal' | 'info' | 'trace' | 'warn', BunyanLogEnhancedFunctionsTypes>,
+            db: any
+        }
+    }
+    export interface Error {
+        code?: string | number;
+    }
+}
 
 global.rbLog = {} as any;
 // global.rbLog.debug = console.debug as any;

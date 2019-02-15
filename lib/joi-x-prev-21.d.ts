@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import * as Joi from 'joi';
 import { IConfigFactory } from './config-factory/iconfig-factory';
 export * from 'joi';

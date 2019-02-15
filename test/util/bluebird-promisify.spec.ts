@@ -4,7 +4,16 @@ import {Promisify} from '../../lib/util/bluebird-promisify';
 
 import {PromisifyReturn} from '../../lib/util/bluebird-promisify';
 import { onPossiblyUnhandledRejection } from 'bluebird';
-const sut = require('redblade-testing');
+import * as Bluebird from 'bluebird';
+
+
+export async function returnCaughtErrorAsync(resultsPromise: Bluebird<any>) {
+  try {
+    await resultsPromise;
+  } catch (err) {
+    return err;
+  }
+}
 
 type CallBack = (err: any, result: any) => void;
 
@@ -161,7 +170,7 @@ describe("Generic Promisification", function() {
     
                 control.error = 'error_1';
 
-                chai.expect(await sut.returnCaughtErrorAsync(promisifyFun)).property('message').to.eq(control.error);
+                chai.expect(await returnCaughtErrorAsync(promisifyFun)).property('message').to.eq(control.error);
             });
     
     
@@ -177,7 +186,7 @@ describe("Generic Promisification", function() {
     
                 control.error = 'error_A';
     
-                chai.expect(await sut.returnCaughtErrorAsync(resultPromsie)).property('message').to.eq(control.error);
+                chai.expect(await returnCaughtErrorAsync(resultPromsie)).property('message').to.eq(control.error);
             });
     
     
@@ -194,7 +203,7 @@ describe("Generic Promisification", function() {
     
                 control.error = 'error_H';
     
-                chai.expect(await sut.returnCaughtErrorAsync(resultPromsie)).property('message').to.eq(control.error);
+                chai.expect(await returnCaughtErrorAsync(resultPromsie)).property('message').to.eq(control.error);
             });
         });  
     });
@@ -499,7 +508,7 @@ describe("Promisification with return", function() {
 
                 control.error = 'error_1';
 
-                chai.expect(await sut.returnCaughtErrorAsync(resultPromsie)).property('message').to.eq(control.error);
+                chai.expect(await returnCaughtErrorAsync(resultPromsie)).property('message').to.eq(control.error);
             });
     
     
@@ -515,7 +524,7 @@ describe("Promisification with return", function() {
     
                 control.error = 'error_1';
 
-                chai.expect(await sut.returnCaughtErrorAsync(resultPromsie)).property('message').to.eq(control.error);
+                chai.expect(await returnCaughtErrorAsync(resultPromsie)).property('message').to.eq(control.error);
             });
     
     
@@ -532,7 +541,7 @@ describe("Promisification with return", function() {
     
                 control.error = 'error_1';
 
-                chai.expect(await sut.returnCaughtErrorAsync(resultPromsie)).property('message').to.eq(control.error);
+                chai.expect(await returnCaughtErrorAsync(resultPromsie)).property('message').to.eq(control.error);
             });
         });
 
@@ -656,7 +665,7 @@ describe("Promisification with return", function() {
     
                     objectFunToBePromisified.control.error = 'error_1';
     
-                    chai.expect(await sut.returnCaughtErrorAsync(resultPromsie)).property('message').to.eq(objectFunToBePromisified.prefix + "::" + objectFunToBePromisified.control.error);
+                    chai.expect(await returnCaughtErrorAsync(resultPromsie)).property('message').to.eq(objectFunToBePromisified.prefix + "::" + objectFunToBePromisified.control.error);
                 });
         
         
@@ -670,7 +679,7 @@ describe("Promisification with return", function() {
         
                     objectFunToBePromisified.control.error = 'error_1';
     
-                    chai.expect(await sut.returnCaughtErrorAsync(resultPromsie)).property('message').to.eq(objectFunToBePromisified.prefix + ":A:" + objectFunToBePromisified.control.error);
+                    chai.expect(await returnCaughtErrorAsync(resultPromsie)).property('message').to.eq(objectFunToBePromisified.prefix + ":A:" + objectFunToBePromisified.control.error);
                 });
         
         
@@ -685,7 +694,7 @@ describe("Promisification with return", function() {
         
                     objectFunToBePromisified.control.error = 'error_1';
 
-                    chai.expect(await sut.returnCaughtErrorAsync(resultPromsie)).property('message').to.eq(objectFunToBePromisified.prefix + ":H:" + objectFunToBePromisified.control.error);
+                    chai.expect(await returnCaughtErrorAsync(resultPromsie)).property('message').to.eq(objectFunToBePromisified.prefix + ":H:" + objectFunToBePromisified.control.error);
                 });
             });
         });

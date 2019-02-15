@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import { IConfigFactory } from './config-factory';
 export { IConfigFactory as IConfigFactory };
 import { ValidationErrorItem, validate, describe, AlternativesSchema } from 'joi';
